@@ -6,8 +6,8 @@
 #include <stdbool.h>
 
 //colors
-#define RED "\1b[31m"
-#define RESET "\1b[0m"
+#define RED "\033[31m"
+#define RESET "\033[0m"
 
 void highlightNumber() {
 	//if token is an integer, highlight it
