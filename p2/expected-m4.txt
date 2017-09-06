@@ -1,0 +1,12 @@
+#include <stdio.h>
+
+int main()
+{
+  int val3 = [31m24[0m;
+
+  for ( int i=[31m357[0m; i>=[31m25[0m; i-=[31m8[0m ) {
+    printf( "%d %d\n", val3, i );
+    val3+=[31m14[0m;
+  }
+  return [31m0[0m;
+}

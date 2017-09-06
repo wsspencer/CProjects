@@ -1,0 +1,8 @@
+This file contains some plain-old
+numbers, like 45, or,72 ... or,963.
+
+It also contains some that are
+part of an identifier like x23 or
+_75_, so although they are
+goofy variable names, they wouldn't
+be magic numbers.

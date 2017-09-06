@@ -1,0 +1,8 @@
+This file contains some plain-old
+numbers, like [31m45[0m, or,[31m72[0m ... or,[31m963[0m.
+
+It also contains some that are
+part of an identifier like x23 or
+_75_, so although they are
+goofy variable names, they wouldn't
+be magic numbers.

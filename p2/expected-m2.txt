@@ -1,0 +1,6 @@
+This file has the number [31m5[0m
+and the number [31m23[0m, and there's a number
+like [31m102794336[0m in here, for some reason.
+
+None of these numbers are part of an
+identifier.

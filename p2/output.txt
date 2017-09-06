@@ -1,0 +1,7 @@
+This file has the number [31m5[0m
+and the number [31m2[0m[31m3[0m, and there's a number
+like [31m1[0m[31m0[0m[31m2[0m[31m7[0m[31m9[0m[31m4[0m[31m3[0m[31m3[0m[31m6[0m in here, for some reason.
+
+None of these numbers are part of an
+identifier.
+ÿ

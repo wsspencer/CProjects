@@ -1,0 +1,12 @@
+#include <stdio.h>
+
+int main()
+{
+  int val3 = 24;
+
+  for ( int i=357; i>=25; i-=8 ) {
+    printf( "%d %d\n", val3, i );
+    val3+=14;
+  }
+  return 0;
+}

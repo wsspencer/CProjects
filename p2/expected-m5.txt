@@ -1,0 +1,7 @@
+This file ends
+in the middle
+of a number, but
+it should still
+switch back to
+the default ext color.
+[31m2345[0m
