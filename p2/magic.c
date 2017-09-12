@@ -44,9 +44,10 @@ void highlightNumber() {
 	//change color back to default
 	printf( RESET );
 	
-	//print the next char
-	printf( "%c", ch );
-
+	//print the next char (if it's not an EOF)
+	if ( ch != EOF ) {
+		printf( "%c", ch );
+	}
 }
 
 void skipIdentifier() {
@@ -60,8 +61,10 @@ void skipIdentifier() {
 		ch = getchar();
 	}
 	
-	//print the next char 
-	printf( "%c", ch );
+	//print the next char (if it's not an EOF)
+	if ( ch != EOF ) {
+		printf( "%c", ch );
+	}
 }
 
 
