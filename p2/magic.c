@@ -9,42 +9,6 @@
 #define RED "\033[31m"
 #define RESET "\033[0m"
 
-void highlightNumber() {
-	//if token is an integer, highlight it
-	char ch = getchar(); 
-	
-	//change print color to red
-	printf( RED );
-	
-	//print the digit (since it's back on the stream)
-	while (ch != ' ' && ch != EOF && ch != '\n') {
-		printf( "%c", ch );
-		ch = getchar();
-	}
-	//put the space, EOF, or newline char back on the stream
-	ungetc( ch, stdin );
-	
-	//change color back to default
-	printf( RESET );
-}
-
-void skipIdentifier() {
-	//if token is identifier, skip highlighting any digits in this token (move stream to next char after token)
-	char ch = getchar();
-	
-	//loop, printing the chars of the token, until the end of the token 
-	//(excluding tabs since Jenkins tells me that's wrong)
-	while ( ch != ' ' && ch != EOF && ch != '\n') {
-		printf( "%c", ch );
-		ch = getchar();
-	}
-	
-	//print the instance of whitespace too
-	if ( ch != EOF && ch != '\n') {
-		printf( "%c", ch );
-	}
-}
-
 bool isDigit( char ch ) {
 	//check if param is a digit
 	if ( ch >= '0' && ch <= '9' ) {
@@ -64,6 +28,42 @@ bool isAlpha( char ch ) {
 	}
 	return false;
 }
+
+void highlightNumber() {
+	//if token is an integer, highlight it
+	char ch = getchar(); 
+	
+	//change print color to red
+	printf( RED );
+	
+	//print the digit (since it's back on the stream)
+	while ( isDigit( ch ) ) {
+		printf( "%c", ch );
+		ch = getchar();
+	}
+	//change color back to default
+	printf( RESET );
+	
+	//print the next char
+	printf( "%c", ch );
+
+}
+
+void skipIdentifier() {
+	//if token is identifier, skip highlighting any digits in this token (move stream to next char after token)
+	char ch = getchar();
+	
+	//loop, printing the chars of the token, until the end of the token 
+	//(excluding tabs since Jenkins tells me that's wrong)
+	while ( ch != ' ' && ch != EOF && ch != '\n') {
+		printf( "%c", ch );
+		ch = getchar();
+	}
+	
+	//print the next char 
+	printf( "%c", ch );
+}
+
 
 int main() {
 	char ch;
@@ -85,14 +85,13 @@ int main() {
 			highlightNumber();
 		}
 		
-		else if ( ch != '\n' && ch != EOF ) {
-			//print the character
+		//print the character
+		else {
 			printf( "%c", ch );
 		}
+		
 		ch = getchar();
 	}
-	//put a newline down
-	printf( "\n" );
 	
 	return 0;
 }
