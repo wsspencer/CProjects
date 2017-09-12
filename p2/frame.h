@@ -6,4 +6,3 @@
 
 /** Blue component of the frame color. */
 #define FRAME_BLUE 255
-
