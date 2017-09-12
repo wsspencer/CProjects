@@ -60,9 +60,8 @@ int main() {
 	char ch;
 	
 	//read user input one char at a time
+	ch = getchar();
 	while ( ch != EOF ) {
-		ch = getchar();
-		
 		//check if ch is the beginning of an identifier (letter or underscore) 
 		if ( isAlpha( ch ) || ch == '_' ) {
 			//iterate through token
@@ -81,6 +80,7 @@ int main() {
 			//print the character
 			printf( "%c", ch );
 		}
+		ch = getchar();
 	}
 	
 	return 0;
