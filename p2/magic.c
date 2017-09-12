@@ -91,6 +91,8 @@ int main() {
 		}
 		ch = getchar();
 	}
+	//put a newline down
+	printf( "\n" );
 	
 	return 0;
 }
