@@ -55,7 +55,7 @@ void skipIdentifier() {
 	
 	//loop, printing the chars of the token, until the end of the token 
 	//(excluding tabs since Jenkins tells me that's wrong)
-	while ( ch != ' ' && ch != EOF && ch != '\n') {
+	while ( isAlpha( ch ) || isDigit( ch ) || ch == '_' ) {
 		printf( "%c", ch );
 		ch = getchar();
 	}
