@@ -5,35 +5,44 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-//colors
-#define RED "\e[31m"
-#define RESET "\e[0m"
+//colors (033 is octal representation of ascii decimal 27)
+#define RED "\033[31m"
+#define RESET "\033[0m"
 
 void highlightNumber() {
 	//if token is an integer, highlight it
+	char ch = getchar(); 
 	
 	//change print color to red
-	printf( "%s", RED );
+	printf( RED );
 	
 	//print the digit (since it's back on the stream)
-	printf( "%c", getchar() );
+	while (ch != ' ' && ch != EOF && ch != '\n') {
+		printf( "%c", ch );
+		ch = getchar();
+	}
+	//put the space, EOF, or newline char back on the stream
+	ungetc( ch, stdin );
 	
 	//change color back to default
-	printf( "%s", RESET );
+	printf( RESET );
 }
 
 void skipIdentifier() {
 	//if token is identifier, skip highlighting any digits in this token (move stream to next char after token)
 	char ch = getchar();
 	
-	//loop, printing the chars of the token, until the end of the token
-	while ( ch != ' ' && ch != '\n' && ch != '\t' ) {
+	//loop, printing the chars of the token, until the end of the token 
+	//(excluding tabs since Jenkins tells me that's wrong)
+	while ( ch != ' ' && ch != EOF && ch != '\n') {
 		printf( "%c", ch );
 		ch = getchar();
 	}
 	
 	//print the instance of whitespace too
-	printf( "%c", ch );
+	if ( ch != EOF && ch != '\n') {
+		printf( "%c", ch );
+	}
 }
 
 bool isDigit( char ch ) {
@@ -76,7 +85,7 @@ int main() {
 			highlightNumber();
 		}
 		
-		else {
+		else if ( ch != '\n' && ch != EOF ) {
 			//print the character
 			printf( "%c", ch );
 		}
