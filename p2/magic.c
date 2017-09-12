@@ -6,20 +6,20 @@
 #include <stdbool.h>
 
 //colors
-#define RED "\x1b[31m"
-#define RESET "\x1b[0m"
+#define RED "\e[31m"
+#define RESET "\e[0m"
 
 void highlightNumber() {
 	//if token is an integer, highlight it
 	
 	//change print color to red
-	printf( RED );
+	printf( "%s", RED );
 	
 	//print the digit (since it's back on the stream)
 	printf( "%c", getchar() );
 	
 	//change color back to default
-	printf( RESET );
+	printf( "%s", RESET );
 }
 
 void skipIdentifier() {
