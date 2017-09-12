@@ -15,6 +15,9 @@
 #define WEIGHT 255
 #define PPM "P3"
 #define RGBNUM 3
+#define FILESTRLEN 3
+#define INHALF 2.0
+#define HALFPIXEL 0.5
 
 //Global variables (constants once known)
 static int X_PLANE;
@@ -27,7 +30,7 @@ static double FRAME_CENTER_Y;
 
 //Void function for checking correct filetype
 void checkFileType() {
-    char fileType[3];
+    char fileType[FILESTRLEN];
     scanf("%s", fileType);
     if (strcmp(fileType, PPM) != 0) {
         exit(ERRFILE);
@@ -65,8 +68,8 @@ int main() {
     //(remember the frame is drawn from the center to the edge, so in an even shorter plane the
     //edges of the frame would lay between the furthest pixels, and in an even shorter plane,
     //the edges of the frame would not touch the furthest pixels.  Thus the -0.5)
-    FRAME_CENTER_X = (X_PLANE / 2.0) - 0.5;
-    FRAME_CENTER_Y = (Y_PLANE / 2.0) - 0.5;
+    FRAME_CENTER_X = (X_PLANE / INHALF) - HALFPIXEL;
+    FRAME_CENTER_Y = (Y_PLANE / INHALF) - HALFPIXEL;
     if ( X_PLANE > Y_PLANE ) {
         FRAME_RADIUS = FRAME_CENTER_Y;
     }
@@ -120,7 +123,7 @@ int main() {
             //pixel in the image)
             distance = sqrt((FRAME_CENTER_Y - y ) * (FRAME_CENTER_Y - y) + (FRAME_CENTER_X - x) *
                                 (FRAME_CENTER_X - x));
-            
+
             //if distance from center > (or equal to?) our circle's radius, pass values to shade.
             //Otherwise, do not shade the pixel, print it as normal. (call shade 3 times for R, G,
             //and B values) The border/frame color is given in teh frame.h header file, so we will
