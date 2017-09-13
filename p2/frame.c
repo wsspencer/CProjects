@@ -27,7 +27,7 @@
 //Global constants.
 /** Constant for exit status when there is a file type error. */
 #define ERRFILE 100
-/** Constant for exit status when there is a maximum intensity error. */
+/** Constant for exit status when there is another header error. */
 #define ERRHEAD 101
 /** Constant for exit status when there is an image error. */
 #define ERRIMG 102
@@ -110,14 +110,15 @@ void shade( int color, int borderColor, double dist) {
 int main() {
     //Ensure image is of type .PPM.
     checkFileType();
-    
+
     //Read the x and y sizes of the image.
-    scanf("%d", &X_PLANE);
-    scanf("%d", &Y_PLANE);
-    if (X_PLANE < 2 || Y_PLANE < 2) {
+    //If they don't parse as ints or are less than 2, exit with header error.
+    int check;
+    check = scanf("%d %d", &X_PLANE, &Y_PLANE);
+    if (check != 2 || X_PLANE < 2 || Y_PLANE < 2) {
         exit(ERRHEAD);
     }
-    
+
     //Use x and y planes to determine the radius of the frame and its origin
     //(Remember the frame is drawn from the center to the edge, so in an even shorter plane the
     //edges of the frame would lay between the furthest pixels, and in an even shorter plane,
@@ -161,7 +162,7 @@ int main() {
             int check;
 
             //Scan in our RGB values from a pixel in the ppm file.
-            check = scanf("%d %d %d ", &red, &green, &blue);
+            check = scanf("%d %d %d", &red, &green, &blue);
 
             if (check != RGBNUM) {
                 //Body of image error, missing RGB value.
