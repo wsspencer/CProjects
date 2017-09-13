@@ -30,7 +30,7 @@ bool isDigit( char ch ) {
     return false;
 }
 
-/** 
+/**
     This function takes a char data type and returns a boolean representing whether or not that
     char is an alphabetical value.
 
@@ -133,6 +133,6 @@ int main() {
 
         ch = getchar();
     }
-	//Exit successfully.
+    //Exit successfully.
     return 0;
 }
