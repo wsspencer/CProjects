@@ -1,63 +1,117 @@
-//Header files we'll use functions from
+/**
+    @file frame.c
+    @author Scott Spencer (wsspence)
+
+    This program takes a .ppm image and "frames" it with a 1970s style color gradient.  This
+    frame will not encroach on a circle in the center of the image with a radius set to about
+    half the distance of the shortest plane (it will bisect the furthest pixels on a plane of
+    an odd number of pixels, and barely miss the furthest pixels on a plane of even pixels).
+    The frame's color is determined by a header file called frame.h and the weight of that
+    frame's color applied to a pixel will be determined by it's percentage of distance between
+    the edge of the frame and the furthest pixel from the center of the image (any corner).
+*/
+
+
+/** Header file containing standard input/output functions we will use. */
 #include <stdio.h>
+/** Header file containing standard library functions we will use. */
 #include <stdlib.h>
+/** Header file containing math functions we will use. */
 #include <math.h>
+/** Header file containing string functions we will use. */
 #include <string.h>
-//include our header file which define's the frame's color
+/** Header file containing the frame's color definition. */
 #include "frame.h"
 
 
-//MAKE SURE THESE ERROR VALUES ARE USED FOR ALLLLL ERROR CASES BEFORE YOU FINISH
-//Global constants
+//Global constants.
+/** Constant for exit status when there is a file type error. */
 #define ERRFILE 100
+/** Constant for exit status when there is a maximum intensity error. */
 #define ERRHEAD 101
+/** Constant for exit status when there is an image error. */
 #define ERRIMG 102
+/** Constant for checking the max intensity. */
 #define WEIGHT 255
-#define PPM "P3"
+/** Constant for the number of color definitions in a ppm pixel. */
 #define RGBNUM 3
-#define FILESTRLEN 3
+/** Constant for bisecting the X or Y coordinate plane. */
 #define INHALF 2.0
+/** Constant for the value of one-half pixel distance. */
 #define HALFPIXEL 0.5
+/** Constant for the proper first line of a .ppm file. */
+#define PPM "P3"
 
-//Global variables (constants once known)
+//Global variables (constants once known).
+/** Variable for the distance of the X coordinate plane. */
 static int X_PLANE;
+/** Variable for the distance of the Y coordinate plane. */
 static int Y_PLANE;
+/** Variable for the maximum intensity of the input file. */
 static int MAX_INTSTY;
+/** Variable for the maximum distance of a pixel from the center of the input image. */
 static double MAX_DIST;
+/** Variable for the radius of our frame's "window" (inner circle). */
 static double FRAME_RADIUS;
+/** Variable for the X coordinate of the image's center point. */
 static double FRAME_CENTER_X;
+/** Variable for the Y coordinate of the image's center point. */
 static double FRAME_CENTER_Y;
 
-//Void function for checking correct filetype
+
+/**
+    This function is meant to check our input file to ensure it's the correct file type.
+    This is known by whether or not the file begins with "P3."
+
+    @return void
+*/
 void checkFileType() {
-    char fileType[FILESTRLEN];
-    scanf("%s", fileType);
-    if (strcmp(fileType, PPM) != 0) {
+    //If the first two chars of input are not p3, it is not a ppm image.
+    char fileType = getchar();
+    if (fileType != 'P') {
         exit(ERRFILE);
     }
-    
+    else {
+        fileType = getchar();
+        if (fileType != '3') {
+            exit(ERRFILE);
+        }
+    }
 }
 
-//Void function for shading a pixel using weight as a function of distance
-void shade( int color, int borderColor, double dist) {
-    //use dist to shade the "color" param with a percentage of "bordercolor" param, then print its
-    //value. (this function will be called 3 times for each pixel, so only print the color value
-    //and a space once it's been calculated)
+/**
+    This function shades the parameterized color by altering its value based on the percentage
+    of distance its pixel is from the edge of the frame.  Towards the edges the pixels in the frame
+    become entirely the frame color, but closer to the window they are mostly their original color
+    with a small percentage of the frame color added.  We accomplish this by altering the RGB
+    values of each color of each pixel according to the R, G, or B value of the border color and
+    the pixel's distance.
 
-    //add weight to each color component of the pixel.  Add frame color times some weight, w plus
+    @param color int representing the RGB color that will have weight applied to it.
+    @param borderColor int representing the RGB color of our frame.
+    @param dist double representing the distance from the edge of the frame this pixel is.
+    @return void
+*/
+void shade( int color, int borderColor, double dist) {
+    //Add weight to each color component of the pixel.  Add frame color times some weight, w plus
     //the original pixel color times ( 1 - w ).  Round to the nearest int and that will be the new
-    //shaded color for that pixel
+    //shaded color for that pixel.
     double w = (dist - FRAME_RADIUS) / (MAX_DIST - FRAME_RADIUS);
     int newColor = round(( borderColor * w ) + ( color * ( 1 - w ) ));
     printf("%3d ", newColor);
 }
 
-//Main method to be executed
+/**
+    This is our main function which executes at run.  It will read our user's input, delegate
+    params to our helper functions as needed, and ultimately print the output .ppm file.
+
+    @return int for the exit status (either failure or success).
+*/
 int main() {
-    //ensure image is of type .PPM
+    //Ensure image is of type .PPM.
     checkFileType();
     
-    //read the x and y sizes of the image
+    //Read the x and y sizes of the image.
     scanf("%d", &X_PLANE);
     scanf("%d", &Y_PLANE);
     if (X_PLANE < 2 || Y_PLANE < 2) {
@@ -65,9 +119,9 @@ int main() {
     }
     
     //Use x and y planes to determine the radius of the frame and its origin
-    //(remember the frame is drawn from the center to the edge, so in an even shorter plane the
+    //(Remember the frame is drawn from the center to the edge, so in an even shorter plane the
     //edges of the frame would lay between the furthest pixels, and in an even shorter plane,
-    //the edges of the frame would not touch the furthest pixels.  Thus the -0.5)
+    //the edges of the frame would not touch the furthest pixels.  Thus the -0.5).
     FRAME_CENTER_X = (X_PLANE / INHALF) - HALFPIXEL;
     FRAME_CENTER_Y = (Y_PLANE / INHALF) - HALFPIXEL;
     if ( X_PLANE > Y_PLANE ) {
@@ -80,10 +134,10 @@ int main() {
     //We can use Euclidean distance to find the Maximum Distance, since we know the max
     //distance is just the distance from the center to any of the corners, such as 0, 0
     //(Though we won't need absolute values since anthing minus 0 is just that value, so
-    //in this case it's essentially just Pythagoras' theorem)
+    //in this case it's essentially just Pythagoras' theorem).
     MAX_DIST = sqrt( pow( FRAME_CENTER_Y, 2 ) + pow( FRAME_CENTER_X, 2 ) );
 
-    //read in the maximum color intensity for the image, exit with error status if it's not 255
+    //Read in the maximum color intensity for the image, exit with error status if it's not 255.
     scanf("%d", &MAX_INTSTY);
     if (MAX_INTSTY != WEIGHT) {
         exit(ERRHEAD);
@@ -94,7 +148,7 @@ int main() {
     printf("%d %d\n", X_PLANE, Y_PLANE);
     printf("%d\n", MAX_INTSTY);
 
-    //loop through the input and if a pixel lies outside our circle in ANY dimension (center_x
+    //Loop through the input and if a pixel lies outside our circle in ANY dimension (center_x
     //+ radius OR center_y + radius) we will alter its color weight by the % distance it is from
     //the center to the maximum distance. (The corners will be the 4 maximum distances).  If it
     //lay within the circle, we will not alter its coloring.
@@ -106,25 +160,25 @@ int main() {
             int blue;
             int check;
 
-            //scan in our RGB values from a pixel in the ppm file
+            //Scan in our RGB values from a pixel in the ppm file.
             check = scanf("%d %d %d ", &red, &green, &blue);
 
             if (check != RGBNUM) {
-                //body of image error, missing RGB value
+                //Body of image error, missing RGB value.
                 exit(ERRIMG);
             }
 
-            //if this pixel's coords are inside our frame (outside our circle), we will shade them
+            //If this pixel's coords are inside our frame (outside our circle), we will shade them.
             double distance;
 
             //Shade weight will be a function of distance, so determine distance from center
             //determine pixel distance from center using Euclidean metric and cartesian coords
             //(pow for squaring results.  x and y will represent the x and y coordinate of every
-            //pixel in the image)
+            //pixel in the image).
             distance = sqrt((FRAME_CENTER_Y - y ) * (FRAME_CENTER_Y - y) + (FRAME_CENTER_X - x) *
                                 (FRAME_CENTER_X - x));
 
-            //if distance from center > (or equal to?) our circle's radius, pass values to shade.
+            //If distance from center > (or equal to?) our circle's radius, pass values to shade.
             //Otherwise, do not shade the pixel, print it as normal. (call shade 3 times for R, G,
             //and B values) The border/frame color is given in teh frame.h header file, so we will
             //use the 3 constants provided there for our borderColor values, depending on the pixel
@@ -138,7 +192,7 @@ int main() {
                 printf("%3d %3d %3d ", red, green, blue);
             }
         }
-        //print newline for next row of pixels
+        //Print newline for next row of pixels.
         printf("\n");
     }
     return 0;
