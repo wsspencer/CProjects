@@ -11,6 +11,11 @@
 #include <stdbool.h>
 #include "board.h"
 
+/** Constant sequence of chars representing the color BLUE */
+#define BLUE "\033[34m" //(033 is octal representation of ascii decimal 27)
+/** Constant sequence of chars representing the default color */
+#define DEFAULT "\033[0m"
+
 
 void initBoard( int rows, int cols, int board[][ cols ] ) {
 	int counter = 0;
@@ -25,17 +30,37 @@ void initBoard( int rows, int cols, int board[][ cols ] ) {
 	//set to initial state
 }
 
+//helper bool method to test if puzzle is in initial/solved state
+static bool checkSolved( int rows, int cols, int board[][ cols ] ) {
+	int counter = 0;
+	for ( int i = 0; i < rows; i++ ) {
+		for ( int j = 0; j < cols; j++ ) {
+			counter++;
+			if ( board[i][j] != counter ) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 void printBoard( int rows, int cols, int board[][ cols ] ) {
 	//TO DO: loop through and print the board to standard output.  (if it's in the solved state, 
 	//print it in blue)
-	int i = 0;
-	int j = 0;
-	for ( i = 0; i < rows; i++ ) {
-		for ( j = 0; j < cols; j++ ) {
+
+	//check if puzzle is solved, if it is, change font color to blue
+	if ( checkSolved( rows, cols, board ) ) {
+		printf( BLUE );
+	}
+	
+	for ( int i = 0; i < rows; i++ ) {
+		for ( int j = 0; j < cols; j++ ) {
 			printf( "%2d  ", board[i][j]);
 		}
 		printf("\n");
 	}
+	//change font color back to default
+	printf( DEFAULT );
 }
 
 //NEEDS INTERNAL LINKAGE (static)
@@ -90,7 +115,7 @@ bool moveDown( int tile, int rows, int cols, int board[][ cols ] ) {
 	int temp = board[rows - 1][targCol];
 	//loop through the values in target column, moving each value "down" except the first (which
 	//requires the last value which we have stored in temp).
-	for ( int i = 1; i < rows; i++ ) {
+	for ( int i = rows - 1; i > 0; i-- ) {
 		board[i][targCol] = board[i - 1][targCol];
 	}
 	//set the last value in the target column to temp
@@ -113,7 +138,7 @@ bool moveLeft( int tile, int rows, int cols, int board[][ cols ] ) {
 	int temp = board[targRow][cols - 1];
 	//loop through the values in the target row, moving each value "left" except the last (which
 	//requires the last value which we have stored in temp).
-	for ( int i = 1; i < cols; i++ ) {
+	for ( int i = cols - 1; i > 0; i-- ) {
 		board[targRow][i] = board[targRow][i - 1];
 	}
 	//set the first value in the target column to temp
