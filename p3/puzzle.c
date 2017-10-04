@@ -17,6 +17,8 @@
 #define DEFAULT_ROWS 5
 #define DEFAULT_COLS 7
 
+//question before finished...how does undo affect command counter/a second undo?
+
 bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ cols ] ) {
 	//return true if command is valid (undo and exit are handled in main)
 	if ( strcmp( cmd, "left" ) == 0 || strcmp( cmd, "right" ) == 0 || strcmp( cmd, "up" ) == 0
@@ -32,6 +34,12 @@ int main(int argc, char** argv) {
 	int rows = DEFAULT_ROWS;
 	int cols = DEFAULT_COLS;
 	FILE *fp;
+	
+	//array variable for storing the command list formatted array[position][command]
+	char cmds[ NUMCOMMANDS ][ COMMANDLEN ];
+	char cmdVals[ NUMCOMMANDS ];
+	
+	int cmdCounter = 0;
 	
 	char quit[] = "quit";
 	char undo[] = "undo";
@@ -101,9 +109,28 @@ int main(int argc, char** argv) {
 				if ( strcmp( move, quit ) == 0 ) {
 					return 0;
 				}
-				else if ( strcmp( move, undo ) == 0 ) {
-					//set move = to the last stored command and val = its val
-					//then just let the below conditions take care of it
+				if ( strcmp( move, undo ) == 0 ) {
+					//set move = the last stored command and val = its val
+					//then swamp it and just let the below conditions take care of it
+					strcpy( move, cmds[ cmdCounter ] );
+					val = cmdVals[ cmdCounter ];
+					//also be sure to remove the command/val from the two arrays and decrement cmdCounter
+					strcpy( cmds[ cmdCounter ], "" );
+					cmdVals[ cmdCounter ] = 0;
+					cmdCounter--;
+					//Now reverse the move so it can effectively be "undone"
+					if ( strcmp( move, up ) == 0 ) {
+						strcpy( move, down );
+					}
+					else if ( strcmp( move, down ) == 0 ) {
+						strcpy( move, up );
+					}
+					else if ( strcmp( move, right ) == 0 ) {
+						strcpy( move, left );
+					}
+					else if ( strcmp( move, left ) == 0 ) {
+						strcpy( move, right );
+					}
 				}
 			}
 			if (runCommand( move, rows, cols, board )) {
@@ -126,7 +153,10 @@ int main(int argc, char** argv) {
 				exit(1);
 			}
 			printBoard( rows, cols, board );
-			//TO DO: store command in memory
+			//store command in memory
+			strcpy( cmds[ cmdCounter ], move );
+			cmdVals[ cmdCounter ] = val;
+			cmdCounter++;
 		}
 
 		//close the configuration file
@@ -151,9 +181,28 @@ int main(int argc, char** argv) {
 				if ( strcmp( move, quit ) == 0 ) {
 					return 0;
 				}
-				else if ( strcmp( move, undo ) == 0 ) {
-					//set move = to the last stored command and val = its val
-					//then just let the below conditions take care of it
+				if ( strcmp( move, undo ) == 0 ) {
+					//set move = the last stored command and val = its val
+					//then swamp it and just let the below conditions take care of it
+					strcpy( move, cmds[ cmdCounter ] );
+					val = cmdVals[ cmdCounter ];
+					//also be sure to remove the command/val from the two arrays and decrement cmdCounter
+					strcpy( cmds[ cmdCounter ], "" );
+					cmdVals[ cmdCounter ] = 0;
+					cmdCounter--;
+					//Now reverse the move so it can effectively be "undone"
+					if ( strcmp( move, up ) == 0 ) {
+						strcpy( move, down );
+					}
+					else if ( strcmp( move, down ) == 0 ) {
+						strcpy( move, up );
+					}
+					else if ( strcmp( move, right ) == 0 ) {
+						strcpy( move, left );
+					}
+					else if ( strcmp( move, left ) == 0 ) {
+						strcpy( move, right );
+					}
 				}
 			}
 			if ( runCommand( move, rows, cols, board ) ) {
@@ -176,7 +225,10 @@ int main(int argc, char** argv) {
 				exit(1);
 			}
 			printBoard( rows, cols, board );
-			//TO DO: store command in memory
+			//store command in memory
+			strcpy( cmds[ cmdCounter ], move );
+			cmdVals[ cmdCounter ] = val;
+			cmdCounter++;
 		}
 	}
 	

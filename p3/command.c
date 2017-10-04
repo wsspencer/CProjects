@@ -27,7 +27,7 @@ bool getCommand( FILE *stream, char cmd[ CMD_LIMIT + 2 ] ) {
 		return true;
 	}
 
-	//return false if did not successfully read a line of input
+	//return false if fscanf did not successfully read a line of input
 	else {
 		return false;
 	}
