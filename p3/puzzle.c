@@ -18,9 +18,11 @@
 #define DEFAULT_COLS 7
 
 bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ cols ] ) {
-	//run a command?
-	//return true if command is valid
-	//return fals if command is invalid
+	//return true if command is valid (undo and exit are handled in main)
+	if ( cmd == "left" || cmd == "right" || cmd == "up" || cmd == "down" ) {
+		return true;
+	}
+	//return false if command is invalid
 	return false;
 }
 
@@ -61,45 +63,65 @@ int main(int argc, char** argv) {
 
 		//TO DO: if size is invalid or missing, exit with status of 1 and print "Invalid Configuration"
 
-		//Don't close the file yet, we still need to read the moves from it
-
 		// Make the board
 		int board[ rows ][ cols ];
 	
 		//initialize board
 		initBoard( rows, cols, board );
 	
-		//perform moves to the board (IF there was a configuration file found)
-		if (argc > 1) {
-			//read moves from the configuration file
-			char *move = "";
-			int val;
+		//read moves from the configuration file
+		char *move = "";
+		int val;
 		
-			//use skipline to move to the next line in the file, over the newline char?
-			//skipline is in command.c....
-			skipLine(fp);
+		//use skipline to move to the next line in the file, over the newline char?
+		//skipline is in command.c....
+		skipLine(fp);
 
-			//while getCommand returns true, execute that command
-			while( getCommand( fp, move ) ) {
-				//use file pointer to read in command?
-				fscanf(fp, "%s %d", move, &val);
-				//If there are invalid move commands, print "Invalid Configuration" and exit with a
-				//status of 1.
-				//Loop for as many times as the user input, performing the proper move each loop
-				for (int i = 0; i < val; i++) {
-					if (runCommand( move, rows, cols, board )) {
-					//Command will execute
-					}
-					else {
-						printf("Invalid Configuration"); //do I need to print this to stderr?
-						exit(1);
-					}
+		//while getCommand returns true, execute that command
+		while( getCommand( fp, move ) ) {
+			//check if command has a value with it
+			if ( fscanf(fp, "%s%d", move, &val) == 2 ) {
+				//do nothing
+			}
+			//otherwise, figure out what command needs to do
+			else {
+				fscanf( fp, "%s", move );
+				if ( move == "exit" ) {
+					exit(0);
+				}
+				else if ( move == "undo" ) {
+					//set move = to the last stored command and val = its val
+					//then just let the below conditions take care of it
 				}
 			}
 
-			//close the configuration file
-			fclose(fp);
+			if (runCommand( move, rows, cols, board )) {
+				if ( move == "left" ) {
+					moveLeft( val, rows, cols, board );
+				}
+				else if ( move == "right" ) {
+					moveRight( val, rows, cols, board );
+				}
+				else if ( move == "up" ) {
+					moveUp( val, rows, cols, board );
+				}
+				else if ( move == "down" ) {
+					moveDown( val, rows, cols, board );
+				}
+			}
+			//Otherwise the command is not valid
+			else {
+				printf("Invalid Configuration"); //do I need to print this to stderr?
+				exit(1);
+			}
+			printBoard( rows, cols, board );
+			//TO DO: store command in memory
 		}
+
+		//close the configuration file
+		fclose(fp);
+		//exit cleanly?
+		exit(0);
 	}
 	else {
 		// Make the board
@@ -107,6 +129,51 @@ int main(int argc, char** argv) {
 	
 		//initialize board
 		initBoard( rows, cols, board );
+		
+		char *move = "";
+		int val;
+		
+		//scan commands from user in terminal
+		char *line;
+		while ( fgets( name, CMD_LIMIT * sizeof( char ), stdin ) != NULL ) {
+			//retrieve the command and value from line implement scanf for undo and exit
+			//check if command has a value with it
+			if ( sscanf( name, "%s%d", move, &val ) == 2 ) {
+				//do nothing
+			}
+			//otherwise, figure out what command needs to do
+			else {
+				sscanf( name, "%s", move );
+				if ( move == "exit" ) {
+					exit(0);
+				}
+				else if ( move == "undo" ) {
+					//set move = to the last stored command and val = its val
+					//then just let the below conditions take care of it
+				}
+			}
+			if ( runCommand( move, rows, cols, board ) ) {
+				if ( move == "left" ) {
+					moveLeft( val, rows, cols, board );
+				}
+				else if ( move == "right" ) {
+					moveRight( val, rows, cols, board );
+				}
+				else if ( move == "up" ) {
+					moveUp( val, rows, cols, board );
+				}
+				else if ( move == "down" ) {
+					moveDown( val, rows, cols, board );
+				}
+			}
+			//Otherwise the command is not valid
+			else {
+				printf( "Invalid Configuration" ); //do I need to print this to stderr?
+				exit(1);
+			}
+			printBoard( rows, cols, board );
+			//TO DO: store command in memory
+		}
 	}
 	
 	return 0;
