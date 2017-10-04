@@ -1,0 +1,17 @@
+4 4
+left 1
+up 2
+right 3
+down 4
+left 5
+up 6
+right 7
+down 8
+left 9
+up 10
+right 11
+down 12
+left 13
+up 14
+right 15
+down 16
