@@ -19,7 +19,8 @@
 
 bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ cols ] ) {
 	//return true if command is valid (undo and exit are handled in main)
-	if ( cmd == "left" || cmd == "right" || cmd == "up" || cmd == "down" ) {
+	if ( strcmp( cmd, "left" ) == 0 || strcmp( cmd, "right" ) == 0 || strcmp( cmd, "up" ) == 0
+			|| strcmp( cmd, "down" ) == 0 ) {
 		return true;
 	}
 	//return false if command is invalid
@@ -30,6 +31,14 @@ int main(int argc, char** argv) {
 	//Initialize variables for argc and argv so they can be used externally
 	int rows = DEFAULT_ROWS;
 	int cols = DEFAULT_COLS;
+	FILE *fp;
+	
+	char quit[] = "quit";
+	char undo[] = "undo";
+	char up[] = "up";
+	char down[] = "down";
+	char left[] = "left";
+	char right[] = "right";
 
 	//check for configuration file.  If it exists, store it in the char array variable "filename."
 	//(which we create as a pointer so we don't have to define its size)
@@ -47,7 +56,7 @@ int main(int argc, char** argv) {
 		char* filename;
 		filename = argv[1];
 		//Use filename to create file pointer and open the configuration file for reading.
-		FILE *fp = fopen(filename, "r");
+		fp = fopen(filename, "r");
 		
 		//If we cannot open the given config file name (fopen yields null pointer), exit with a
 		//status of 1 and print to standard error.
@@ -62,13 +71,16 @@ int main(int argc, char** argv) {
 		fscanf(fp, "%d %d", &rows, &cols);
 
 		//TO DO: if size is invalid or missing, exit with status of 1 and print "Invalid Configuration"
-
-		// Make the board
-		int board[ rows ][ cols ];
+	}
 	
-		//initialize board
-		initBoard( rows, cols, board );
+	// Make the board
+	int board[ rows ][ cols ];
+	//initialize board
+	initBoard( rows, cols, board );
+	//print the initial board
+	printBoard( rows, cols, board );
 	
+	if (argc > 1) {
 		//read moves from the configuration file
 		char *move = "";
 		int val;
@@ -86,26 +98,25 @@ int main(int argc, char** argv) {
 			//otherwise, figure out what command needs to do
 			else {
 				fscanf( fp, "%s", move );
-				if ( move == "exit" ) {
-					exit(0);
+				if ( strcmp( move, quit ) == 0 ) {
+					return 0;
 				}
-				else if ( move == "undo" ) {
+				else if ( strcmp( move, undo ) == 0 ) {
 					//set move = to the last stored command and val = its val
 					//then just let the below conditions take care of it
 				}
 			}
-
 			if (runCommand( move, rows, cols, board )) {
-				if ( move == "left" ) {
+				if ( strcmp( move, left ) == 0 ) {
 					moveLeft( val, rows, cols, board );
 				}
-				else if ( move == "right" ) {
+				else if ( strcmp( move, right ) == 0 ) {
 					moveRight( val, rows, cols, board );
 				}
-				else if ( move == "up" ) {
+				else if ( strcmp( move, up ) == 0 ) {
 					moveUp( val, rows, cols, board );
 				}
-				else if ( move == "down" ) {
+				else if ( strcmp( move, down ) == 0 ) {
 					moveDown( val, rows, cols, board );
 				}
 			}
@@ -120,49 +131,42 @@ int main(int argc, char** argv) {
 
 		//close the configuration file
 		fclose(fp);
-		//exit cleanly?
-		exit(0);
 	}
+	//if no config file,
 	else {
-		// Make the board
-		int board[ rows ][ cols ];
-	
-		//initialize board
-		initBoard( rows, cols, board );
 		
-		char *move = "";
+		char move[CMD_LIMIT];
 		int val;
 		
 		//scan commands from user in terminal
-		char *line;
-		while ( fgets( name, CMD_LIMIT * sizeof( char ), stdin ) != NULL ) {
+		while ( scanf( "%s", move ) != EOF ) {
 			//retrieve the command and value from line implement scanf for undo and exit
 			//check if command has a value with it
-			if ( sscanf( name, "%s%d", move, &val ) == 2 ) {
+			if ( scanf( "%d", &val ) == 1 ) {
 				//do nothing
 			}
 			//otherwise, figure out what command needs to do
 			else {
-				sscanf( name, "%s", move );
-				if ( move == "exit" ) {
-					exit(0);
+				
+				if ( strcmp( move, quit ) == 0 ) {
+					return 0;
 				}
-				else if ( move == "undo" ) {
+				else if ( strcmp( move, undo ) == 0 ) {
 					//set move = to the last stored command and val = its val
 					//then just let the below conditions take care of it
 				}
 			}
 			if ( runCommand( move, rows, cols, board ) ) {
-				if ( move == "left" ) {
+				if ( strcmp( move, left ) == 0 ) {
 					moveLeft( val, rows, cols, board );
 				}
-				else if ( move == "right" ) {
+				else if ( strcmp( move, right ) == 0 ) {
 					moveRight( val, rows, cols, board );
 				}
-				else if ( move == "up" ) {
+				else if ( strcmp( move, up ) == 0 ) {
 					moveUp( val, rows, cols, board );
 				}
-				else if ( move == "down" ) {
+				else if ( strcmp( move, down ) == 0 ) {
 					moveDown( val, rows, cols, board );
 				}
 			}
