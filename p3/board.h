@@ -3,13 +3,19 @@
 //findTile()) should be given internal linkage, so they won't be visible to other components.
 
 //initBoard prototyped
+void initBoard( int rows, int cols, int board[][ cols ] );
 
 //printBoard prototyped
+void printBoard( int rows, int cols, int board[][ cols ] );
 
 //moveUp prototyped
+bool moveUp( int tile, int rows, int cols, int board[][ cols ] );
 
 //moveDown prototyped
+bool moveDown( int tile, int rows, int cols, int board[][ cols ] );
 
 //moveLeft prototyped
+bool moveRight( int tile, int rows, int cols, int board[][ cols ] );
 
 //moveRight prototyped
+bool moveLeft( int tile, int rows, int cols, int [][ cols ] );

@@ -1,8 +1,16 @@
 //This component defines function for reading and executing user commands.
 
-#includes "command.h"
+/** Header file containing standard input/output functions we will use. */
+#include <stdio.h>
+/** Header file containing standard library functions we will use. */
+#include <stdlib.h>
+/** Header file containing math functions we will use. */
+#include <math.h>
+/** Header file containing string functions we will use. */
+#include <string.h>
+#include <stdbool.h>
+#include "command.h"
 
-#define CMD_LIMIT 30
 
 void skipLine( FILE *stream ) {
 	//Read through input until we're pointing at the first char after the next newline.

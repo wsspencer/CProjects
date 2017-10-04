@@ -1,6 +1,15 @@
 //This component defines functions for working with the board.
 
-#includes "board.h"
+/** Header file containing standard input/output functions we will use. */
+#include <stdio.h>
+/** Header file containing standard library functions we will use. */
+#include <stdlib.h>
+/** Header file containing math functions we will use. */
+#include <math.h>
+/** Header file containing string functions we will use. */
+#include <string.h>
+#include <stdbool.h>
+#include "board.h"
 
 #define DEFAULT_ROWS 5
 #define DEFAULT_COLS 7
@@ -41,13 +50,14 @@ static bool findTile( int tile, int rows, int cols, int board[][ cols ], int *r,
 }
 
 bool moveUp( int tile, int rows, int cols, int board[][ cols ] ) {
-	int *targCol;
-	int *targRow;
+	int *targCol = NULL;
+	int *targRow = NULL;
 	
 	//If this doesn't change pointer vals, just go back to searching manually
 	//check if tile is in board? 
 	if ( findTile(tile, rows, cols, board, targRow, targCol) == false ) {
-		printf("error message?");
+		printf("error message?"); //?
+		return false;
 	}
 	
 	//save the value of the first element in target column before it's overwritten
@@ -59,16 +69,19 @@ bool moveUp( int tile, int rows, int cols, int board[][ cols ] ) {
 	}
 	//set the last value in the target column to temp
 	board[rows - 1][*targCol] = temp;
+	
+	return true; //?
 }
 
 bool moveDown( int tile, int rows, int cols, int board[][ cols ] ) {
-	int *targCol;
-	int *targRow;
+	int *targCol = NULL;
+	int *targRow = NULL;
 	
 	//If this doesn't change pointer vals, just go back to searching manually
 	//check if tile is in board? 
 	if ( findTile(tile, rows, cols, board, targRow, targCol) == false ) {
-		printf("error message?");
+		printf("error message?"); //?
+		return false;
 	}
 	//save the value of the last element in target column before it's overwritten
 	int temp = board[rows - 1][*targCol];
@@ -79,16 +92,19 @@ bool moveDown( int tile, int rows, int cols, int board[][ cols ] ) {
 	}
 	//set the last value in the target column to temp
 	board[0][*targCol] = temp;
+	
+	return true; //?
 }
 
 bool moveLeft( int tile, int rows, int cols, int board[][ cols ] ) {
-	int *targCol;
-	int *targRow;
+	int *targCol = NULL;
+	int *targRow = NULL;
 	
 	//If this doesn't change pointer vals, just go back to searching manually
 	//check if tile is in board? 
 	if ( findTile(tile, rows, cols, board, targRow, targCol) == false ) {
-		printf("error message?");
+		printf("error message?"); //?
+		return false;
 	}
 	//save the value of the last element in target column before it's overwritten
 	int temp = board[*targRow][cols - 1];
@@ -99,16 +115,19 @@ bool moveLeft( int tile, int rows, int cols, int board[][ cols ] ) {
 	}
 	//set the first value in the target column to temp
 	board[*targRow][0] = temp;
+	
+	return true; //?
 }
 
 bool moveRight( int tile, int rows, int cols, int board[][ cols ] ) {
-	int *targCol;
-	int *targRow;
+	int *targCol = NULL;
+	int *targRow = NULL;
 	
 	//If this doesn't change pointer vals, just go back to searching manually
 	//check if tile is in board? 
 	if ( findTile(tile, rows, cols, board, targRow, targCol) == false ) {
-		printf("error message?");
+		printf("error message?"); //?
+		return false;
 	}
 	//save the value of the first element in target row before it's overwritten
 	int temp = board[*targRow][0];
@@ -119,4 +138,6 @@ bool moveRight( int tile, int rows, int cols, int board[][ cols ] ) {
 	}
 	//set the last value in the target row to temp
 	board[*targRow][cols - 1] = temp;
+	
+	return true; //?
 }

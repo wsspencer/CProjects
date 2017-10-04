@@ -4,6 +4,7 @@
 
 #define NUMCOMMANDS 10
 #define COMMANDLEN 30
+#define CMD_LIMIT 30
 
 //This is an array of strings (so, really, a two-dimensional array of characters), with room for 
 //the 10 most recent commands. Remember, valid commands may be up to 30 characters long.
@@ -15,5 +16,7 @@ extern int histLen;
 
 
 //skipline prototyped
+void skipLine( FILE *stream );
 
 //getCommand prototyped
+bool getCommand( FILE *stream, char cmd[ CMD_LIMIT + 2 ] );
