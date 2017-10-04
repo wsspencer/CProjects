@@ -171,7 +171,6 @@ int main(int argc, char** argv) {
             //figure out what command needs to do
             if ( strcmp( move, quit ) == 0 ) {
                 //quit program
-                printf( "\n" );
                 return 0;
             }
             if ( strcmp( move, undo ) == 0 ) {
