@@ -1,16 +1,8 @@
-CC = gcc
-CFLAGS = -g -Wall -std=c99
+all: puzzle
 
-all: puzzle.o board.o puzzle.o
-
-puzzle.o: board.h command.h
-
-board.o: board.h
-
-command.o: command.h
+puzzle: puzzle.c board.c command.c board.h command.h
+	gcc -g -Wall -std=c99 puzzle.c command.c board.c -o puzzle
 
 clean:
-	rm -f board board.o
-	rm -f command command.o
-	rm -f puzzle puzzle.o
+	rm -f puzzle
 	rm -f output.txt
