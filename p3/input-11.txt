@@ -1,0 +1,7 @@
+left 19
+right 25
+up 6
+down 17
+undo
+undo 
+quit

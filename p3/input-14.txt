@@ -1,0 +1,6 @@
+left 35
+right 28
+up 21
+down 14
+left 27
+right 34

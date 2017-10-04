@@ -1,0 +1,24 @@
+up 1
+down 2
+left 3
+right 4
+up 5
+down 6
+left 7
+right 8
+up 9
+down 10
+left 11
+right 12
+undo
+undo
+undo
+undo
+undo
+undo
+undo
+undo
+undo
+undo
+undo
+quit

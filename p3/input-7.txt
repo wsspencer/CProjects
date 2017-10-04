@@ -1,0 +1,9 @@
+up 16
+down 27
+right 30
+left 6
+right 6
+left 30
+up 27
+down 16
+quit

@@ -1,0 +1,2 @@
+Can't open config file: missing-file.txt
+usage: puzzle [config-file]

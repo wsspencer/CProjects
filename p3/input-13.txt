@@ -1,0 +1,8 @@
+up 7
+down 0
+left 20
+right 36
+up 30
+down -25
+right three
+up 10

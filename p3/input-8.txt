@@ -1,0 +1,5 @@
+left 16
+up 14
+right 5
+down 3
+quit

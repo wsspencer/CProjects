@@ -1,0 +1,5 @@
+left 35
+up 18
+down 7
+right 30
+quit

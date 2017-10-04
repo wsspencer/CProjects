@@ -1,0 +1,12 @@
+up      7
+lft 20
+down    30
+quite
+left   15
+undoo
+right   9
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 35
+up
+left                          8
+down                        27
+quit
