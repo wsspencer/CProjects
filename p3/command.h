@@ -14,7 +14,7 @@
 #define CMD_LIMIT 30
 
 /* This global variable defined elsewhere holds the history of our commmands. */
-extern char history[COMMANDLEN][NUMCOMMANDS];
+extern char history[ NUMCOMMANDS ][ COMMANDLEN ];
 
 /* This global variable defined elsewhere holds the number of commands held in memory. */
 extern int histLen;
