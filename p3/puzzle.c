@@ -179,32 +179,35 @@ int main(int argc, char** argv) {
                 return 0;
             }
             else if ( strcmp( move, UNDO ) == 0 ) {
-                //set val = last stored command val
-                val = cmdVals[ histLen - 1 ];
-
-                //Now reverse the move so it can effectively be "undone"
-                if ( strcmp( history[ histLen - 1 ], UP ) == 0 ) {
-                    moveDown( val, rows, cols, board );
-                }
-                else if ( strcmp( history[ histLen - 1 ], DOWN ) == 0 ) {
-                    moveUp( val, rows, cols, board );
-                }
-                else if ( strcmp( history[ histLen - 1 ], RIGHT ) == 0 ) {
-                    moveLeft( val, rows, cols, board );
-                }
-                else if ( strcmp( history[ histLen - 1 ], LEFT ) == 0 ) {
-                    moveRight( val, rows, cols, board );
-                }
-                strcpy( history[ histLen - 1 ], "" );
-                cmdVals[ histLen - 1 ] = 0;
                 if ( histLen > 0 ) {
+                    //set val = last stored command val
+                    val = cmdVals[ histLen - 1 ];
+
+                    //Now reverse the move so it can effectively be "undone"
+                    if ( strcmp( history[ histLen - 1 ], UP ) == 0 ) {
+                        moveDown( val, rows, cols, board );
+                    }
+                    else if ( strcmp( history[ histLen - 1 ], DOWN ) == 0 ) {
+                        moveUp( val, rows, cols, board );
+                    }
+                    else if ( strcmp( history[ histLen - 1 ], RIGHT ) == 0 ) {
+                        moveLeft( val, rows, cols, board );
+                    }
+                    else if ( strcmp( history[ histLen - 1 ], LEFT ) == 0 ) {
+                        moveRight( val, rows, cols, board );
+                    }
+                    strcpy( history[ histLen - 1 ], "" );
+                    cmdVals[ histLen - 1 ] = 0;
                     histLen--;
+                }
+                else {
+                    printf("Invalid command\n");
                 }
             }
 
             //command is invalid
             else {
-				fprintf( stderr, "Invalid configuration\n" );
+                fprintf( stderr, "Invalid configuration\n" );
                 exit(EXIT_ERROR);
             }
         }
@@ -229,26 +232,29 @@ int main(int argc, char** argv) {
                 return 0;
             }
             else if ( strcmp( move, UNDO ) == 0 ) {
-                //set val = last stored command val
-                val = cmdVals[ histLen - 1 ];
-
-                //Now reverse the move so it can effectively be "undone"
-                if ( strcmp( history[ histLen - 1 ], UP ) == 0 ) {
-                    moveDown( val, rows, cols, board );
-                }
-                else if ( strcmp( history[ histLen - 1 ], DOWN ) == 0 ) {
-                    moveUp( val, rows, cols, board );
-                }
-                else if ( strcmp( history[ histLen - 1 ], RIGHT ) == 0 ) {
-                    moveLeft( val, rows, cols, board );
-                }
-                else if ( strcmp( history[ histLen - 1 ], LEFT ) == 0 ) {
-                    moveRight( val, rows, cols, board );
-                }
-                strcpy( history[ histLen - 1 ], "" );
-                cmdVals[ histLen - 1 ] = 0;
                 if ( histLen > 0 ) {
+                    //set val = last stored command val
+                    val = cmdVals[ histLen - 1 ];
+
+                    //Now reverse the move so it can effectively be "undone"
+                    if ( strcmp( history[ histLen - 1 ], UP ) == 0 ) {
+                        moveDown( val, rows, cols, board );
+                    }
+                    else if ( strcmp( history[ histLen - 1 ], DOWN ) == 0 ) {
+                        moveUp( val, rows, cols, board );
+                    }
+                    else if ( strcmp( history[ histLen - 1 ], RIGHT ) == 0 ) {
+                        moveLeft( val, rows, cols, board );
+                    }
+                    else if ( strcmp( history[ histLen - 1 ], LEFT ) == 0 ) {
+                        moveRight( val, rows, cols, board );
+                    }
+                    strcpy( history[ histLen - 1 ], "" );
+                    cmdVals[ histLen - 1 ] = 0;
                     histLen--;
+                }
+                else {
+                    printf("Invalid command\n");
                 }
             }
             else if ( runCommand( line, rows, cols, board ) ) {
