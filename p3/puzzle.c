@@ -41,6 +41,8 @@
 #define LEFT "left"
 /* Constant representing the string of the "right" command */
 #define RIGHT "right"
+/* Constant for an exit code definition */
+#define EXIT_ERROR 1
 /* Global variable for the history of commands' target tiles */
 char cmdVals[ NUMCOMMANDS ];
 /* Global variable for the history of commands */
@@ -77,9 +79,9 @@ bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ col
             moveDown( val, rows, cols, board );
         }
         //store command in memory
-        if ( histLen < 10 ) {
-            strcpy( history[ histLen ], cmd );
-            cmdVals[ histLen ] = val;
+        if ( histLen < NUMCOMMANDS ) {
+            strcpy( history[ histLen - 1 ], cmd );
+            cmdVals[ histLen - 1] = val;
             histLen++;
         }
         //If histLen = 10, drop the oldest command out of memory to add the newest one
@@ -88,8 +90,8 @@ bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ col
                 strcpy( history[ i ], history[ i + 1 ] );
                 cmdVals[ i ] = cmdVals[ i + 1 ];
             }
-            strcpy( history[ histLen ], cmd );
-            cmdVals[ histLen ] = val;
+            strcpy( history[ histLen - 1 ], cmd );
+            cmdVals[ histLen - 1] = val;
             //do not increment histlen because we are at maximum
         }
         //return true
@@ -122,7 +124,7 @@ int main(int argc, char** argv) {
         //file, exit with status of 1 and print to standard error.
         if (argc > 2) {
             fprintf( stderr, "%s", "usage: puzzle [config-file]\n" );
-            exit(1);
+            exit(EXIT_ERROR);
         }
 
         char* filename;
@@ -136,7 +138,7 @@ int main(int argc, char** argv) {
             fprintf( stderr, "Can't open config file: " );
             fprintf( stderr, "%s", filename );
             fprintf( stderr, "\nusage: puzzle [config-file]\n" );
-            exit(1);
+            exit(EXIT_ERROR);
         }
 
         //scan the board size from the config file and update them
@@ -161,7 +163,7 @@ int main(int argc, char** argv) {
         skipLine(fp);
 
         //while getCommand returns true, execute that command
-        while( getCommand( fp, move ) ) {
+        while ( getCommand( fp, move ) ) {
             //check if command has a value with it
             fscanf( fp, "%s", move );
             //check if command is valid
@@ -192,16 +194,16 @@ int main(int argc, char** argv) {
                 strcpy( history[ histLen - 1 ], "" );
                 cmdVals[ histLen - 1 ] = 0;
                 if ( histLen > 0 ) {
-				    histLen--;
+                histLen--;
                 }
             }
             //command is invalid
-		    else {
+            else {
                 printf("Invalid Configuration"); //do I need to print this to stderr?
-                exit(1);
+                exit(EXIT_ERROR);
             }
         }
-		//print the board
+        //print the board
         printBoard( rows, cols, board );
         //close the configuration file
         fclose(fp);
@@ -240,7 +242,7 @@ int main(int argc, char** argv) {
                 strcpy( history[ histLen - 1 ], "" );
                 cmdVals[ histLen - 1 ] = 0;
                 if ( histLen > 0 ) {
-				    histLen--;
+                    histLen--;
                 }
             }
             else if ( runCommand( move, rows, cols, board ) ) {
@@ -250,7 +252,7 @@ int main(int argc, char** argv) {
             //Otherwise the command is not valid
             else {
                 printf( "Invalid Configuration" ); //do I need to print this to stderr?
-                exit(1);
+                exit(EXIT_ERROR);
             }
             //print board
             printBoard( rows, cols, board );

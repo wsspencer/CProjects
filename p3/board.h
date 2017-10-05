@@ -29,7 +29,7 @@ void initBoard( int rows, int cols, int board[][ cols ] );
     @param rows int the number of rows in our board.
     @param cols int the number of columns in our board.
     @param board[][ cols ] int a 2 dimensional array holding the tiles of our board.
-	@return void
+    @return void
 */
 void printBoard( int rows, int cols, int board[][ cols ] );
 
