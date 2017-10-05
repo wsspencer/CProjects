@@ -58,9 +58,8 @@ void printBoard( int rows, int cols, int board[][ cols ] ) {
     
     for ( int i = 0; i < rows; i++ ) {
 		//print starting space
-		printf(" ");
         for ( int j = 0; j < cols; j++ ) {
-            printf( "%2d ", board[i][j]);
+            printf( " %2d", board[i][j]);
         }
         printf("\n");
     }
