@@ -213,8 +213,8 @@ int main(int argc, char** argv) {
     printBoard( rows, cols, board );
     //if no config file, start here
 
-        char move[CMD_LIMIT];
-        char line[CMD_LIMIT];
+        char move[CMD_LIMIT + 2];
+        char line[CMD_LIMIT + 2];
         int val;
 
         while ( fgets( line, sizeof( line ), stdin ) != NULL ) {
