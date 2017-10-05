@@ -48,9 +48,12 @@ void printBoard( int rows, int cols, int board[][ cols ] ) {
     //TO DO: loop through and print the board to standard output.  (if it's in the solved state, 
     //print it in blue)
 
+	bool solved = false;
     //check if puzzle is solved, if it is, change font color to blue
+	printf("\n");
     if ( checkSolved( rows, cols, board ) ) {
         printf( BLUE );
+		solved = true;
     }
     
     for ( int i = 0; i < rows; i++ ) {
@@ -62,7 +65,10 @@ void printBoard( int rows, int cols, int board[][ cols ] ) {
         printf("\n");
     }
     //change font color back to default
-    printf( DEFAULT );
+	if ( solved ) {
+		printf( DEFAULT );
+	}
+	printf("> ");
 }
 
 //NEEDS INTERNAL LINKAGE (static)
