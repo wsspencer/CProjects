@@ -153,23 +153,22 @@ int main(int argc, char** argv) {
     int board[ rows ][ cols ];
     //initialize board
     initBoard( rows, cols, board );
-    //print the board
-    printBoard( rows, cols, board );
 
     if (argc > 1) {
         //read moves from the configuration file
-        char *move = "";
+        char line[ CMD_LIMIT + 2 ];
+        char move[ CMD_LIMIT ];
         int val;
         //use skipline to move to the next line in the file, over the newline char?
         //skipline is in command.c....
         skipLine(fp);
 
         //while getCommand returns true, execute that command
-        while ( getCommand( fp, move ) ) {
+        while ( getCommand( fp, line ) ) {
             //check if command has a value with it
-            fscanf( fp, "%s", move );
+            sscanf( line, "%s", move );
             //check if command is valid
-            if ( runCommand( move, rows, cols, board ) ) {
+            if ( runCommand( line, rows, cols, board ) ) {
                 //do nothing
             }
             //otherwise, figure out what command needs to do
@@ -209,6 +208,8 @@ int main(int argc, char** argv) {
         //close the configuration file
         fclose(fp);
     }
+    //print the board
+    printBoard( rows, cols, board );
     //if no config file, start here
 
         char move[CMD_LIMIT];
