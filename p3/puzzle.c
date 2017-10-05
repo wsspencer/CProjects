@@ -43,8 +43,6 @@
 #define RIGHT "right"
 /* Constant for an exit code definition */
 #define EXIT_ERROR 1
-/* Global variable for the history of commands' target tiles */
-char cmdVals[ NUMCOMMANDS ];
 /* Global variable for the history of commands */
 char history[ NUMCOMMANDS ][ COMMANDLEN ];
 /* Global variable for the number of commands stored in memory */
@@ -82,18 +80,15 @@ bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ col
         }
         //store command in memory
         if ( histLen < NUMCOMMANDS ) {
-            strcpy( history[ histLen  ], move );
-            cmdVals[ histLen ] = val;
+            strcpy( history[ histLen  ], cmd );
             histLen++;
         }
         //If histLen = 10, drop the oldest command out of memory to add the newest one
         else {
             for ( int i = 0; i < NUMCOMMANDS - 1; i++ ) {
                 strcpy( history[ i ], history[ i + 1 ] );
-                cmdVals[ i ] = cmdVals[ i + 1 ];
             }
-            strcpy( history[ histLen - 1 ], move );
-            cmdVals[ histLen - 1] = val;
+            strcpy( history[ histLen - 1 ], cmd );
             //do not increment histlen because we are at maximum
         }
     }
@@ -148,8 +143,6 @@ int main(int argc, char** argv) {
             fprintf( stderr, "Invalid configuration\n" );
             exit(EXIT_ERROR);
         }
-
-        //if size is invalid or missing, exit with status of 1 and print "Invalid Configuration"
     }
 
     // Make the board
@@ -170,7 +163,11 @@ int main(int argc, char** argv) {
         while ( getCommand( fp, line ) ) {
             //check if command has a value with it
             sscanf( line, "%s", move );
-            //check if command is valid
+            //check if command is valid size
+            size_t len = strlen( line );
+            if ( line[ len - 1 ] != '\n' ) {
+                skipLine( stdin );
+            }
             if ( runCommand( line, rows, cols, board ) ) {
                 //If command is valid but tile is not found, return in error
             }
@@ -180,24 +177,26 @@ int main(int argc, char** argv) {
             }
             else if ( strcmp( move, UNDO ) == 0 ) {
                 if ( histLen > 0 ) {
+                    char temp[ CMD_LIMIT ];
+                    //put the move value in the last move stored in memory in "move"
                     //set val = last stored command val
-                    val = cmdVals[ histLen - 1 ];
+                    sscanf( history[ histLen - 1 ], "%s %d", temp, &val );
 
                     //Now reverse the move so it can effectively be "undone"
-                    if ( strcmp( history[ histLen - 1 ], UP ) == 0 ) {
+                    if ( strcmp( temp, UP ) == 0 ) {
                         moveDown( val, rows, cols, board );
                     }
-                    else if ( strcmp( history[ histLen - 1 ], DOWN ) == 0 ) {
+                    else if ( strcmp( temp, DOWN ) == 0 ) {
                         moveUp( val, rows, cols, board );
                     }
-                    else if ( strcmp( history[ histLen - 1 ], RIGHT ) == 0 ) {
+                    else if ( strcmp( temp, RIGHT ) == 0 ) {
                         moveLeft( val, rows, cols, board );
                     }
-                    else if ( strcmp( history[ histLen - 1 ], LEFT ) == 0 ) {
+                    else if ( strcmp( temp, LEFT ) == 0 ) {
                         moveRight( val, rows, cols, board );
                     }
+                    //Remove that move from history
                     strcpy( history[ histLen - 1 ], "" );
-                    cmdVals[ histLen - 1 ] = 0;
                     histLen--;
                 }
                 else {
@@ -227,30 +226,38 @@ int main(int argc, char** argv) {
             //check if command has a value with it
             //parse the line
             sscanf( line, "%s", move );
+            //check if input is too long
+            size_t len = strlen( line );
+            if ( line[ len - 1 ] != '\n' ) {
+                skipLine( stdin );
+            }
+
             if ( strcmp( move, QUIT ) == 0 ) {
                 //quit program
                 return 0;
             }
             else if ( strcmp( move, UNDO ) == 0 ) {
                 if ( histLen > 0 ) {
+                    char temp[ CMD_LIMIT ];
+                    //put the move value in the last move stored in memory in "move"
                     //set val = last stored command val
-                    val = cmdVals[ histLen - 1 ];
+                    sscanf( history[ histLen - 1 ], "%s %d", temp, &val );
 
                     //Now reverse the move so it can effectively be "undone"
-                    if ( strcmp( history[ histLen - 1 ], UP ) == 0 ) {
+                    if ( strcmp( temp, UP ) == 0 ) {
                         moveDown( val, rows, cols, board );
                     }
-                    else if ( strcmp( history[ histLen - 1 ], DOWN ) == 0 ) {
+                    else if ( strcmp( temp, DOWN ) == 0 ) {
                         moveUp( val, rows, cols, board );
                     }
-                    else if ( strcmp( history[ histLen - 1 ], RIGHT ) == 0 ) {
+                    else if ( strcmp( temp, RIGHT ) == 0 ) {
                         moveLeft( val, rows, cols, board );
                     }
-                    else if ( strcmp( history[ histLen - 1 ], LEFT ) == 0 ) {
+                    else if ( strcmp( temp, LEFT ) == 0 ) {
                         moveRight( val, rows, cols, board );
                     }
+                    //Remove that move from history
                     strcpy( history[ histLen - 1 ], "" );
-                    cmdVals[ histLen - 1 ] = 0;
                     histLen--;
                 }
                 else {
@@ -263,12 +270,6 @@ int main(int argc, char** argv) {
             }
             //Otherwise the command is not valid
             else {
-                //check if string is too long, do a line feed if it is...
-                if ( line[ CMD_LIMIT + 1 ] != '\0' ) {
-                    skipLine( stdin );
-                }
-
-                //line feed so we don't keep reading an oversize line
                 printf( "Invalid command\n" ); //do I need to print this to stderr?
             }
             //print board
