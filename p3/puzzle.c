@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
         //scan the board size from the config file and update them
         //also check to make sure there are two numbers at the beginning of the config file
         if ( fscanf(fp, "%d %d", &rows, &cols) != 2 ) {
-            fprintf( stderr, "Invalid configuration" );
+            fprintf( stderr, "Invalid configuration\n" );
             exit(EXIT_ERROR);
         }
 
@@ -205,7 +205,7 @@ int main(int argc, char** argv) {
 
             //command is invalid
             else {
-                fprintf( stderr, "Invalid Configuration" ); //do I need to print this to stderr?
+                fprintf( stderr, "Invalid Configuration\n" ); //do I need to print this to stderr?
                 exit(EXIT_ERROR);
             }
         }
