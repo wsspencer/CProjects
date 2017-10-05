@@ -48,7 +48,7 @@ char cmdVals[ NUMCOMMANDS ];
 /* Global variable for the history of commands */
 char history[ NUMCOMMANDS ][ COMMANDLEN ];
 /* Global variable for the number of commands stored in memory */
-int histLen = 0;
+int histLen;
 
 /**
     This function takes a command and determines whether or not that command can be run, and
@@ -61,27 +61,28 @@ int histLen = 0;
 */
 bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ cols ] ) {
     //return true if command is valid (undo and exit are handled in main)
-    if ( strcmp( cmd, LEFT ) == 0 || strcmp( cmd, RIGHT ) == 0 || strcmp( cmd, UP ) == 0
-            || strcmp( cmd, DOWN ) == 0 ) {
-        int val;
-        scanf( "%d", &val );
+    int val;
+    char move[ CMD_LIMIT ];
+    sscanf( cmd, "%s %d", move, &val);
+    if ( strcmp( move, LEFT ) == 0 || strcmp( move, RIGHT ) == 0 || strcmp( move, UP ) == 0
+            || strcmp( move, DOWN ) == 0 ) {
         //now perform commands
-        if ( strcmp( cmd, LEFT ) == 0 ) {
+        if ( strcmp( move, LEFT ) == 0 ) {
             moveLeft( val, rows, cols, board );
         }
-        else if ( strcmp( cmd, RIGHT ) == 0 ) {
+        else if ( strcmp( move, RIGHT ) == 0 ) {
             moveRight( val, rows, cols, board );
         }
-        else if ( strcmp( cmd, UP ) == 0 ) {
+        else if ( strcmp( move, UP ) == 0 ) {
             moveUp( val, rows, cols, board );
         }
-        else if ( strcmp( cmd, DOWN ) == 0 ) {
+        else if ( strcmp( move, DOWN ) == 0 ) {
             moveDown( val, rows, cols, board );
         }
         //store command in memory
         if ( histLen < NUMCOMMANDS ) {
-            strcpy( history[ histLen - 1 ], cmd );
-            cmdVals[ histLen - 1] = val;
+            strcpy( history[ histLen  ], move );
+            cmdVals[ histLen ] = val;
             histLen++;
         }
         //If histLen = 10, drop the oldest command out of memory to add the newest one
@@ -90,7 +91,7 @@ bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ col
                 strcpy( history[ i ], history[ i + 1 ] );
                 cmdVals[ i ] = cmdVals[ i + 1 ];
             }
-            strcpy( history[ histLen - 1 ], cmd );
+            strcpy( history[ histLen - 1 ], move );
             cmdVals[ histLen - 1] = val;
             //do not increment histlen because we are at maximum
         }
@@ -113,6 +114,7 @@ int main(int argc, char** argv) {
     int rows = DEFAULT_ROWS;
     int cols = DEFAULT_COLS;
     FILE *fp;
+    histLen = 0;
 
     //check for configuration file.  If it exists, store it in the char array variable "filename."
     //(which we create as a pointer so we don't have to define its size)
@@ -194,30 +196,30 @@ int main(int argc, char** argv) {
                 strcpy( history[ histLen - 1 ], "" );
                 cmdVals[ histLen - 1 ] = 0;
                 if ( histLen > 0 ) {
-                histLen--;
+                    histLen--;
                 }
             }
+
             //command is invalid
             else {
                 printf("Invalid Configuration"); //do I need to print this to stderr?
                 exit(EXIT_ERROR);
             }
         }
-        //print the board
-        printBoard( rows, cols, board );
         //close the configuration file
         fclose(fp);
     }
-    //if no config file,
-    else {
+    //if no config file, start here
 
         char move[CMD_LIMIT];
+        char line[CMD_LIMIT + 1];
         int val;
 
-        while ( scanf( "%s", move ) != EOF ) {
+        while ( fgets( line, sizeof( line ), stdin ) != NULL ) {
             //retrieve the command and value from line implement scanf for undo and exit
             //check if command has a value with it
-            //figure out what command needs to do
+            //parse the line
+            sscanf( line, "%s", move );
             if ( strcmp( move, QUIT ) == 0 ) {
                 //quit program
                 return 0;
@@ -245,19 +247,21 @@ int main(int argc, char** argv) {
                     histLen--;
                 }
             }
-            else if ( runCommand( move, rows, cols, board ) ) {
+            else if ( runCommand( line, rows, cols, board ) ) {
                 //Do nothing, runCommand will run the command
                 //We don't want undo here because it will store the command in memory
             }
             //Otherwise the command is not valid
             else {
-                printf( "Invalid Configuration" ); //do I need to print this to stderr?
-                exit(EXIT_ERROR);
+                //check if string ends in null terminator, if it doesn't the line is too
+                //long and we should skip to the next.
+
+                //line feed so we don't keep reading an oversize line
+                printf( "Invalid command\n" ); //do I need to print this to stderr?
             }
             //print board
             printBoard( rows, cols, board );
         }
-    }
     printf( "\n" );
     return 0;
 }

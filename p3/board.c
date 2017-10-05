@@ -177,7 +177,7 @@ bool moveLeft( int tile, int rows, int cols, int board[][ cols ] ) {
     //If this doesn't change pointer vals, just go back to searching manually
     //check if tile is in board?
     if ( findTile(tile, rows, cols, board, &targRow, &targCol) == false ) {
-       printf("Invalid command\n"); //?
+        printf("Invalid command\n"); //?
         return false;
     }
     //save the value of the first element in target row before it's overwritten
