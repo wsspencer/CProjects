@@ -85,6 +85,8 @@ int main(int argc, char** argv) {
     int board[ rows ][ cols ];
     //initialize board
     initBoard( rows, cols, board );
+	//print the board
+	printBoard( rows, cols, board );
     
     if (argc > 1) {
         //read moves from the configuration file
@@ -125,7 +127,6 @@ int main(int argc, char** argv) {
             else {
                 fscanf( fp, "%s", move );
                 if ( strcmp( move, quit ) == 0 ) {
-					printBoard( rows, cols, board );
                     return 0;
                 }
                 if ( strcmp( move, undo ) == 0 ) {
@@ -170,7 +171,6 @@ int main(int argc, char** argv) {
             //figure out what command needs to do
             if ( strcmp( move, quit ) == 0 ) {
                 //quit program
-				printBoard( rows, cols, board );
                 return 0;
             }
             if ( strcmp( move, undo ) == 0 ) {
