@@ -33,13 +33,12 @@ void skipLine( FILE *stream ) {
 
 bool getCommand( FILE *stream, char cmd[ CMD_LIMIT + 2 ] ) {
     //read string into cmd and return true if successful (fgets will stop at an EOF or newline)
-    if ( fgets( cmd, CMD_LIMIT + 2, stdin ) != NULL ) {
+    if ( fscanf( stream, "%[^\n]\n", cmd ) != EOF ) {
         return true;
     }
 
     //return false if fscanf did not successfully read a line of input
     else {
-        skipLine( stream );
         return false;
     }
 }
