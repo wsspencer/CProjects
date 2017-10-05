@@ -1,6 +1,14 @@
-//This component will contain the main function, and any other functions that don't belong in one
-// of the other components (i.e., any functions that don't pertain to manipulating the board or
-// handling commands).
+/**
+    @file puzzle.c
+    @author W. Scott Spencer
+
+    This file handles the functions that handle our program.  It includes main which runs the
+    program, runCommand which checks if a command can be run.  The purpose of our program is to
+    run a puzzle game.  The puzzle starts off in a sequential, solved, state and is altered by
+    the user in an attempt to re-solve the puzzle.  The board can be altered by moving a selected
+    tile up, left, down, or right.  If the move is horizontal, the entire row moves with the
+    selected tile and if the move is verticle the entire column moves with the selected tile.
+*/
 
 /** Header file containing standard input/output functions we will use. */
 #include <stdio.h>
@@ -10,15 +18,27 @@
 #include <math.h>
 /** Header file containing string functions we will use. */
 #include <string.h>
+/** Header file containing boolean operations we will use here. */
 #include <stdbool.h>
+/** Header file containing function prototypes for functions in board.c we use. */
 #include "board.h"
+/** Header file containing function prototypes for functions in command.c we use. */
 #include "command.h"
 
+/* Constant representing the number of rows a board has when no config file is present. */
 #define DEFAULT_ROWS 5
+/* Constant representing the number of columns a board has when no config file is present. */
 #define DEFAULT_COLS 7
 
-//question before finished...how does undo affect command counter/a second undo?
-
+/**
+    This function takes a command and determines whether or not that command can be run, and
+    if the command can be run, it runs that command.
+    @param cmd[ CMD_LIMIT + 1 ] char array holding the command passed by the user.
+    @param rows int the number of rows in our board.
+    @param cols int the number of columns in our board.
+    @param board[][ cols ] int a 2 dimensional array holding the tiles of our board.
+    @return bool telling us whether or not the passed command could be run.
+*/
 bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ cols ] ) {
     //return true if command is valid (undo and exit are handled in main)
     if ( strcmp( cmd, "left" ) == 0 || strcmp( cmd, "right" ) == 0 || strcmp( cmd, "up" ) == 0
@@ -29,18 +49,25 @@ bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ col
     return false;
 }
 
+/**
+    This is the main function which delegates tasks to other functions and performs tasks that
+    run our program.
+    @param argc int the number of command line arguments passed in the terminal function call.
+    @param argv char** 2d char array, it holds all the command line arguments passed by the user.
+    @return int the exit status of the program upon termination.
+*/
 int main(int argc, char** argv) {
     //Initialize variables for argc and argv so they can be used externally
     int rows = DEFAULT_ROWS;
     int cols = DEFAULT_COLS;
     FILE *fp;
-    
+
     //array variable for storing the command list formatted array[position][command]
     char cmds[ NUMCOMMANDS ][ COMMANDLEN ];
     char cmdVals[ NUMCOMMANDS ];
-    
+
     int cmdCounter = 0;
-    
+
     char quit[] = "quit";
     char undo[] = "undo";
     char up[] = "up";
@@ -65,7 +92,7 @@ int main(int argc, char** argv) {
         filename = argv[1];
         //Use filename to create file pointer and open the configuration file for reading.
         fp = fopen(filename, "r");
-        
+
         //If we cannot open the given config file name (fopen yields null pointer), exit with a
         //status of 1 and print to standard error.
         if ( fp == NULL ) {
@@ -78,21 +105,21 @@ int main(int argc, char** argv) {
         //scan the board size from the config file and update them
         fscanf(fp, "%d %d", &rows, &cols);
 
-        //TO DO: if size is invalid or missing, exit with status of 1 and print "Invalid Configuration"
+        //if size is invalid or missing, exit with status of 1 and print "Invalid Configuration"
     }
-    
+
     // Make the board
     int board[ rows ][ cols ];
     //initialize board
     initBoard( rows, cols, board );
-	//print the board
-	printBoard( rows, cols, board );
-    
+    //print the board
+    printBoard( rows, cols, board );
+
     if (argc > 1) {
         //read moves from the configuration file
         char *move = "";
         int val;
-        
+
         //use skipline to move to the next line in the file, over the newline char?
         //skipline is in command.c....
         skipLine(fp);
@@ -134,11 +161,13 @@ int main(int argc, char** argv) {
                     //then swamp it and just let the below conditions take care of it
                     strcpy( move, cmds[ cmdCounter ] );
                     val = cmdVals[ cmdCounter ];
-                    //also be sure to remove the command/val from the two arrays and decrement cmdCounter
+                    //also be sure to remove the command/val from the two arrays and decrement
+                    //cmdCounter
                     strcpy( cmds[ cmdCounter ], "" );
                     cmdVals[ cmdCounter ] = 0;
                     cmdCounter--;
-                    //Now reverse the move so it can be "undone" (without adding to command memory)
+                    //Now reverse the move so it can be "undone" (without adding to command
+                    //memory)
                     if ( strcmp( move, up ) == 0 ) {
                         moveDown( val, rows, cols, board );
                     }
@@ -161,10 +190,10 @@ int main(int argc, char** argv) {
     }
     //if no config file,
     else {
-        
+
         char move[CMD_LIMIT];
         int val;
-        
+
         while ( scanf( "%s", move ) != EOF ) {
             //retrieve the command and value from line implement scanf for undo and exit
             //check if command has a value with it
@@ -178,7 +207,8 @@ int main(int argc, char** argv) {
                 //then swamp it and just let the below conditions take care of it
                 strcpy( move, cmds[ cmdCounter - 1 ] );
                 val = cmdVals[ cmdCounter - 1 ];
-                //also be sure to remove the command/val from the two arrays and decrement cmdCounter
+                //also be sure to remove the command/val from the two arrays and decrement
+                //cmdCounter
                 strcpy( cmds[ cmdCounter - 1 ], "" );
                 cmdVals[ cmdCounter - 1 ] = 0;
                 cmdCounter--;

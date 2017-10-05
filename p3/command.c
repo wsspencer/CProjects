@@ -1,4 +1,12 @@
 //This component defines function for reading and executing user commands.
+/**
+   @file command.c
+   @author W. Scott Spencer
+
+   This program handles all the command functions that deal with configuration files such as
+   skipping a line of input until a newline is found so we may process the next one and whether
+   or not a line can be successfully read from the input file.
+*/
 
 /** Header file containing standard input/output functions we will use. */
 #include <stdio.h>
@@ -8,7 +16,9 @@
 #include <math.h>
 /** Header file containing string functions we will use. */
 #include <string.h>
+/** Header file containing boolean operations we will use */
 #include <stdbool.h>
+/** Header file containing the command function prototypes */
 #include "command.h"
 
 
