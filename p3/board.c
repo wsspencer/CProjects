@@ -51,10 +51,11 @@ void printBoard( int rows, int cols, int board[][ cols ] ) {
     //check if puzzle is solved, if it is, change font color to blue
     if ( checkSolved( rows, cols, board ) ) {
         printf( BLUE );
-		printf(" ");
     }
     
     for ( int i = 0; i < rows; i++ ) {
+		//print starting space
+		printf(" ");
         for ( int j = 0; j < cols; j++ ) {
             printf( "%2d ", board[i][j]);
         }
