@@ -204,7 +204,7 @@ int main(int argc, char** argv) {
 
             //command is invalid
             else {
-                fprintf( stderr, "Invalid Configuration\n" ); //do I need to print this to stderr?
+				fprintf( stderr, "Invalid configuration\n" );
                 exit(EXIT_ERROR);
             }
         }
