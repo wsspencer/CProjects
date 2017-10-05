@@ -266,6 +266,5 @@ int main(int argc, char** argv) {
             //print board
             printBoard( rows, cols, board );
         }
-    printf( "\n" );
     return 0;
 }
