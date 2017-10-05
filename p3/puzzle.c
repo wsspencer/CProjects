@@ -214,7 +214,7 @@ int main(int argc, char** argv) {
     //if no config file, start here
 
         char move[CMD_LIMIT];
-        char line[CMD_LIMIT + 2];
+        char line[CMD_LIMIT];
         int val;
 
         while ( fgets( line, sizeof( line ), stdin ) != NULL ) {
@@ -226,8 +226,9 @@ int main(int argc, char** argv) {
             size_t len = strlen( line );
             if ( line[ len - 1 ] != '\n' ) {
                 skipLine( stdin );
+                printf( "Invalid command\n" );
             }
-
+            else {
             if ( strcmp( move, QUIT ) == 0 ) {
                 //quit program
                 return 0;
@@ -267,6 +268,7 @@ int main(int argc, char** argv) {
             //Otherwise the command is not valid
             else {
                 printf( "Invalid command\n" ); //do I need to print this to stderr?
+            }
             }
             //print board
             printBoard( rows, cols, board );
