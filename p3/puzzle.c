@@ -216,7 +216,7 @@ int main(int argc, char** argv) {
     //if no config file, start here
 
         char move[CMD_LIMIT];
-        char line[CMD_LIMIT + 1];
+        char line[CMD_LIMIT + 2];
         int val;
 
         while ( fgets( line, sizeof( line ), stdin ) != NULL ) {
@@ -257,8 +257,10 @@ int main(int argc, char** argv) {
             }
             //Otherwise the command is not valid
             else {
-                //check if string ends in null terminator, if it doesn't the line is too
-                //long and we should skip to the next.
+                //check if string is too long, do a line feed if it is...
+                if ( line[ CMD_LIMIT + 1 ] != '\0' ) {
+                    skipLine( stdin );
+                }
 
                 //line feed so we don't keep reading an oversize line
                 printf( "Invalid command\n" ); //do I need to print this to stderr?
