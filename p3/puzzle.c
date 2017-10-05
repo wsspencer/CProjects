@@ -64,20 +64,21 @@ bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ col
     int val;
     char move[ CMD_LIMIT ];
     sscanf( cmd, "%s %d", move, &val);
+    bool tileChecker = false;
     if ( strcmp( move, LEFT ) == 0 || strcmp( move, RIGHT ) == 0 || strcmp( move, UP ) == 0
             || strcmp( move, DOWN ) == 0 ) {
         //now perform commands
         if ( strcmp( move, LEFT ) == 0 ) {
-            moveLeft( val, rows, cols, board );
+            tileChecker = moveLeft( val, rows, cols, board );
         }
         else if ( strcmp( move, RIGHT ) == 0 ) {
-            moveRight( val, rows, cols, board );
+            tileChecker = moveRight( val, rows, cols, board );
         }
         else if ( strcmp( move, UP ) == 0 ) {
-            moveUp( val, rows, cols, board );
+            tileChecker = moveUp( val, rows, cols, board );
         }
         else if ( strcmp( move, DOWN ) == 0 ) {
-            moveDown( val, rows, cols, board );
+            tileChecker = moveDown( val, rows, cols, board );
         }
         //store command in memory
         if ( histLen < NUMCOMMANDS ) {
@@ -95,11 +96,9 @@ bool runCommand( char cmd[ CMD_LIMIT + 1 ], int rows, int cols, int board[][ col
             cmdVals[ histLen - 1] = val;
             //do not increment histlen because we are at maximum
         }
-        //return true
-        return true;
     }
     //return false if command is invalid
-    return false;
+    return tileChecker;
 }
 
 /**
@@ -173,7 +172,7 @@ int main(int argc, char** argv) {
             sscanf( line, "%s", move );
             //check if command is valid
             if ( runCommand( line, rows, cols, board ) ) {
-                //do nothing
+                //If command is valid but tile is not found, return in error
             }
             //otherwise, figure out what command needs to do
             else if ( strcmp( move, QUIT ) == 0 ) {
