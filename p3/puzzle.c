@@ -163,11 +163,7 @@ int main(int argc, char** argv) {
         while ( getCommand( fp, line ) ) {
             //check if command has a value with it
             sscanf( line, "%s", move );
-            //check if command is valid size
-            size_t len = strlen( line );
-            if ( line[ len - 1 ] != '\n' ) {
-                skipLine( stdin );
-            }
+
             if ( runCommand( line, rows, cols, board ) ) {
                 //If command is valid but tile is not found, return in error
             }
