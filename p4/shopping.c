@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) {
             //print to standard output
             printf("Invalid command\n");
         }
-        //printf("\n");
+        printf("\n");
         free(line);
         //free(newline);  //MAY NOT NEED THIS
 
