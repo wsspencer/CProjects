@@ -117,6 +117,9 @@ int main(int argc, char *argv[]) {
         printf("%d> ", promptcount);
 
         line = getLine(stdin);
+		if (line == NULL) {
+			return 0;
+		}
 
         //scan first command out of line
         sscanf(line, "%s %n", input, &linePos);
@@ -211,7 +214,7 @@ int main(int argc, char *argv[]) {
         free(line);
         //free(newline);  //MAY NOT NEED THIS
 
-    } while ( strcmp(input, "quit") != 0 /* && not EOF*/);
+    } while ( strcmp(input, "quit") != 0);
 
     //free(line);
 
