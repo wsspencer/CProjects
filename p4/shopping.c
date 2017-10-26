@@ -246,7 +246,16 @@ int main(int argc, char *argv[]) {
         }
         else if ( strcmp(input, "report") == 0) {
             //run tests to see if user specified store or less or greater report.
-            shoppingListReport(list, test, newline);
+			//check if valid report command
+			char checker[8] = "";
+			sscanf(newline, "%s", checker);
+			if (strcmp(checker, "store") == 0 || strcmp(checker, "greater") == 0 ||
+					strcmp(checker, "less") == 0 || strcmp(checker, "") == 0) {
+				shoppingListReport(list, test, newline);
+			}
+			else {
+				printf("\nInvalid command");
+			}
         }
         else if ( strcmp(input, "help") == 0) {
             //When the user enters the help command, the program will respond with a report of the valid commands. It will
