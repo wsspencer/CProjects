@@ -1,0 +1,9 @@
+load medium-list.txt
+report
+remove 3
+remove 7
+report
+remove 2
+remove 9
+report
+quit

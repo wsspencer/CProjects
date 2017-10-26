@@ -1,0 +1,6 @@
+add BigDonut free Napkin
+add Starbucks 5.99 Large cappuccino
+add PortCityJava 0.00 Water
+add BrueggersBagels 3.45 Super bagel
+report
+quit

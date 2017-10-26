@@ -1,0 +1,47 @@
+1> 
+2> 
+   1 Amazon          3.50 cookie
+   2 PetSmart       99.45 tarantula
+   3 CVS            19.42 crowbar
+   4 Amazon         29.95 brake pads
+   5 BestBuy       899.96 refrigerator
+   6 Amazon          0.25 gumball
+   7 BestBuy       149.49 iPod
+   8 PetSmart        6.23 flobberworm
+   9 Amazon          7.41 purple hair dye
+  10 Amazon          2.99 french bread
+  11 BestBuy         6.50 AA batteries
+  12 PetSmart        1.68 sea water
+  13 CVS             3.32 bandages
+                  1230.15
+3> 
+   1 Amazon          3.50 cookie
+   2 PetSmart       99.45 tarantula
+   3 CVS            19.42 crowbar
+   4 Amazon         29.95 brake pads
+   5 BestBuy       899.96 refrigerator
+   7 BestBuy       149.49 iPod
+   8 PetSmart        6.23 flobberworm
+   9 Amazon          7.41 purple hair dye
+  10 Amazon          2.99 french bread
+  11 BestBuy         6.50 AA batteries
+  12 PetSmart        1.68 sea water
+  13 CVS             3.32 bandages
+                  1229.90
+4> 
+   2 PetSmart       99.45 tarantula
+   3 CVS            19.42 crowbar
+   4 Amazon         29.95 brake pads
+   5 BestBuy       899.96 refrigerator
+   7 BestBuy       149.49 iPod
+   8 PetSmart        6.23 flobberworm
+   9 Amazon          7.41 purple hair dye
+  11 BestBuy         6.50 AA batteries
+                  1218.41
+5> 
+   2 PetSmart       99.45 tarantula
+   4 Amazon         29.95 brake pads
+   5 BestBuy       899.96 refrigerator
+   7 BestBuy       149.49 iPod
+                  1178.85
+6> 

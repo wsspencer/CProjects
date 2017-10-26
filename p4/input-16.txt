@@ -1,0 +1,6 @@
+add SubWay 3.49 Veggie delite
+ad Firehouse 4.49 Tuna sub
+This isn't a valid command.
+report everything
+report
+quit

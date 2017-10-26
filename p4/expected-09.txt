@@ -1,0 +1,10 @@
+1> 
+2> 
+3> 
+4> 
+   1 Kroger          3.49 milk
+   2 Walmart         8.63 hat
+   3 Walmart        22.15 thermos
+   4 Kroger          2.62 bread
+                    36.89
+5> 

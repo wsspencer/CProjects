@@ -1,0 +1,8 @@
+1> 
+Invalid item, line 1
+Invalid item, line 3
+2> 
+   1 AppleStore   2500.00 Macbook
+   2 FamilyFare      0.99 Large soda
+                  2500.99
+3> 

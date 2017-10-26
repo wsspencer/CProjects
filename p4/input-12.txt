@@ -1,0 +1,6 @@
+load medium-list.txt
+report greater 0.00
+report greater 1.00
+report greater 5.00
+report greater 20.00
+quit

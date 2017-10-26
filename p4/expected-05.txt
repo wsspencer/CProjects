@@ -1,0 +1,19 @@
+1> 
+2> 
+3> 
+   1 Food-lion       2.76 butter
+   2 Home-depot      4.83 sandpaper
+                     7.59
+4> 
+5> 
+6> 
+7> 
+8> 
+   1 Food-lion       2.76 butter
+   2 Home-depot      4.83 sandpaper
+   3 Food-lion       6.95 coffee
+   4 Home-depot      3.21 6 foot 2x4
+   5 Home-depot      1.06 outlet cover
+   6 Food-lion       4.21 salad dressing
+                    23.02
+9> 

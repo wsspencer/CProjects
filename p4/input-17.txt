@@ -1,0 +1,4 @@
+load short-list.txt
+load bad-filename.txt
+report
+quit

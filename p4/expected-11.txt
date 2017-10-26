@@ -1,0 +1,25 @@
+1> 
+2> 
+   1 Amazon          3.50 cookie
+   4 Amazon         29.95 brake pads
+   6 Amazon          0.25 gumball
+   9 Amazon          7.41 purple hair dye
+  10 Amazon          2.99 french bread
+                    44.10
+3> 
+   2 PetSmart       99.45 tarantula
+   8 PetSmart        6.23 flobberworm
+  12 PetSmart        1.68 sea water
+                   107.36
+4> 
+   3 CVS            19.42 crowbar
+  13 CVS             3.32 bandages
+                    22.74
+5> 
+   5 BestBuy       899.96 refrigerator
+   7 BestBuy       149.49 iPod
+  11 BestBuy         6.50 AA batteries
+                  1055.95
+6> 
+                     0.00
+7> 

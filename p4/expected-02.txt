@@ -1,0 +1,12 @@
+1> 
+load <file>
+save <file>
+add <store> <price> <name>
+remove <id>
+report
+report store <store>
+report less <price>
+report greater <price>
+help
+quit
+2> 

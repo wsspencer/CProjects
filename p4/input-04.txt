@@ -1,0 +1,3 @@
+add Target 3.95 toothbrush
+add Kroger 5.35 salsa
+quit

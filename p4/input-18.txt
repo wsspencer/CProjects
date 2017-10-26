@@ -1,0 +1,3 @@
+load bad-list.txt
+report
+quit

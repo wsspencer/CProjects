@@ -1,0 +1,3 @@
+load short-list.txt
+report
+quit

@@ -1,0 +1,47 @@
+1> 
+2> 
+3> 
+4> 
+5> 
+   1 TacoBell        3.59 7-layer burrito
+   2 Wendy's         2.95 Large chili
+   4 Walmart         8.63 hat
+   5 Walmart        22.15 thermos
+                    37.32
+6> 
+7> 
+8> 
+9> 
+10> 
+11> 
+   2 Wendy's         2.95 Large chili
+   6 BurgerKing      4.45 Whopper
+   7 McDonald's      3.05 Big Mac
+   8 Amazon          3.50 cookie
+  13 Amazon          0.25 gumball
+  17 Amazon          2.99 french bread
+  19 PetSmart        1.68 sea water
+  20 CVS             3.32 bandages
+                    22.19
+12> 
+load <file>
+save <file>
+add <store> <price> <name>
+remove <id>
+report
+report store <store>
+report less <price>
+report greater <price>
+help
+quit
+13> 
+14> 
+15> 
+16> 
+   8 Amazon          3.50 cookie
+  11 Amazon         29.95 brake pads
+  13 Amazon          0.25 gumball
+  16 Amazon          7.41 purple hair dye
+                    41.11
+17> 
+18> 

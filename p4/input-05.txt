@@ -1,0 +1,9 @@
+add Food-lion 2.76 butter
+add Home-depot 4.83 sandpaper
+report
+add Food-lion 6.95 coffee
+add Home-depot 3.21 6 foot 2x4
+add Home-depot 1.06 outlet cover
+add Food-lion 4.21 salad dressing
+report
+quit

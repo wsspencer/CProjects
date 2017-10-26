@@ -1,0 +1,7 @@
+load medium-list.txt
+report store Amazon
+report store PetSmart
+report store CVS
+report store BestBuy
+report store Aldi
+quit

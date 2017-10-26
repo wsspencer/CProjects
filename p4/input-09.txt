@@ -1,0 +1,5 @@
+load short-list.txt
+add Kroger 2.62 bread
+save outlist.txt
+report
+quit

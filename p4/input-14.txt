@@ -1,0 +1,18 @@
+add TacoBell 3.59 7-layer burrito
+add Wendy's 2.95 Large chili
+load short-list.txt
+remove 3
+report
+remove 1
+add BurgerKing 4.45 Whopper
+add McDonald's 3.05 Big Mac
+load medium-list.txt
+remove 4
+report less 5.00
+help
+add WhiteCastle 1.50 Breakfast waffle slider
+add Whataburger 2.65 Whataburger
+remove 17
+report store Amazon
+save outlist.txt
+quit

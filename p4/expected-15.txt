@@ -1,0 +1,11 @@
+1> 
+Invalid command
+2> 
+3> 
+4> 
+Invalid command
+5> 
+   1 Starbucks       5.99 Large cappuccino
+   2 PortCityJava    0.00 Water
+                     5.99
+6> 
