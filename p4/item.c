@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-#define LINE_MAX 20
+#define LINE_MAX 40
 
 //struct Item {
 //    int id;            //id for referencing in list

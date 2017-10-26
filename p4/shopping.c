@@ -179,7 +179,12 @@ int main(int argc, char *argv[]) {
             //printf(initline);
             it = readItem(newline);
 
-            shoppingListAdd(list, it);
+			if (it != NULL) {
+				shoppingListAdd(list, it);
+			}
+			else {
+				printf("Invalid command\n");
+			}
         }
         else if ( strcmp(input, "remove") == 0) {
             //remove the item in our instance of list corresponding to the given id 

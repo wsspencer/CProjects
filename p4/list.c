@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define INITIAL_CAP 15
+#define INITIAL_CAP 2
 
 //struct ShoppingList {
 //    Item *items;        //pointer to first item in list
@@ -16,7 +16,7 @@ ShoppingList *makeShoppingList() {
     ShoppingList *list = (ShoppingList*) malloc(sizeof(ShoppingList));
     list->length = 0;
     list->capacity = INITIAL_CAP;
-    list->items = (Item**) malloc(list->capacity * sizeof(Item*));
+    list->items = (Item**) malloc(INITIAL_CAP * sizeof(Item*));
 
     return list;
 }
@@ -33,11 +33,13 @@ void freeShoppingList( ShoppingList *list ) {
 }
 
 void shoppingListAdd( ShoppingList *list, Item *it ) {
-    if (list->length == list->capacity) {
+    if (list->length >= list->capacity) {
         //double capacity
         list->capacity *= 2;
+		
+		printf("%d\n", list->capacity);
+		
         //reallocate memory for list with double space for capacity
-        list = realloc(list, list->capacity * 2 * sizeof(int));
         list->items = realloc(list->items, list->capacity * sizeof(Item*));
     }
 
