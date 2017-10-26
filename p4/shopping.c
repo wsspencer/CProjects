@@ -177,7 +177,9 @@ int main(int argc, char *argv[]) {
 					if (it == NULL) {
 						printf("Invalid item, line %d\n", lineCount);
 					}
-                    shoppingListAdd(list, it);
+					else {
+						shoppingListAdd(list, it);
+					}
 					lineCount++;
                 }
 				fclose(fp);
