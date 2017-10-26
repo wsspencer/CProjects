@@ -23,7 +23,9 @@ ShoppingList *makeShoppingList() {
 
 void freeShoppingList( ShoppingList *list ) {
     for(int i = 0; i <list->length; i++) {
-        freeItem(list->items[i]);
+        if (list->items[i] != NULL) {
+			freeItem(list->items[i]);
+		}
     }
 	free(list->items);
     free(list);
