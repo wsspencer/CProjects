@@ -77,6 +77,7 @@ void shoppingListReport( ShoppingList *list, bool test( Item *it, void *arg ), v
             //argument.
 
             double total = 0.0;
+			printf("\n");
             for (int i = 0; i < list->length; i++) {
                 if (list->items[i] != NULL && test(list->items[i], arg)) {
                     //print list->items[i] in report format

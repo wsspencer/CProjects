@@ -63,8 +63,6 @@ bool test (Item *it, void *arg) {
             //scan store name
             sscanf(extra, "%s", storeName);
 
-            printf(storeName);
-
             //if item's store name matches the given store name, return true
             if (strcmp(storeName, it->store) == 0) {
                 //free(type);
@@ -76,7 +74,7 @@ bool test (Item *it, void *arg) {
         if (strcmp(type, "greater") == 0) {    
             sscanf(extra, "%lf", &price);
             if (it->price > price) {
-                free(type);
+                //free(type);
                 return true;
             }
         }
@@ -85,12 +83,12 @@ bool test (Item *it, void *arg) {
         if (strcmp(type, "less") == 0) {
             sscanf(extra, "%lf", &price);
             if (it->price < price) {
-                free(type);
+                //free(type);
                 return true;
             }
         }
     }
-    free(type);
+    //free(type);
     return false;
 
 }
