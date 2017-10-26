@@ -201,7 +201,6 @@ int main(int argc, char *argv[]) {
 			//null terminate filename
 			filename[numChars] = '\0';
             //open the file
-			printf(filename);
 			FILE *fp;
             fp = fopen (filename, "w");
             //check if file exists
