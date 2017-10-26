@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
                     Item *it = readItem(fileLine);
                     //if it is null, we got a bad line, so let the user know which line it was on
 					if (it == NULL) {
-						printf("Invalid item, line %d", lineCount);
+						printf("Invalid item, line %d\n", lineCount);
 					}
                     shoppingListAdd(list, it);
 					lineCount++;
@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
             }
             else {
                 //Print to STANDARD OUTPUT
-                printf("Can't open file\n");
+                printf("Can't open file");
             }
 	    }
         else if ( strcmp(input, "save") == 0) {
@@ -235,7 +235,7 @@ int main(int argc, char *argv[]) {
 				shoppingListAdd(list, it);
 			}
 			else {
-				printf("Invalid command\n");
+				printf("\nInvalid command");
 			}
         }
         else if ( strcmp(input, "remove") == 0) {
@@ -257,7 +257,7 @@ int main(int argc, char *argv[]) {
         }
         else if (strcmp(input, "quit") != 0) {
             //print to standard output
-            printf("Invalid command\n");
+            printf("\nInvalid command");
         }
         printf("\n");
         free(line);
