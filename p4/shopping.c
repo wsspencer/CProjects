@@ -33,6 +33,9 @@ char *getLine( FILE *stream ) {
         buffer[numChars] = ch;
         numChars++;
     } while (ch != '\n' && ch != EOF);
+	
+	//make sure strin is null terminated
+	
 
     if (ch == EOF) {
         return NULL;
@@ -45,50 +48,60 @@ char *getLine( FILE *stream ) {
 bool test (Item *it, void *arg) {
     //convert arg pointer back into a string (void *arg is a pointer to anything we want, but we
     //still need to convert it to the desired type before we use it in an operation.
-    char *extra = (char *)arg;
+    char *cast = (char *)arg;
+    //create a new variable to work with (add values to so we can change index) without changing
+    //original
+	char *extra = cast;
     char *type = (char*) malloc(LINE_MAX * sizeof(char));
 
-    if (sscanf(extra, "%s", type) != 1) {
+	int stringPlace = 0;
+    //scan extra to save the report type and also keep track of where we left off scanning
+    if (sscanf(extra, "%s %n", type, &stringPlace) != 2) {
         free(type);
         return true;
     }
     else {
 
         //try to scan in the item's price
-        double price = 0.0;
+        double price;
 
         //is the report a store report?
         if (strcmp(type, "store") == 0) {
             char *storeName = (char*) malloc(LINE_MAX * sizeof(char));
-            //scan store name
-            sscanf(extra, "%s", storeName);
+            //scan the rest of extra for store name
+            sscanf(extra + stringPlace, "%s", storeName);
 
             //if item's store name matches the given store name, return true
             if (strcmp(storeName, it->store) == 0) {
-                //free(type);
+                free(type);
+				free(storeName);
                 return true;
             }
         }
 
         //is the report a greater than report?
-        if (strcmp(type, "greater") == 0) {    
-            sscanf(extra, "%lf", &price);
-            if (it->price > price) {
-                //free(type);
+        else if (strcmp(type, "greater") == 0) {    
+			//scan the rest of extra for price
+            sscanf(extra + stringPlace, "%lf", &price);
+
+			if (it->price > price) {
+                free(type);
                 return true;
             }
         }
 
         //is the report a less than report?
-        if (strcmp(type, "less") == 0) {
-            sscanf(extra, "%lf", &price);
+        else if (strcmp(type, "less") == 0) {
+			//scan the rest of extra for price
+            sscanf(extra + stringPlace, "%lf", &price);
+			
             if (it->price < price) {
-                //free(type);
+                free(type);
                 return true;
             }
         }
     }
-    //free(type);
+    free(type);
     return false;
 
 }

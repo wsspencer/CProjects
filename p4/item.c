@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-#define LINE_MAX 40
+#define LINE_MAX 10
 
 //struct Item {
 //    int id;            //id for referencing in list
@@ -20,15 +20,17 @@ Item *readItem( char *str ) {
 
     int stringPlace = 0;
 
-    //check if we can get the store name and price and following space from the given line
+    //check if we can get the store name and price and last index of them from the given line
     if ( sscanf(str, "%s %lf %n", it->store, &it->price, &stringPlace) == 2 ) {
         //malloc new item, set its values, and return a pointer to it.
         //be sure to malloc name separately
 
         int numChars = 0;
-        int nameCap = LINE_MAX;
+        int nameCap = 1;
 		
-		while (stringPlace < strlen(str)) {
+		it->name[0] = 0;
+		
+		while (str[stringPlace] != '\n') {
             if (numChars >= nameCap) {
                 nameCap += LINE_MAX;
                 it->name = realloc(it->name, nameCap * sizeof(char));
@@ -38,6 +40,10 @@ Item *readItem( char *str ) {
 			stringPlace++;
         }
 		if (numChars != 0) {
+			//null terminate the string before returning the item
+			//for (int i = numChars; i < (strlen(str) - stringPlace); i++) {
+			it->name[numChars] = '\0';
+			//}
 			return it;
 		}
         else {

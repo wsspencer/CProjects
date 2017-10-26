@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define INITIAL_CAP 10
+#define INITIAL_CAP 50
 
 //struct ShoppingList {
 //    Item *items;        //pointer to first item in list
@@ -22,9 +22,10 @@ ShoppingList *makeShoppingList() {
 }
 
 void freeShoppingList( ShoppingList *list ) {
-    for(int i = list->length - 1; i >= 0; i--) {
+    for(int i = 0; i <list->length; i++) {
         freeItem(list->items[i]);
     }
+	free(list->items);
     free(list);
     //do I need to call freeitem method in a loop here?  I don't know why freeing the list itself won't work...
     //unless I'm not suppose to be allocating memory for shopping list in the first place...
