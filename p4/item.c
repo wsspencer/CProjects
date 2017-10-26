@@ -24,6 +24,11 @@ Item *readItem( char *str ) {
     if ( sscanf(str, "%s %lf %n", it->store, &it->price, &stringPlace) == 2 ) {
         //malloc new item, set its values, and return a pointer to it.
         //be sure to malloc name separately
+		
+		//check if store name is too long
+		if (strlen(it->store) > STORE_MAX) {
+			return NULL;
+		}
 
         int numChars = 0;
         int nameCap = 1;

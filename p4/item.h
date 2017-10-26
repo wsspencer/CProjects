@@ -1,5 +1,5 @@
 /** Maximum length of a store name */
-#define STORE_MAX 20
+#define STORE_MAX 12
 
 /** Representation for an item to be purchased. */
 typedef struct {
