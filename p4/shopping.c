@@ -51,10 +51,12 @@ bool test (Item *it, void *arg) {
     //original
 	char *extra = cast;
     char *type = (char*) malloc(LINE_MAX * sizeof(char));
+	
+
 
 	int stringPlace = 0;
     //scan extra to save the report type and also keep track of where we left off scanning
-    if (sscanf(extra, "%s %n", type, &stringPlace) != 2) {
+    if (sscanf(extra, "%s %n", type, &stringPlace) != 1) {
         free(type);
         return true;
     }
