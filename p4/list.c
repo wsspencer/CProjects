@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define INITIAL_CAP 2
+#define INITIAL_CAP 10
 
 //struct ShoppingList {
 //    Item *items;        //pointer to first item in list
@@ -36,8 +36,6 @@ void shoppingListAdd( ShoppingList *list, Item *it ) {
     if (list->length >= list->capacity) {
         //double capacity
         list->capacity *= 2;
-		
-		printf("%d\n", list->capacity);
 		
         //reallocate memory for list with double space for capacity
         list->items = realloc(list->items, list->capacity * sizeof(Item*));
