@@ -149,6 +149,7 @@ int main(int argc, char *argv[]) {
                 
                 //!!!Remember that the input files do not have "add" at the beginning of each line.
             }
+			fclose(fp);
         }
         if ( strcmp(input, "save") == 0) {
             //save the current list to a file
@@ -170,6 +171,7 @@ int main(int argc, char *argv[]) {
                     fprintf(fp, "%s", list->items[i]->name);
                 }
             }
+			fclose(fp);
         }
         else if ( strcmp(input, "add") == 0) {
             //NOTE: sscanf from earlier already parsed out "add" from line, so just pass it to make an item
