@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
                     Item *it = readItem(fileLine);
                     //if it is null, we got a bad line, so let the user know which line it was on
 					if (it == NULL) {
-						printf("Invalid item, line %d\n", lineCount);
+						printf("\nInvalid item, line %d", lineCount);
 					}
 					else {
 						shoppingListAdd(list, it);
