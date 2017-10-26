@@ -8,6 +8,7 @@
 
 
 #define LINE_MAX 20
+#define FILE_LINE_MAX 400
 #define CMD_LEN 7
 
 //function prototypes
@@ -33,9 +34,6 @@ char *getLine( FILE *stream ) {
         buffer[numChars] = ch;
         numChars++;
     } while (ch != '\n' && ch != EOF);
-	
-	//make sure strin is null terminated
-	
 
     if (ch == EOF) {
         return NULL;
@@ -132,7 +130,7 @@ int main(int argc, char *argv[]) {
 			return 0;
 		}
 
-        //scan first command out of line
+        //scan first command out of line, saving the last position read
         sscanf(line, "%s %n", input, &linePos);
 
         //testing
@@ -142,35 +140,69 @@ int main(int argc, char *argv[]) {
 
         //check for load, save, add, remove, report, help, and quit
         if ( strcmp(input, "load") == 0) {
-            char *filename = "";
-            scanf("%s", filename);
+			//read in a filename of unknown size
+            char *filename = (char*) malloc(LINE_MAX * sizeof(char));
+			int numChars = 0;
+			int filenameCap = LINE_MAX;
+			//loop through user input to build filename 
+			while(newline[numChars] != '\n' && newline[numChars] != ' ' && newline[numChars] != EOF) {
+				if (numChars >= filenameCap) {
+					filenameCap += LINE_MAX;
+					filename = realloc(filename, filenameCap * sizeof(char));
+				}
+				filename[numChars] = newline[numChars];
+				numChars++;
+			}
+			//null terminate filename
+			filename[numChars] = '\0';
+            //initialize file pointer, open it at the given filename
             FILE *fp;
             fp = fopen(filename, "r");
+			
             //check if file exists
-            if (fp == NULL) {
+            if (fp != NULL) {
+                //iterate through the file one line at a time.  Each line should yield an item which we will
+                //add to our instance of a list.  BE SURE NOT TO ALTER LINE SO IT CAN BE FREED
+				char *fileLine = (char*) malloc(FILE_LINE_MAX * sizeof(char));
+                int lineCount = 1;
+                while (fgets(fileLine, FILE_LINE_MAX, fp) != NULL) {
+                    Item *it = readItem(fileLine);
+                    //if it is null, we got a bad line, so let the user know which line it was on
+					if (it == NULL) {
+						printf("Invalid item, line %d", lineCount);
+					}
+                    shoppingListAdd(list, it);
+					lineCount++;
+                }
+				fclose(fp);
+                free(fileLine);
+				free(filename);
+            }
+            else {
                 //Print to STANDARD OUTPUT
                 printf("Can't open file\n");
             }
-            else {
-                //iterate through the file one line at a time.  Each line should yield an item which we will
-                //add to our instance of a list.  BE SURE NOT TO ALTER LINE SO IT CAN BE FREED
-                char *fileLine = getLine(fp);
-                do {
-                    Item *it = readItem(fileLine);
-                    shoppingListAdd(list, it);
-                    fileLine = getLine(fp);
-                } while (fileLine != NULL);
-                
-                //!!!Remember that the input files do not have "add" at the beginning of each line.
-            }
-			fclose(fp);
-        }
-        if ( strcmp(input, "save") == 0) {
+	    }
+        else if ( strcmp(input, "save") == 0) {
             //save the current list to a file
-            //scan the filename
-            FILE *fp;
-            char *filename = "";
-            scanf("%s", filename);
+			//read in a filename of unknown size
+            char *filename = (char*) malloc(LINE_MAX * sizeof(char));
+			int numChars = 0;
+			int filenameCap = LINE_MAX;
+			//loop through user input to build filename 
+			while(newline[numChars] != '\n' && newline[numChars] != ' ' && newline[numChars] != EOF) {
+				if (numChars >= filenameCap) {
+					filenameCap += LINE_MAX;
+					filename = realloc(filename, filenameCap * sizeof(char));
+				}
+				filename[numChars] = newline[numChars];
+				numChars++;
+			}
+			//null terminate filename
+			filename[numChars] = '\0';
+            //open the file
+			printf(filename);
+			FILE *fp;
             fp = fopen (filename, "w");
             //check if file exists
             if (fp == NULL) {
@@ -180,12 +212,13 @@ int main(int argc, char *argv[]) {
             else {
                 for (int i = 0; i < list->length; i++) {
                     //write each individual item to the file one line at a time
-                    fprintf(fp, "%s", list->items[i]->store);
-                    fprintf(fp, "%lf", list->items[i]->price);
-                    fprintf(fp, "%s", list->items[i]->name);
+                    fprintf(fp, "%s ", list->items[i]->store);
+                    fprintf(fp, "%lf ", list->items[i]->price);
+                    fprintf(fp, "%s\n", list->items[i]->name);
                 }
             }
 			fclose(fp);
+			free(filename);
         }
         else if ( strcmp(input, "add") == 0) {
             //NOTE: sscanf from earlier already parsed out "add" from line, so just pass it to make an item
@@ -223,13 +256,10 @@ int main(int argc, char *argv[]) {
         }
         printf("\n");
         free(line);
-        //free(newline);  //MAY NOT NEED THIS
+        free(newline);  //MAY NOT NEED THIS
 
     } while ( strcmp(input, "quit") != 0);
 
-    //free(line);
-
-    //don't think I'm properly freeing up memory here...
     freeShoppingList(list);
 
     return 0;
