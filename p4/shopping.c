@@ -122,6 +122,10 @@ int main(int argc, char *argv[]) {
     char input[CMD_LEN];
     //input line
     char *line = NULL;
+	
+	//flag for when there's a bad file load so we don't use the line terminator...it 
+	//said to in the project design
+	bool lineTermFlag = true;
 
     do {
         promptcount++;
@@ -182,7 +186,8 @@ int main(int argc, char *argv[]) {
             }
             else {
                 //Print to STANDARD OUTPUT
-                printf("Can't open file");
+                printf("\nCan't open file");
+				lineTermFlag = false;
             }
 	    }
         else if ( strcmp(input, "save") == 0) {
@@ -209,7 +214,7 @@ int main(int argc, char *argv[]) {
             //check if file exists
             if (fp == NULL) {
                 //print error to standard output
-                printf("Can't open file\n");
+                printf("\nCan't open file");
             }
             else {
                 for (int i = 0; i < list->length; i++) {
@@ -268,7 +273,10 @@ int main(int argc, char *argv[]) {
             //print to standard output
             printf("\nInvalid command");
         }
-        printf("\n");
+		if (lineTermFlag) {
+			printf("\n");
+		}
+		lineTermFlag = true;
         free(line);
         //free(newline);  //MAY NOT NEED THIS
 
