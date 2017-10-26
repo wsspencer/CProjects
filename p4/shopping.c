@@ -256,7 +256,7 @@ int main(int argc, char *argv[]) {
         }
         printf("\n");
         free(line);
-        free(newline);  //MAY NOT NEED THIS
+        //free(newline);  //MAY NOT NEED THIS
 
     } while ( strcmp(input, "quit") != 0);
 
