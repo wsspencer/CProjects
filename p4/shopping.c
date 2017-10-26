@@ -211,7 +211,7 @@ int main(int argc, char *argv[]) {
     //free(line);
 
     //don't think I'm properly freeing up memory here...
-    //freeShoppingList(list);
+    freeShoppingList(list);
 
     return 0;
 }
