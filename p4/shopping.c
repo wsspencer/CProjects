@@ -193,14 +193,14 @@ int main(int argc, char *argv[]) {
             //When the user enters the help command, the program will respond with a report of the valid commands. It will
             //print the following message to STANDARD OUTPUT, then prompt for another command:
 
-            printf("load <file>\nsave <file>\nadd <store> <price> <name>\nremove <id>\nreport\n");
+            printf("\nload <file>\nsave <file>\nadd <store> <price> <name>\nremove <id>\nreport\n");
             printf("report store <store>\nreport less <price>\nreport greater <price>\nhelp\nquit");
         }
         else if (strcmp(input, "quit") != 0) {
             //print to standard output
             printf("Invalid command\n");
         }
-        printf("\n");
+        //printf("\n");
         free(line);
         //free(newline);  //MAY NOT NEED THIS
 
