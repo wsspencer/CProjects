@@ -202,6 +202,7 @@ int main(int argc, char *argv[]) {
 			}
 			//null terminate filename
 			filename[numChars] = '\0';
+			
             //open the file
 			FILE *fp;
             fp = fopen (filename, "w");
@@ -212,10 +213,13 @@ int main(int argc, char *argv[]) {
             }
             else {
                 for (int i = 0; i < list->length; i++) {
-                    //write each individual item to the file one line at a time
-                    fprintf(fp, "%s ", list->items[i]->store);
-                    fprintf(fp, "%.2lf ", list->items[i]->price);
-                    fprintf(fp, "%s\n", list->items[i]->name);
+                    //check if item is null, do not print it if it is
+					if (list->items[i] != NULL) {
+						//write each individual item to the file one line at a time
+						fprintf(fp, "%s ", list->items[i]->store);
+						fprintf(fp, "%.2lf ", list->items[i]->price);
+						fprintf(fp, "%s\n", list->items[i]->name);
+					}
                 }
             }
 			fclose(fp);
