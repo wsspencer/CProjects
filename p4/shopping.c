@@ -212,7 +212,7 @@ int main(int argc, char *argv[]) {
                 for (int i = 0; i < list->length; i++) {
                     //write each individual item to the file one line at a time
                     fprintf(fp, "%s ", list->items[i]->store);
-                    fprintf(fp, "%lf ", list->items[i]->price);
+                    fprintf(fp, "%.2lf ", list->items[i]->price);
                     fprintf(fp, "%s\n", list->items[i]->name);
                 }
             }
