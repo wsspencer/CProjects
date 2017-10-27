@@ -34,7 +34,7 @@ typedef struct {
 */
 Item *readItem( char *str );
 
-/** 
+/**
     Function prototype for freeItem which takes a pointer to an item and frees up all the
     memory dynamically allocated to that item so it may be used by other operations.
 

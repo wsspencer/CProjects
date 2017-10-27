@@ -19,6 +19,9 @@
 /** Constant int representing the color the initial size of a line */
 #define LINE_MAX 10
 
+/** Constant int representing the number of scans we want returned in our if */
+#define ARGS 2
+
 /**
     This function is documented in item.h.
 */
@@ -31,7 +34,7 @@ Item *readItem( char *str ) {
     int stringPlace = 0;
 
     //check if we can get the store name and price and last index of them from the given line
-    if ( sscanf(str, "%s %lf %n", it->store, &it->price, &stringPlace) == 2 ) {
+    if ( sscanf(str, "%s %lf %n", it->store, &it->price, &stringPlace) == ARGS ) {
         //malloc new item, set its values, and return a pointer to it.
         //be sure to malloc name separately
 

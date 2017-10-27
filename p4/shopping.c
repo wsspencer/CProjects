@@ -26,6 +26,8 @@
 #define FILE_LINE_MAX 400
 /** Constant int representing the color the length of a command */
 #define CMD_LEN 7
+/** Constant int representing the size of the check string */
+#define CHECK_SIZE 8
 
 /** Function prototype for a shopping list  */
 ShoppingList *makeShoppingList();
@@ -78,8 +80,6 @@ bool test (Item *it, void *arg) {
     //original
     char *extra = cast;
     char *type = (char*) malloc(LINE_MAX * sizeof(char));
-
-
 
     int stringPlace = 0;
     //scan extra to save the report type and also keep track of where we left off scanning
@@ -185,7 +185,7 @@ int main(int argc, char *argv[]) {
             int numChars = 0;
             int filenameCap = LINE_MAX;
             //loop through user input to build filename
-            while(newline[numChars] != '\n' && newline[numChars] != ' ' &&
+            while (newline[numChars] != '\n' && newline[numChars] != ' ' &&
                         newline[numChars] != EOF) {
                 if (numChars >= filenameCap) {
                     filenameCap += LINE_MAX;
@@ -235,7 +235,7 @@ int main(int argc, char *argv[]) {
             int numChars = 0;
             int filenameCap = LINE_MAX;
             //loop through user input to build filename
-            while(newline[numChars] != '\n' && newline[numChars] != ' ' &&
+            while (newline[numChars] != '\n' && newline[numChars] != ' ' &&
                         newline[numChars] != EOF) {
                 if (numChars >= filenameCap) {
                     filenameCap += LINE_MAX;
@@ -291,7 +291,7 @@ int main(int argc, char *argv[]) {
         else if ( strcmp(input, "report") == 0) {
             //run tests to see if user specified store or less or greater report.
             //check if valid report command
-            char checker[8] = "";
+            char checker[CHECK_SIZE] = "";
             sscanf(newline, "%s", checker);
             if (strcmp(checker, "store") == 0 || strcmp(checker, "greater") == 0 ||
                     strcmp(checker, "less") == 0 || strcmp(checker, "") == 0) {

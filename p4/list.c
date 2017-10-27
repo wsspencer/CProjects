@@ -37,7 +37,7 @@ ShoppingList *makeShoppingList() {
     This function is documented in list.h.
 */
 void freeShoppingList( ShoppingList *list ) {
-    for(int i = 0; i <list->length; i++) {
+    for (int i = 0; i <list->length; i++) {
         if (list->items[i] != NULL) {
             freeItem(list->items[i]);
         }
@@ -108,6 +108,6 @@ void shoppingListReport( ShoppingList *list, bool test( Item *it, void *arg ), v
                     total += list->items[i]->price;
                 }
             }
-            printf("                  %7.2lf", total); 
+            printf("                  %7.2lf", total);
             //right justified 7 character field with 2 fractional digits (and alligning spaces)
 }
