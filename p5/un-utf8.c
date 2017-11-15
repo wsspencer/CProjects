@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 	//than a single filename and the program call), it will print an error message to standard
 	//error and exit with an exit status of 1.
 	if (argc != 2) {
-		fprintf(stderr, "usage: un-utf8 <input-file>");
+		fprintf(stderr, "usage: un-utf8 <input-file>\n");
 		exit(1);
 	}
 	
@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 	if (fp == NULL) {
 		fprintf(stderr, "Can't open file: ");
 		fprintf(stderr, argv[1]);
-		fprintf(stderr, "\nusage: un-utf8 <input-file>");
+		fprintf(stderr, "\nusage: un-utf8 <input-file>\n");
 		exit(1);
 	}
 	
