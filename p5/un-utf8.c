@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
 			}
 			
 			//check that concat begins with 10 (as a non-first byte in a multibyte code should)
-			if ( (concat & 0xC0) != 0x80 ) {
+			else if ( (concat & 0xC0) != 0x80 ) {
 				fprintf( stderr, "Invalid byte: 0x%X at %d\n", concat, position + 1 );
 				//set printName to false
 				printName = false;
@@ -147,7 +147,7 @@ int main(int argc, char **argv) {
 
 			//check that the second two bytes begin with 10 (as a non-first byte in a multibyte
 			//code should)
-			if ( (firstByte & 0xC0) != 0x80 ) {
+			else if ( (firstByte & 0xC0) != 0x80 ) {
 				fprintf( stderr, "Invalid byte: 0x%X at %d\n", firstByte, position + 1 );
 				//set printName to false
 				printName = false;
@@ -204,7 +204,7 @@ int main(int argc, char **argv) {
 
 			//check that the last three bytes begin with 10 (as a non-first byte in a multibyte
 			//code should)
-			if ( (firstByte & 0xC0) != 0x80 ) {
+			else if ( (firstByte & 0xC0) != 0x80 ) {
 				fprintf( stderr, "Invalid byte: 0x%X at %d\n", firstByte, position + 1 );
 				//set printName to false
 				printName = false;
