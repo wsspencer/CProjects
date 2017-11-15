@@ -77,8 +77,6 @@
 /** Constant for masking off the lowest sixteen bits. */
 #define LOWESTSIXTEENBITS 0xF0000
 
-
-
 /**
     This is our main function which executes at run.  It will read our user's input, delegate
     params to our helper functions as needed, and ultimately print the output .ppm file.
@@ -181,7 +179,8 @@ int main(int argc, char **argv) {
             //we check this by checking if anything but the lowest seven bits remains.
             //(if there isn't, we could have represented it with 0-seven bits)
             if (  (input & LOWESTSEVENBITS) == 0x00 ) {
-                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & MASKTWELVEBITS), position);
+                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & MASKTWELVEBITS),
+                        position);
                 //set printName to false
                 printName = false;
             }
@@ -236,7 +235,8 @@ int main(int argc, char **argv) {
             //we check this by checking if anything but the lowest 11 bits remains (because if
             //there isn't, we could have represented it in 0-eleven bits)
             if (  (input & LOWESTELEVENBITS) == 0x00 ) {
-                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & MASKSIXTEENBITS), position);
+                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & MASKSIXTEENBITS),
+                        position);
                 //set printName to false
                 printName = false;
             }
@@ -270,12 +270,14 @@ int main(int argc, char **argv) {
                 printName = false;
             }
             else if ( (secondByte & CHECKTWOHIBITS) != FORMATBITS ) {
-                fprintf( stderr, "Invalid byte: 0x%X at %d\n", secondByte, position + INCTWOBYTES );
+                fprintf( stderr, "Invalid byte: 0x%X at %d\n", secondByte, position +
+                        INCTWOBYTES );
                 //set printName to false
                 printName = false;
             }
             else if ( (thirdByte & CHECKTWOHIBITS) != FORMATBITS ) {
-                fprintf( stderr, "Invalid byte: 0x%X at %d\n", thirdByte, position + INCTHREEBYTES );
+                fprintf( stderr, "Invalid byte: 0x%X at %d\n", thirdByte, position +
+                        INCTHREEBYTES );
                 //set printName to false
                 printName = false;
             }
@@ -300,7 +302,8 @@ int main(int argc, char **argv) {
             //we check this by checking if anything remains but the lowest sixteen bits.
             //(if nothing does, we could have represented it in 0-sixteen bits)
             if (  (input & LOWESTSIXTEENBITS) == 0x00 ) {
-                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & MASKTWENTYBITS), position);
+                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & MASKTWENTYBITS),
+                        position);
                 //set printName to false
                 printName = false;
             }

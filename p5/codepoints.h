@@ -25,7 +25,7 @@ typedef struct CodePoint{
     //numeric code
     unsigned int code;
 
-    //string name (won't be longer than 90 chars, but make room for null terminator)
+    //string name (won't be longer than ninety chars, but make room for null terminator)
     char name[NAMEMAX];
 
 } CodePoint;
