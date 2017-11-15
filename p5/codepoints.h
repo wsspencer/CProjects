@@ -17,13 +17,16 @@
 /** Header file containing standard library functions we will use. */
 #include <stdlib.h>
 
+/** Constant for the max array size for our codepoint name. */
+#define NAMEMAX 91
+
 /** Struct/type-definition for the CodePoint type. */
 typedef struct CodePoint{
     //numeric code
     unsigned int code;
 
     //string name (won't be longer than 90 chars, but make room for null terminator)
-    char name[91];
+    char name[NAMEMAX];
 
 } CodePoint;
 
