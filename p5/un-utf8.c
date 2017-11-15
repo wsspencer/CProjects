@@ -72,10 +72,13 @@ int main(int argc, char **argv) {
 	
 	int position = 0;
 	int increment = 0;
+	bool printName;
 	
 	while (fread(&input, 1, 1, fp) == 1) {
 		//update increment for position
 		increment = 1;
+		//set printName to true
+		printName = true;
 		
 		//case of 1 byte read (bin 0XXXXXXX), let i increment (note, this will also handle null)
 		if ( (input & 0x80) == 0x00) {
@@ -92,6 +95,8 @@ int main(int argc, char **argv) {
 			//read another byte into input (if you hit eof before you can, print error)
 			if ( fread(&concat, 1, 1, fp) != 1 ) {
 				fprintf(stderr, "Incomplete code at %d\n", position);
+				//set printName to false
+				printName = false;
 			}
 
 			//we know concat's byte will begin with 10 so go ahead and remove the first 2 bits
@@ -110,6 +115,8 @@ int main(int argc, char **argv) {
 			//(if there isn't, we could have represented it with 0-7 bits)
 			if (  (input & 0xF80) == 0x00 ) {
 				fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & 0xFFF), position);
+				//set printName to false
+				printName = false;
 			}
 
 			//update increment for position
@@ -127,6 +134,8 @@ int main(int argc, char **argv) {
 			//read another byte into input (if you hit eof before you can, print error)
 			if ( fread(&secondByte, 1, 1, fp) != 1 ) {
 				fprintf(stderr, "Incomplete code at %d\n", position);
+				//set printName to false
+				printName = false;
 			}
 
 			//we know concat's 2 bytes will begin with 10 so go ahead and remove the first two bits
@@ -148,6 +157,8 @@ int main(int argc, char **argv) {
 			//there isn't, we could have represented it in 0-11 bits)
 			if (  (input & 0xF800) == 0x00 ) {
 				fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & 0xFFFF), position);
+				//set printName to false
+				printName = false;
 			}
 
 			//update increment for position
@@ -167,6 +178,8 @@ int main(int argc, char **argv) {
 			//read third byte into input (if you hit eof before you can, print error)
 			if ( fread(&thirdByte, 1, 1, fp) != 1 ) {
 				fprintf(stderr, "Incomplete code at %d\n", position);
+				//set printName to false
+				printName = false;
 			}
 
 			//we know concat's 2 bytes will begin with 10 so go ahead and remove the first two bits
@@ -190,13 +203,15 @@ int main(int argc, char **argv) {
 			//(if nothing does, we could have represented it in 0-16 bits)
 			if (  (input & 0xF0000) == 0x00 ) {
 				fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & 0xFFFFF), position);
+				//set printName to false
+				printName = false;
 			}
 
 			//update increment for position
 			increment = 4;
 		}
 		//report code (if code isn't found, print error message)
-		if ( !reportCode(input) ) {
+		if ( printName && !reportCode(input) ) {
 			//otherwise min > max so param code wasn't found in the binary search of table
 			fprintf(stderr, "Unknown code: 0x%X at %d\n", input, position);
 		}
