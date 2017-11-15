@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
 		printName = true;
 		
 		//case of 1 byte read (bin 0XXXXXXX), let i increment (note, this will also handle null)
-		if ( (input & 0x80) == 0x00) {
+		if ( (input & 0x80) == 0x0) {
 			//mask off all but the last 8 bits (technically 7 but we've already established the
 			//first bit is 0)
 			input = input & 0xFF;
@@ -95,6 +95,13 @@ int main(int argc, char **argv) {
 			//read another byte into input (if you hit eof before you can, print error)
 			if ( fread(&concat, 1, 1, fp) != 1 ) {
 				fprintf(stderr, "Incomplete code at %d\n", position);
+				//set printName to false
+				printName = false;
+			}
+			
+			//check that concat begins with 10 (as a non-first byte in a multibyte code should)
+			if ( (concat & 0xC0) != 0x80 ) {
+				fprintf( stderr, "Invalid byte: 0x%X at %d\n", concat, position + 1 );
 				//set printName to false
 				printName = false;
 			}
@@ -138,6 +145,19 @@ int main(int argc, char **argv) {
 				printName = false;
 			}
 
+			//check that the second two bytes begin with 10 (as a non-first byte in a multibyte
+			//code should)
+			if ( (firstByte & 0xC0) != 0x80 ) {
+				fprintf( stderr, "Invalid byte: 0x%X at %d\n", firstByte, position + 1 );
+				//set printName to false
+				printName = false;
+			}
+			else if ( (secondByte & 0xC0) != 0x80 ) {
+				fprintf( stderr, "Invalid byte: 0x%X at %d\n", secondByte, position + 2 );
+				//set printName to false
+				printName = false;
+			}
+
 			//we know concat's 2 bytes will begin with 10 so go ahead and remove the first two bits
 			//from both bytes
 			firstByte = firstByte & 0x3F;
@@ -171,13 +191,31 @@ int main(int argc, char **argv) {
 			unsigned int firstByte;
 			unsigned int secondByte;
 			unsigned int thirdByte;
-			
+
 			//read another 3 bytes into input
 			fread(&firstByte, 1, 1, fp);
 			fread(&secondByte, 1, 1, fp);
 			//read third byte into input (if you hit eof before you can, print error)
 			if ( fread(&thirdByte, 1, 1, fp) != 1 ) {
 				fprintf(stderr, "Incomplete code at %d\n", position);
+				//set printName to false
+				printName = false;
+			}
+
+			//check that the last three bytes begin with 10 (as a non-first byte in a multibyte
+			//code should)
+			if ( (firstByte & 0xC0) != 0x80 ) {
+				fprintf( stderr, "Invalid byte: 0x%X at %d\n", firstByte, position + 1 );
+				//set printName to false
+				printName = false;
+			}
+			else if ( (secondByte & 0xC0) != 0x80 ) {
+				fprintf( stderr, "Invalid byte: 0x%X at %d\n", secondByte, position + 2 );
+				//set printName to false
+				printName = false;
+			}
+			else if ( (thirdByte & 0xC0) != 0x80 ) {
+				fprintf( stderr, "Invalid byte: 0x%X at %d\n", thirdByte, position + 3 );
 				//set printName to false
 				printName = false;
 			}
