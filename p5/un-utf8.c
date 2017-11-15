@@ -210,6 +210,13 @@ int main(int argc, char **argv) {
 			//update increment for position
 			increment = 4;
 		}
+		//otherwise...it must be an invalid code, so print an error message
+		else {
+			fprintf(stderr, "Invalid byte: 0x%X at %d\n", input, position);
+			//set printName to false
+			printName = false;
+		}
+
 		//report code (if code isn't found, print error message)
 		if ( printName && !reportCode(input) ) {
 			//otherwise min > max so param code wasn't found in the binary search of table
