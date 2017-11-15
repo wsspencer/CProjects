@@ -1,143 +1,154 @@
-//Each code point will be represented by an instance of a CodePoint struct, which you get to
-// design. The code point table will be a dynamically allocated array of of instances of this
-// struct.
+/**
+    @file codepoints.c
+    @author Scott Spencer (wsspence)
 
-//The code point table will be stored as a static global variables in the codepoints component.
-// All of the functions in this component will be able to access it, but, by making it static,
-// code elsewhere in the program won't be able to access it directly (and it won't pollute the
-// global namespace).
+    This file defines all the operations involving our unicode table and its navigation.
+    It will build the unicode table by dynamically allocating memory as it reads entries in
+    the unicode.txt file in our source directory, it will be responsible for the function that
+    frees that memory once
+*/
 
-//As you read code point descriptions from the unicode.txt file, you'll need to implement resizable
-// array behavior for the code point table, since you won't know how many code points you'll need
-// to read. Once you've read the whole table, you won't need to resize it again, so the current
-// capacity (the capacity variable that's normally part of a resizable array implementation) won't
-// need to be global; you just need it inside the loadTable() function.
-
-//The reportCode() function will use binary search to quickly find the record for a given code
-// point. There's a generic binary search function in the standard library, but I'd like you to
-// write your own for this assignment. It's not difficult.
-
-//Before you can use binary search, you'll need to sort the code point table. Do this before you
-// return from loadTable(). For the sort, use the standard library qsort() function. To use
-// qsort(), you have to define your own comparison function and pass in the function's address as
-// the last parameter to qsort(). The type of this comparison function has to be generic, taking
-// two const void pointers as parameters and returning int. Inside the function, you'll know what
-// types of values you're really sorting. You'll need to cast these void pointers to pointers to
-// the type of value that's really stored in your array. So, if your sorting an array of CodePoint
-// structures, you'll cast the void pointers to pointers to CodePoints. Alternatively, if you've
-// implemented your code point table as an array of pointers to structs, then you're really sorting
-// an array of pointers. So, inside your comparison function, you'll need to cast the parameters
-// to pointers to pointers to CodePoint structures (since you're sorting an array of pointers to
-// CodePoints).
-
+/** Header file containing CodePoint type and definitions for functions we will use. */
 #include "codepoints.h"
+/** Header file containing boolean type and functions we will use. */
 #include <stdbool.h>
+/** Header file containing standard input/output functions we will use. */
 #include <stdio.h>
+/** Header file containing string functions we will use. */
 #include <string.h>
+/** Header file containing standard library functions we will use. */
 #include <stdlib.h>
 
-#define BUFFER 100
+/** Constant for the size of our string buffer. */
+#define BUFFER 101
 
+/** Variable for the dynamically allocated array of CodePoints that is our unicode table. */
 static struct CodePoint *table;
+/** Variable for the size of our unicode table. */
 static int size;
 
+/**
+    This function will be used by qsort to sort our CodePoint table in order of code values.
+    When qsort calls this function it will pass two instances of CodePoints as parameters,
+    which we will extract the code values from and subtract from one another, returning the
+    difference and letting qsort know if a is bigger (+), b is bigger (-) or the two are
+    equal (0).
+
+    @param a const void * an instance of a CodePoint to compare (we cast it to CodePoint)
+    @param b const void * an instance of a CodePoint to compare (we cast it to CodePoint)
+    @return int representing the difference between codepoint codes
+*/
 int compareCP( const void * a, const void * b ) {
-	//cast params to CodePoints
-	CodePoint *cpA = (CodePoint *) a;
-	CodePoint *cpB = (CodePoint *) b;
-	//return the difference between codepoint a and codepoint b's codes
-	return ( cpA->code - cpB->code );
+    //cast params to CodePoints
+    CodePoint *cpA = (CodePoint *) a;
+    CodePoint *cpB = (CodePoint *) b;
+    //return the difference between codepoint a and codepoint b's codes
+    return ( cpA->code - cpB->code );
 }
 
+/**
+    This function is used to load the unicode table as an array of dynamically allocated memory
+    containing instances of the CodePoint struct.  Once all values are loaded from the unicode.txt
+    file provided in the source directory, this function will call qsort to sort the values.
+
+    @return void
+*/
 void loadTable() {
-	// load the table defined in unicode.txt into memory by way of our static list of Codepoint
-	// structs.  It's static in visibility but dynamically allocated in memory.  (Even though
-	// the size of the table is not arbitrary we still must allocate the table in memory
-	// dynamically since there is not enough stack memory to hold it in its entirety, therefore
-	// we will use heap memory to store it.
-	
-	//try to open unicode.txt for reading (not a binary file so just read it as ASCII plain text)
-	FILE *fp = fopen("unicode.txt", "r");
-	
-	//if we fail to open the file, print error message to standard error and exit with status of 1
-	if ( fp == NULL ) {
-		fprintf( stderr, "Invalid unicode table file" );
-		exit(1);
-	}
-	
-	//read each line of the unicode file.  Each line is organized as such:
-	//numeric value for a code point | tab char | name of the code point | end of line char
-	
-	//malloc initial memory for table and set its initial size and capacity
-	int cap = 10;
-	size = 0;
-	table = (struct CodePoint *) malloc(cap * sizeof(CodePoint));
+    // load the table defined in unicode.txt into memory by way of our static list of Codepoint
+    // structs.  It's static in visibility but dynamically allocated in memory.  (Even though
+    // the size of the table is not arbitrary we still must allocate the table in memory
+    // dynamically since there is not enough stack memory to hold it in its entirety, therefore
+    // we will use heap memory to store it.
+
+    //try to open unicode.txt for reading (not a binary file so just read it as ASCII plain text)
+    FILE *fp = fopen("unicode.txt", "r");
+
+    //if we fail to open the file, print error message to standard error and exit with status of 1
+    if ( fp == NULL ) {
+        fprintf( stderr, "Invalid unicode table file" );
+        exit(1);
+    }
+
+    //read each line of the unicode file.  Each line is organized as such:
+    //numeric value for a code point | tab char | name of the code point | end of line char
+
+    //malloc initial memory for table and set its initial size and capacity
+    int cap = 10;
+    size = 0;
+    table = (struct CodePoint *) malloc(cap * sizeof(CodePoint));
 
 
-	//scan the code and name for each codepoint struct until EOF
-	//%x because codes are in hex
-	char string[BUFFER];
-	while ( fgets(string, BUFFER, fp) ) {
-		unsigned int nextCode;
-		char nextName[91];
-		sscanf(string, "%x %[^\n]", &nextCode, nextName);
-		
-		if ( size + 1 >= cap ) {
-			cap *= 2;
-			table = realloc(table, cap * sizeof(CodePoint));
-		}
-		
-		table[size].code = nextCode;
-		strcpy( table[size].name, nextName );
-		
-		//increment the size of the table since scan was successful
-		size++;
-		
-	}
+    //scan the code and name for each codepoint struct until EOF
+    //%x because codes are in hex
+    char string[BUFFER];
+    while ( fgets(string, BUFFER, fp) ) {
+        unsigned int nextCode;
+        char nextName[91];
+        sscanf(string, "%x %[^\n]", &nextCode, nextName);
 
-	//use qsort to sort the codepoints table given its #elements, sizeof a codepoint,
-	//and the comparison function we defined above
-	qsort( table, size, sizeof(CodePoint), compareCP );
-	
-	//close the file
-	fclose(fp);
+        if ( size + 1 >= cap ) {
+            cap *= 2;
+            table = realloc(table, cap * sizeof(CodePoint));
+        }
+
+        table[size].code = nextCode;
+        strcpy( table[size].name, nextName );
+
+        //increment the size of the table since scan was successful
+        size++;
+
+    }
+
+    //use qsort to sort the codepoints table given its #elements, sizeof a codepoint,
+    //and the comparison function we defined above
+    qsort( table, size, sizeof(CodePoint), compareCP );
+
+    //close the file
+    fclose(fp);
 }
 
+/**
+    This function is used to free the table of CodePoints.  It's pretty simple really, it makes
+    use of the free() function call and frees all of the memory at once since the table is
+    allocated as one contiguous block of memory instead of separately allocated blocks.
+
+    @return void
+*/
 void freeTable() {
-	
-	//NOTE: DOUBLE CHECK THAT THIS WORKS AND FREES THE TABLE PROPERLY
-	
-	//free the dynamically allocated table of codepoints so we don't get a memory leak
-	//struct CodePoint *temp;
-	free(table);
-	//while (table != NULL) {
-	//	temp = table;
-	//	table = table->next;
-	//	free(temp);
-	//}
+    free(table);
 }
 
+/**
+    This function is used to print the names of chars associated with the unicode values in the
+    file given by the user.  A unicode bitfield is passed as a parameter, and a binary search
+    is then performed on our table array, if in this search we find the value, we print it and
+    return true.  If in the binary search min becomes > than max, we have exhausted the table
+    without finding the appropriate value and thus print nothing and return false.
+
+    @param code unisgned int representing a bitfield of unicode we are looking for in the table.
+    @return bool telling us if the code was found in the unicode table.
+*/
 bool reportCode( unsigned int code ) {
-	//BINARY SEARCH OF THE ARRAY SINCE IT HAS BEEN QSORTED
-	
-	int min = 0;
-	int max = size - 1;
-	int mid = ( min + max ) / 2;
-	
-	while ( min <= max ) {
-		if ( table[mid].code < code ) {
-			min = mid + 1;
-		}
-		else if ( table[mid].code == code ) {
-			printf( table[mid].name );
-			printf("\n");
-			return true;			
-		}
-		else {
-			max = mid - 1;
-		}
-		
-		mid = ( min + max ) / 2;
-	}
-	return false;	
+    //BINARY SEARCH OF THE ARRAY SINCE IT HAS BEEN QSORTED
+
+    int min = 0;
+    int max = size - 1;
+    int mid = ( min + max ) / 2;
+
+    while ( min <= max ) {
+        if ( table[mid].code < code ) {
+            min = mid + 1;
+        }
+        else if ( table[mid].code == code ) {
+            printf( table[mid].name );
+            printf("\n");
+            return true;
+        }
+        else {
+            max = mid - 1;
+        }
+
+        mid = ( min + max ) / 2;
+    }
+    return false;
 }
