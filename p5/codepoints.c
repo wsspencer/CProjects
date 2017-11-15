@@ -21,6 +21,12 @@
 
 /** Constant for the size of our string buffer. */
 #define BUFFER 101
+/** Constant for the initial size of our table capacity. */
+#define INITCAP 10
+/** Constant for the max array size for our codepoint name. */
+#define NAMEMAX 91
+/** Constant for doubling size of capacity. */
+#define DOUBLE 2
 
 /** Variable for the dynamically allocated array of CodePoints that is our unicode table. */
 static struct CodePoint *table;
@@ -73,7 +79,7 @@ void loadTable() {
     //numeric value for a code point | tab char | name of the code point | end of line char
 
     //malloc initial memory for table and set its initial size and capacity
-    int cap = 10;
+    int cap = INITCAP;
     size = 0;
     table = (struct CodePoint *) malloc(cap * sizeof(CodePoint));
 
@@ -83,11 +89,11 @@ void loadTable() {
     char string[BUFFER];
     while ( fgets(string, BUFFER, fp) ) {
         unsigned int nextCode;
-        char nextName[91];
+        char nextName[NAMEMAX];
         sscanf(string, "%x %[^\n]", &nextCode, nextName);
 
         if ( size + 1 >= cap ) {
-            cap *= 2;
+            cap *= DOUBLE;
             table = realloc(table, cap * sizeof(CodePoint));
         }
 
@@ -133,7 +139,7 @@ bool reportCode( unsigned int code ) {
 
     int min = 0;
     int max = size - 1;
-    int mid = ( min + max ) / 2;
+    int mid = ( min + max ) / DOUBLE;
 
     while ( min <= max ) {
         if ( table[mid].code < code ) {
@@ -148,7 +154,7 @@ bool reportCode( unsigned int code ) {
             max = mid - 1;
         }
 
-        mid = ( min + max ) / 2;
+        mid = ( min + max ) / DOUBLE;
     }
     return false;
 }

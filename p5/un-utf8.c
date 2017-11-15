@@ -34,6 +34,50 @@
 /** Header file containing standard library functions we will use. */
 #include <stdlib.h>
 
+/** Constant for the maximum command line arguments. */
+#define MAXARGS 2
+/** Constant for the mask check of a one byte code. */
+#define ONEBYTE 0x80
+/** Constant for the mask check of a two byte code. */
+#define TWOBYTE 0xE0
+/** Constant for the mask check of a three byte code. */
+#define THREEBYTE 0xF0
+/** Constant for the mask check of a four byte code. */
+#define FOURBYTE 0xF8
+/** Constant for shifting bitfields over the '10' format bits. */
+#define FORMATSHIFT 6
+/** Constant for the mask check of '10' format bits. */
+#define FORMATBITS 0x80
+/** Constant for incrementing position 2 bytes. */
+#define INCTWOBYTES 2
+/** Constant for incrementing position 3 bytes. */
+#define INCTHREEBYTES 3
+/** Constant for incrementing position 4 bytes. */
+#define INCFOURBYTES 4
+/** Constant for masking off all but lowest 8 bits. */
+#define MASK8BITS 0xFF
+/** Constant for masking off all but lowest 12 bits. */
+#define MASK12BITS 0xFFF
+/** Constant for masking off all but lowest 16 bits. */
+#define MASK16BITS 0xFFFF
+/** Constant for masking off all but lowest 20 bits. */
+#define MASK20BITS 0xFFFFF
+/** Constant for checking the high bits are '110'. */
+#define CHECKTWOHIBITS 0xC0
+/** Constant for checking if high bits are '1110'. */
+#define CHECKTHREEHIBITS 0xE0
+/** Constant for checking if high bits are '11110'. */
+#define CHECKFOURHIBITS 0xF0
+/** Constant for masking off the two highest bits. */
+#define REMOVETWOHIBITS 0x3F
+/** Constant for masking off the lowest 7 bits. */
+#define LOWEST7BITS 0xF80
+/** Constant for masking off the lowest 11 bits. */
+#define LOWEST11BITS 0xF800
+/** Constant for masking off the lowest 16 bits. */
+#define LOWEST16BITS 0xF0000
+
+
 
 /**
     This is our main function which executes at run.  It will read our user's input, delegate
@@ -47,7 +91,7 @@ int main(int argc, char **argv) {
     //If the user tries to run the program with invalid command-line arguments (anything other
     //than a single filename and the program call), it will print an error message to standard
     //error and exit with an exit status of 1.
-    if (argc != 2) {
+    if (argc != MAXARGS) {
         fprintf(stderr, "usage: un-utf8 <input-file>\n");
         exit(1);
     }
@@ -97,14 +141,14 @@ int main(int argc, char **argv) {
         printName = true;
 
         //case of 1 byte read (bin 0XXXXXXX), let i increment (note, this will also handle null)
-        if ( (input & 0x80) == 0x0) {
+        if ( (input & ONEBYTE) == 0x0) {
             //mask off all but the last 8 bits (technically 7 but we've already established the
             //first bit is 0)
-            input = input & 0xFF;
+            input = input & MASK8BITS;
         }
 
         //case of 2 bytes read (bin 110XXXXX), increment i by 2
-        else if ( (input & 0xE0) == 0xC0) {
+        else if ( (input & TWOBYTE) == CHECKTWOHIBITS) {
             //new int that we can add to the end of input
             unsigned int concat;
 
@@ -116,38 +160,38 @@ int main(int argc, char **argv) {
             }
 
             //check that concat begins with 10 (as a non-first byte in a multibyte code should)
-            else if ( (concat & 0xC0) != 0x80 ) {
+            else if ( (concat & CHECKTWOHIBITS) != FORMATBITS ) {
                 fprintf( stderr, "Invalid byte: 0x%X at %d\n", concat, position + 1 );
                 //set printName to false
                 printName = false;
             }
 
             //we know concat's byte will begin with 10 so go ahead and remove the first 2 bits
-            concat = concat & 0x3F;
+            concat = concat & REMOVETWOHIBITS;
             //shift input over and add concat to its end (only shift 6 since we've removed the
             //first 2 bits)
-            input = input << 6;
+            input = input << FORMATSHIFT;
             //bitwise OR to concatenate the two bitfields
             input = input | concat;
 
             //mask off all but the last 12 bits
-            input = input & 0xFFF;
+            input = input & MASK12BITS;
 
             //check if bitfield is overlong (can be represented in shorter byte string)
             //we check this by checking if anything but the lowest 7 bits remains.
             //(if there isn't, we could have represented it with 0-7 bits)
-            if (  (input & 0xF80) == 0x00 ) {
-                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & 0xFFF), position);
+            if (  (input & LOWEST7BITS) == 0x00 ) {
+                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & MASK12BITS), position);
                 //set printName to false
                 printName = false;
             }
 
             //update increment for position
-            increment = 2;
+            increment = INCTWOBYTES;
         }
 
         //case of 3 bytes read (bin 1110XXXX), increment i by 3
-        else if ( (input & 0xF0) == 0xE0) {
+        else if ( (input & THREEBYTE) == CHECKTHREEHIBITS) {
             //new int bitfields that we can add to the end of input
             unsigned int firstByte;
             unsigned int secondByte;
@@ -163,12 +207,12 @@ int main(int argc, char **argv) {
 
             //check that the second two bytes begin with 10 (as a non-first byte in a multibyte
             //code should)
-            else if ( (firstByte & 0xC0) != 0x80 ) {
+            else if ( (firstByte & CHECKTWOHIBITS) != FORMATBITS ) {
                 fprintf( stderr, "Invalid byte: 0x%X at %d\n", firstByte, position + 1 );
                 //set printName to false
                 printName = false;
             }
-            else if ( (secondByte & 0xC0) != 0x80 ) {
+            else if ( (secondByte & CHECKTWOHIBITS) != FORMATBITS ) {
                 fprintf( stderr, "Invalid byte: 0x%X at %d\n", secondByte, position + 2 );
                 //set printName to false
                 printName = false;
@@ -176,33 +220,33 @@ int main(int argc, char **argv) {
 
             //we know concat's 2 bytes will begin with 10 so go ahead and remove the first two bits
             //from both bytes
-            firstByte = firstByte & 0x3F;
-            secondByte = secondByte & 0x3F;
+            firstByte = firstByte & REMOVETWOHIBITS;
+            secondByte = secondByte & REMOVETWOHIBITS;
 
             //shift input over and add the two bytes minus their 2 highest bits
-            input = input << 6;
+            input = input << FORMATSHIFT;
             input = input | firstByte;
-            input = input << 6;
+            input = input << FORMATSHIFT;
             input = input | secondByte;
 
             //mask off all but the last 16 bits
-            input = input & 0xFFFF;
+            input = input & MASK16BITS;
 
             //check if bitfield is overlong (can be represented in shorter byte string)
             //we check this by checking if anything but the lowest 11 bits remains (because if
             //there isn't, we could have represented it in 0-11 bits)
-            if (  (input & 0xF800) == 0x00 ) {
-                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & 0xFFFF), position);
+            if (  (input & LOWEST11BITS) == 0x00 ) {
+                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & MASK16BITS), position);
                 //set printName to false
                 printName = false;
             }
 
             //update increment for position
-            increment = 3;
+            increment = INCTHREEBYTES;
         }
 
         //case of 4 bytes read (bin 11110XXX), increment i by 4
-        else if ( (input & 0xF8) == 0xF0) {
+        else if ( (input & FOURBYTE) == CHECKFOURHIBITS) {
             //new int bitfields that we can add to the end of input
             unsigned int firstByte;
             unsigned int secondByte;
@@ -220,49 +264,49 @@ int main(int argc, char **argv) {
 
             //check that the last three bytes begin with 10 (as a non-first byte in a multibyte
             //code should)
-            else if ( (firstByte & 0xC0) != 0x80 ) {
+            else if ( (firstByte & CHECKTWOHIBITS) != FORMATBITS ) {
                 fprintf( stderr, "Invalid byte: 0x%X at %d\n", firstByte, position + 1 );
                 //set printName to false
                 printName = false;
             }
-            else if ( (secondByte & 0xC0) != 0x80 ) {
-                fprintf( stderr, "Invalid byte: 0x%X at %d\n", secondByte, position + 2 );
+            else if ( (secondByte & CHECKTWOHIBITS) != FORMATBITS ) {
+                fprintf( stderr, "Invalid byte: 0x%X at %d\n", secondByte, position + INCTWOBYTES );
                 //set printName to false
                 printName = false;
             }
-            else if ( (thirdByte & 0xC0) != 0x80 ) {
-                fprintf( stderr, "Invalid byte: 0x%X at %d\n", thirdByte, position + 3 );
+            else if ( (thirdByte & CHECKTWOHIBITS) != FORMATBITS ) {
+                fprintf( stderr, "Invalid byte: 0x%X at %d\n", thirdByte, position + INCTHREEBYTES );
                 //set printName to false
                 printName = false;
             }
 
             //we know concat's 2 bytes will begin with 10 so go ahead and remove the first two bits
             //from all three bytes
-            firstByte = firstByte & 0x3F;
-            secondByte = secondByte & 0x3F;
-            thirdByte = thirdByte & 0x3F;
+            firstByte = firstByte & REMOVETWOHIBITS;
+            secondByte = secondByte & REMOVETWOHIBITS;
+            thirdByte = thirdByte & REMOVETWOHIBITS;
             //shift input over and add the three bytes minus their 2 highest bits
-            input = input << 6;
+            input = input << FORMATSHIFT;
             input = input | firstByte;
-            input = input << 6;
+            input = input << FORMATSHIFT;
             input = input | secondByte;
-            input = input << 6;
+            input = input << FORMATSHIFT;
             input = input | thirdByte;
 
-            //mask off all but the last 21 bits
-            input = input & 0xFFFFF;
+            //mask off all but the last 20 bits
+            input = input & MASK20BITS;
 
             //check if bitfield is overlong (can be represented in shorter byte string)
             //we check this by checking if anything remains but the lowest 16 bits.
             //(if nothing does, we could have represented it in 0-16 bits)
-            if (  (input & 0xF0000) == 0x00 ) {
-                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & 0xFFFFF), position);
+            if (  (input & LOWEST16BITS) == 0x00 ) {
+                fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & MASK20BITS), position);
                 //set printName to false
                 printName = false;
             }
 
             //update increment for position
-            increment = 4;
+            increment = INCFOURBYTES;
         }
         //otherwise...it must be an invalid code, so print an error message
         else {
