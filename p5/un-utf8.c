@@ -70,22 +70,30 @@ int main(int argc, char **argv) {
 	unsigned int input;
 	//read into "input" 1 element of size 1 byte of memory from fp
 	
+	int position = 0;
+	int increment = 0;
+	
 	while (fread(&input, 1, 1, fp) == 1) {
+		//update increment for position
+		increment = 1;
 		
 		//case of 1 byte read (bin 0XXXXXXX), let i increment (note, this will also handle null)
 		if ( (input & 0x80) == 0x00) {
-			//mask off all but the last
+			//mask off all but the last 8 bits (technically 7 but we've already established the
+			//first bit is 0)
 			input = input & 0xFF;
-			//report code
-			reportCode(input);
 		}
 		
 		//case of 2 bytes read (bin 110XXXXX), increment i by 2
 		else if ( (input & 0xE0) == 0xC0) {
 			//new int that we can add to the end of input
-			unsigned int concat;			
-			//read another 2 bytes into input
-			fread(&concat, 1, 1, fp);
+			unsigned int concat;
+			
+			//read another byte into input (if you hit eof before you can, print error)
+			if ( fread(&concat, 1, 1, fp) != 1 ) {
+				fprintf(stderr, "Incomplete code at %d\n", position);
+			}
+
 			//we know concat's byte will begin with 10 so go ahead and remove the first 2 bits
 			concat = concat & 0x3F;
 			//shift input over and add concat to its end (only shift 6 since we've removed the
@@ -94,11 +102,18 @@ int main(int argc, char **argv) {
 			//bitwise OR to concatenate the two bitfields
 			input = input | concat;
 
-			//mask off the first 3 bits since we know they're 110
+			//mask off all but the last 12 bits
 			input = input & 0xFFF;
 			
-			//call reportCode
-			reportCode(input);
+			//check if bitfield is overlong (can be represented in shorter byte string)
+			//we check this by checking if anything but the lowest 7 bits remains.
+			//(if there isn't, we could have represented it with 0-7 bits)
+			if (  (input & 0xF80) == 0x00 ) {
+				fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & 0xFFF), position);
+			}
+
+			//update increment for position
+			increment = 2;
 		}
 		
 		//case of 3 bytes read (bin 1110XXXX), increment i by 3
@@ -106,9 +121,14 @@ int main(int argc, char **argv) {
 			//new int bitfields that we can add to the end of input
 			unsigned int firstByte;
 			unsigned int secondByte;
+
 			//read another 2 bytes into input
 			fread(&firstByte, 1, 1, fp);
-			fread(&secondByte, 1, 1, fp);
+			//read another byte into input (if you hit eof before you can, print error)
+			if ( fread(&secondByte, 1, 1, fp) != 1 ) {
+				fprintf(stderr, "Incomplete code at %d\n", position);
+			}
+
 			//we know concat's 2 bytes will begin with 10 so go ahead and remove the first two bits
 			//from both bytes
 			firstByte = firstByte & 0x3F;
@@ -120,10 +140,18 @@ int main(int argc, char **argv) {
 			input = input << 6;
 			input = input | secondByte;
 			
-			//mask off all but the last
+			//mask off all but the last 16 bits
 			input = input & 0xFFFF;
-			//call reportCode
-			reportCode(input);
+
+			//check if bitfield is overlong (can be represented in shorter byte string)
+			//we check this by checking if anything but the lowest 11 bits remains (because if 
+			//there isn't, we could have represented it in 0-11 bits)
+			if (  (input & 0xF800) == 0x00 ) {
+				fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & 0xFFFF), position);
+			}
+
+			//update increment for position
+			increment = 3;
 		}
 		
 		//case of 4 bytes read (bin 11110XXX), increment i by 4
@@ -132,10 +160,15 @@ int main(int argc, char **argv) {
 			unsigned int firstByte;
 			unsigned int secondByte;
 			unsigned int thirdByte;
+			
 			//read another 3 bytes into input
 			fread(&firstByte, 1, 1, fp);
 			fread(&secondByte, 1, 1, fp);
-			fread(&thirdByte, 1, 1, fp);
+			//read third byte into input (if you hit eof before you can, print error)
+			if ( fread(&thirdByte, 1, 1, fp) != 1 ) {
+				fprintf(stderr, "Incomplete code at %d\n", position);
+			}
+
 			//we know concat's 2 bytes will begin with 10 so go ahead and remove the first two bits
 			//from all three bytes
 			firstByte = firstByte & 0x3F;
@@ -149,11 +182,27 @@ int main(int argc, char **argv) {
 			input = input << 6;
 			input = input | thirdByte;
 			
-			//mask off all but the last
+			//mask off all but the last 21 bits
 			input = input & 0xFFFFF;
-			//call reportCode
-			reportCode(input);
+
+			//check if bitfield is overlong (can be represented in shorter byte string)
+			//we check this by checking if anything remains but the lowest 16 bits.
+			//(if nothing does, we could have represented it in 0-16 bits)
+			if (  (input & 0xF0000) == 0x00 ) {
+				fprintf(stderr, "Invalid encoding: 0x%X at %d\n", (input & 0xFFFFF), position);
+			}
+
+			//update increment for position
+			increment = 4;
 		}
+		//report code (if code isn't found, print error message)
+		if ( !reportCode(input) ) {
+			//otherwise min > max so param code wasn't found in the binary search of table
+			fprintf(stderr, "Unknown code: 0x%X at %d\n", input, position);
+		}
+		
+		//update position
+		position += increment;
 	}
 	
 	//Once we are done with the table we should free its memory by calling freeTable()

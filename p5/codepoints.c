@@ -139,8 +139,5 @@ bool reportCode( unsigned int code ) {
 		
 		mid = ( min + max ) / 2;
 	}
-	
-	//otherwise min > max so param code wasn't found in the binary search of table
-	return false;
-	
+	return false;	
 }
