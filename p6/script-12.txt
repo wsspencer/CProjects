@@ -1,0 +1,19 @@
+# Testing the if command.
+
+set cond "1";
+
+if cond skip1;
+
+print "This should not print out\n";
+
+skip1:
+
+set cond "";
+
+if cond skip2;
+
+print "This should print out\n";
+
+skip2:
+
+print "This also should print out\n";

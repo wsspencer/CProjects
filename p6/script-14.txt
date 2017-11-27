@@ -1,0 +1,30 @@
+# A nested loop, printing a grid of stars.
+
+# A test-at-the-bottom loop for printing rows.
+set row "0";
+rowTop:
+
+  # Test-at-the-bottom loop for printing stars on each row, counting down
+  # for this loop
+  set col "20";
+  colTop:
+
+    print "*";
+
+    # decrement col, and go back to the start of the loop if it's non-zero.
+    sub col col "1";
+    eq test col "0";
+
+    # We want to go to the top of the loop if col is _not_ equal to zero, so we need to
+    # go to top of the loop if test is _not_ true.
+    if test skip;
+      goto colTop;
+    skip:
+
+  # end of the row.
+  print "\n";
+
+  # Increment row, and loop if it's not too big.
+  add row row "1";
+  less test row "11";
+  if test rowTop; 

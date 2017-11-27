@@ -1,0 +1,14 @@
+# Set some values to use.
+set x "10";
+set y "2";
+set z "red";
+
+# Nothing wrong here.
+add a x y;
+
+# But, z isn't a valid integer.
+sub b y z;
+
+# Program will exit before it gets here.
+print "This should not print\n";
+

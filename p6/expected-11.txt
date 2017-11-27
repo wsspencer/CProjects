@@ -1,0 +1,2 @@
+This should print
+This also should print

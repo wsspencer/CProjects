@@ -1,0 +1,16 @@
+# Try adding a literal value to a variable.
+set y "2";
+add x y "1";
+print x;
+print "\n";
+
+# Try adding the other way around.
+add x "2" y;
+print x;
+print "\n";
+
+# Try adding two variables.
+set z "3";
+add x y z;
+print x;
+print "\n";

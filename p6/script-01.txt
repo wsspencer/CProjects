@@ -1,0 +1,2 @@
+# One command, printing a literal value.
+print "Hello World\n";

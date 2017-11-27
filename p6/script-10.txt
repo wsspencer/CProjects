@@ -1,0 +1,22 @@
+set y "25";
+set z "30";
+
+# Try out the eq command.  Evaluates to true if two numbers are equal.
+eq x "25" y;
+print x;
+print "\n";
+
+# False is empty string, so this should print a blank line.
+eq x y z;
+print x;
+print "\n";
+
+# Try out the less command.  Evaluates to true if the 2nd argument is less than the 3rd.
+less x "10" y;
+print x;
+print "\n";
+
+# Same as before, we should get a blank line.
+less x z y;
+print x;
+print "\n";

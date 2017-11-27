@@ -1,0 +1,11 @@
+# Use goto to skip over a command.
+
+print "This should print\n";
+
+goto skip;
+
+print "But this should not print\n";
+
+skip:
+
+print "This also should print\n";

@@ -1,0 +1,12 @@
+print "This program doesn't parse correctly\n";
+print "So this shouldn't get printed\n";
+
+set x "1";
+
+# Add takes three arguments.
+add y x x;
+
+# You can't use it to add more than 2 values.
+add y x x x;
+
+print "This won't even get parsed, which is good, since this string never terminates.

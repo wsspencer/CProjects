@@ -1,0 +1,6 @@
+set x "5";
+
+# It should be possible to overwrite the source.
+add x x x;
+print x;
+print "\n";

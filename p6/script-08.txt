@@ -1,0 +1,13 @@
+set y "10";
+set z "5";
+
+
+# Subtract a constant froma  variable.
+sub x y "1";
+print x;
+print "\n";
+
+# Subtract one variable from another.
+sub x y z;
+print x;
+print "\n";

@@ -1,0 +1,14 @@
+# Use the set command to give a variable a value.
+set x "25";
+print x;
+print "\n";
+
+# Change a variable value, after you've assigned it.
+set x "35";
+print x;
+print "\n";
+
+# Then, use set to copy a value from one variable to another.
+set y x;
+print y;
+print "\n";

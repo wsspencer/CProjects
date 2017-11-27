@@ -1,0 +1,26 @@
+# Multiply a variable value by a literal value.
+set y "10";
+mult x y "2";
+print x;
+print "\n";
+
+# Try multiplying the value of one variable by another.
+set z "3";
+mult x y z;
+print x;
+print "\n";
+
+# Divide a variable's value by a literal 2.
+div x y "2";
+print x;
+print "\n";
+
+# Try dividing the value of one variable by another.
+div x y z;
+print x;
+print "\n";
+
+# Try computing the mod of a varible and a constant.
+mod x y "7";
+print x;
+print "\n";

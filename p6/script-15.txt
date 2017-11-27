@@ -1,0 +1,40 @@
+# Generate prime numbers up to 500
+
+# Try potential primes.
+set num "2";
+
+# A test-at-the-top loop, like a for loop.
+nextNumber:
+
+  # Bail out of the loop if num is too big.
+  less result "500" num;
+  if result done;
+
+  set factor "2";
+
+  # Keep checking potential factors
+  nextFactor:
+
+    # Stop if the factor is too large.
+    mult square factor factor;
+    less result num square;
+    if result isPrime;
+
+    mod remainder num factor;
+    eq result remainder "0";
+    if result isComposite;
+
+    add factor factor "1";
+    goto nextFactor;
+
+  isPrime:
+  print num;
+  print "\n";
+
+  isComposite:
+
+  # Increment num and go to the top.
+  add num num "1";
+  goto nextNumber;
+
+done:

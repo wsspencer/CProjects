@@ -1,0 +1,20 @@
+set x "Hello World";
+set nl "\n";
+
+set y "";
+set nl "\n";
+
+# This should get printed, these variables are defined.
+print x;
+print nl;
+
+# This also has a value, even though it's empty string.
+print y;
+print nl;
+
+# But, this should fail at execution time. z doesn't have a value.
+print z;
+print nl;
+
+# We try to give it a value here, but it's too late.
+set z "abc";

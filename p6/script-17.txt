@@ -1,0 +1,9 @@
+print "This program doesn't parse correctly\n";
+print "So this shouldn't get printed\n";
+
+# There's no command named spork.
+spork x y "3";
+
+# There's also no command named qwop, but the parser will
+# exit before it gets here.
+qwop 3 10 x;

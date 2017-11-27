@@ -1,0 +1,18 @@
+print "This program doesn't parse correctly\n";
+print "So this shouldn't get printed\n";
+
+# Make some variables.
+set x "1";
+set y "2";
+set z "3";
+
+# Either of the source arguments can be literals.
+add x y "1";
+sub x "2" z;
+
+# But, the destination argument can't be.  This shuld fail at parse time.
+mul "3" y z;
+
+# This isn't legal, but it won't get printed or parsed.
+one two three four five;
+

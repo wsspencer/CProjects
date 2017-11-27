@@ -1,0 +1,15 @@
+# Set some values to use.
+set x "10";
+set y "2";
+set z "0";
+
+# Nothing wrong here.
+mult a x z;
+sub b y z;
+
+# But, this is a divide-by-zero
+div c x z;
+
+# So is this, but the earlier error will make us exit first.
+mod d y z;
+

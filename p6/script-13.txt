@@ -1,0 +1,13 @@
+# Use an if to to implement a loop.
+
+set icount "1";
+
+top:
+
+  print icount;
+  print "\n";
+
+  add icount icount "1";
+
+  less test icount "11";
+  if test top;
