@@ -53,14 +53,23 @@ static Command *makePrint( char const *arg )
 {
   // Allocate space for the PrintCommand object
   PrintCommand *this = (PrintCommand *) malloc( sizeof( PrintCommand ) );
-
+  
   // Remember pointers to our overridable methods and line number.
   this->execute = executePrint;
   this->line = getLineNumber();
-
+  
+  //WORK NEEDED HERE:  THIS IS WHERE YOU ADDED VARIABLE COMPATIBILITY FOR PRINTING
+  //Check if token is a variable (environmental or otherwise since we set normal variables as
+  //environmental ones?) name, if it is, change its arg's value to the value of the variable?
+  if ( isVarName( arg ) ) {
+    this->arg = copyString( getenv( arg ) ); 
+  }  
+  
   // Make a copy of the argument.
-  this->arg = copyString( arg );
-
+  else {
+	this->arg = copyString( arg );  
+  }
+  
   // Return the result, as an instance of the Command interface.
   return (Command *) this;
 }
@@ -78,14 +87,6 @@ Command *parseCommand( char *cmdName, FILE *fp )
     // Parse the one argument to print.
     expectToken( tok, fp );
     requireToken( ";", fp );
-	
-	//WORK NEEDED HERE:
-	//Check if token is a variable (environmental or otherwise since we set normal variables as
-	//environmental ones?) name, if it is, change its value to the value of the variable?
-	if (isVarName(tok)) {
-		char *val = getenv( tok );
-		return makePrint( val ); 
-	}
 	
     return makePrint( tok );
   } 
