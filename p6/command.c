@@ -39,8 +39,20 @@ static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
   // WORK NEEDED HERE: add compatibility for variables as well as literals
   // Environment variables are stored in the standard library,
   // so we should use getenv and setenv to work with them...
-  printf( "%s", this->arg + 1 );
-
+  
+  // TEMPORARY FIX? (this will work for environment variables since they contain quotes but what
+  // about normal vars?
+  if ( isVarName( this->arg ) ) {
+	  //strip quotes?
+	  char *str = getenv(this->arg);
+	  str++; //strip first quote
+	  str[strlen(str) - 1] = 0; //strip last quote?
+	  printf( "%s", str );
+  }
+  else {
+	printf( "%s", this->arg + 1 );
+  }
+  
   return pc + 1;
 }
 
@@ -58,17 +70,11 @@ static Command *makePrint( char const *arg )
   this->execute = executePrint;
   this->line = getLineNumber();
   
-  //WORK NEEDED HERE:  THIS IS WHERE YOU ADDED VARIABLE COMPATIBILITY FOR PRINTING
+  //WORK NEEDED HERE?:  THIS IS WHERE YOU ADDED VARIABLE COMPATIBILITY FOR PRINTING
   //Check if token is a variable (environmental or otherwise since we set normal variables as
   //environmental ones?) name, if it is, change its arg's value to the value of the variable?
-  if ( isVarName( arg ) ) {
-    this->arg = copyString( getenv( arg ) ); 
-  }  
   
-  // Make a copy of the argument.
-  else {
-	this->arg = copyString( arg );  
-  }
+  this->arg = copyString( arg );  
   
   // Return the result, as an instance of the Command interface.
   return (Command *) this;
