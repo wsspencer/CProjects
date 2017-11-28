@@ -52,6 +52,39 @@ typedef struct {
 	char *three;
 } AddCommand;
 
+//Representation for a sub command? derived from Command.
+typedef struct {
+	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+	int line;
+	
+	/** Arguments for sum and two additives */
+	char *res;
+	char *two;
+	char *three;
+} SubCommand;
+
+//Representation for a mult command? derived from Command.
+typedef struct {
+	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+	int line;
+	
+	/** Arguments for sum and two additives */
+	char *prod;
+	char *two;
+	char *three;
+} MultCommand;
+
+//Representation for a div command? derived from Command.
+typedef struct {
+	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+	int line;
+	
+	/** Arguments for sum and two additives */
+	char *quot;
+	char *two;
+	char *three;
+} DivCommand;
+
 
 //COMMAND EXECUTIONS:
 
@@ -105,9 +138,114 @@ static int executeSet( Command *cmd, LabelMap *labelMap, int pc ) {
 static int executeAdd( Command *cmd, LabelMap *labelMap, int pc ) {
 	AddCommand *this = (AddCommand *)cmd;
 	
-	//set a new environmental variable to this name and value
-	int total = (int) this->two + (int) this->three;
-	setenv(this->sum, total, 1);
+	long add1 = 0;
+	long add2 = 0;
+	
+	//if either of the two additive arguments are variables, carry out the addition with their environment values
+	if ( isVarName( this->two ) ) {
+		sscanf( getenv( this->two ), "%ld", &add1 );
+	}
+	else {
+		sscanf( this->two, "%ld", &add1 );
+	}
+	if (isVarName(this->three)) {
+		sscanf( getenv( this->three ), "%ld", &add2 );
+	}
+	else {
+		sscanf( this->three, "%ld", &add2 );
+	}
+	
+	//set a new environmental variable to this name and value, then cast sum back to a string
+	long total = add1 + add2;
+	char *sum = (char *) total;
+	setenv(this->sum, sum, 1);
+
+	return pc + 1;
+}
+
+//execute sub command
+static int executeSub( Command *cmd, LabelMap *labelMap, int pc ) {
+	SubCommand *this = (SubCommand *)cmd;
+	
+	long sub1 = 0;
+	long sub2 = 0;
+	
+	//if either of the two additive arguments are variables, carry out the addition with their environment values
+	if ( isVarName( this->two ) ) {
+		sscanf( getenv( this->two ), "%ld", &sub1 );
+	}
+	else {
+		sscanf( this->two, "%ld", &sub1 );
+	}
+	if (isVarName(this->three)) {
+		sscanf( getenv( this->three ), "%ld", &sub2 );
+	}
+	else {
+		sscanf( this->three, "%ld", &sub2 );
+	}
+	
+	//set a new environmental variable to this name and value, then cast sum back to a string
+	long total = sub2 - sub1;
+	char *res = (char *) total;
+	setenv(this->res, res, 1);
+
+	return pc + 1;
+}
+
+//execute mult command
+static int executeMult( Command *cmd, LabelMap *labelMap, int pc ) {
+	MultCommand *this = (MultCommand *)cmd;
+	
+	long mul1 = 0;
+	long mul2 = 0;
+	
+	//if either of the two additive arguments are variables, carry out the addition with their environment values
+	if ( isVarName( this->two ) ) {
+		sscanf( getenv( this->two ), "%ld", &mul1 );
+	}
+	else {
+		sscanf( this->two, "%ld", &mul1 );
+	}
+	if (isVarName(this->three)) {
+		sscanf( getenv( this->three ), "%ld", &mul2 );
+	}
+	else {
+		sscanf( this->three, "%ld", &mul2 );
+	}
+	
+	//set a new environmental variable to this name and value, then cast sum back to a string
+	long total = mul1 * mul2;
+	char *prod = (char *) total;
+	setenv(this->prod, prod, 1);
+
+	return pc + 1;
+}
+
+//execute div command
+static int executeDiv( Command *cmd, LabelMap *labelMap, int pc ) {
+	DivCommand *this = (DivCommand *)cmd;
+	
+	long div1 = 0;
+	long div2 = 0;
+	
+	//if either of the two additive arguments are variables, carry out the addition with their environment values
+	if ( isVarName( this->two ) ) {
+		sscanf( getenv( this->two ), "%ld", &div1 );
+	}
+	else {
+		sscanf( this->two, "%ld", &div1 );
+	}
+	if (isVarName(this->three)) {
+		sscanf( getenv( this->three ), "%ld", &div2 );
+	}
+	else {
+		sscanf( this->three, "%ld", &div2 );
+	}
+	
+	//set a new environmental variable to this name and value, then cast sum back to a string
+	long total = div1 / div2;
+	char *quot = (char *) total;
+	setenv(this->quot, quot, 1);
 
 	return pc + 1;
 }
@@ -154,11 +292,53 @@ static Command *makeSet( char const *var, char const *arg ) {
 static Command *makeAdd( char const *sum, char const *two, char const *three ) {
 	AddCommand *this = (AddCommand *) malloc( sizeof( AddCommand ) );
 	
-	this->execute = executeSet;
+	this->execute = executeAdd;
 	this->line = getLineNumber();
 	
 	//set variable and argument
 	this->sum = copyString( sum );
+	this->two = copyString( two );
+	this->three = copyString( three );
+	
+	return (Command *) this;
+}
+
+static Command *makeSub( char const *res, char const *two, char const *three ) {
+	SubCommand *this = (SubCommand *) malloc( sizeof( SubCommand ) );
+	
+	this->execute = executeSub;
+	this->line = getLineNumber();
+	
+	//set variable and argument
+	this->res = copyString( res );
+	this->two = copyString( two );
+	this->three = copyString( three );
+	
+	return (Command *) this;
+}
+
+static Command *makeMult( char const *prod, char const *two, char const *three ) {
+	MultCommand *this = (MultCommand *) malloc( sizeof( MultCommand ) );
+	
+	this->execute = executeMult;
+	this->line = getLineNumber();
+	
+	//set variable and argument
+	this->prod = copyString( prod );
+	this->two = copyString( two );
+	this->three = copyString( three );
+	
+	return (Command *) this;
+}
+
+static Command *makeDiv( char const *quot, char const *two, char const *three ) {
+	DivCommand *this = (DivCommand *) malloc( sizeof( DivCommand ) );
+	
+	this->execute = executeDiv;
+	this->line = getLineNumber();
+	
+	//set variable and argument
+	this->quot = copyString( quot );
 	this->two = copyString( two );
 	this->three = copyString( three );
 	
@@ -172,8 +352,7 @@ Command *parseCommand( char *cmdName, FILE *fp )
   // Read the first token.
   char tok[ MAX_TOKEN + 1 ];
 
-  // Figure out what kind of command it is.
-  // SCOTT'S WORK: Is this how we figure out variables?
+  // Figure out what kind of command it is:
   
   //If command is print
   if ( strcmp( cmdName, "print" ) == 0 ) {
@@ -212,15 +391,45 @@ Command *parseCommand( char *cmdName, FILE *fp )
   //If command is Sub
   else if ( strcmp( cmdName, "sub" ) == 0 ) {
 	  //three args, subtract third FROM second, store value in first
+	  char two[ MAX_TOKEN + 1 ];
+	  char three[ MAX_TOKEN + 1 ];
+	  
+	  expectVariable( tok, fp );
+	  expectToken( two, fp );
+	  expectToken( three, fp );
+	  
+	  requireToken( ";", fp );
+	  
+	  return makeSub( tok, two, three );
   }
   //If command is Mult
   else if ( strcmp( cmdName, "mult" ) == 0 ) {
 	  //three args, multiply second and third, store value in first
+	  char two[ MAX_TOKEN + 1 ];
+	  char three[ MAX_TOKEN + 1 ];
+	  
+	  expectVariable( tok, fp );
+	  expectToken( two, fp );
+	  expectToken( three, fp );
+	  
+	  requireToken( ";", fp );
+	  
+	  return makeMult( tok, two, three );
   }
   //If command is Div
   else if ( strcmp( cmdName, "div" ) == 0 ) {
 	  //three args, divide second BY the third, store value in first (discard any remainder
 	  //using long)
+	  char two[ MAX_TOKEN + 1 ];
+	  char three[ MAX_TOKEN + 1 ];
+	  
+	  expectVariable( tok, fp );
+	  expectToken( two, fp );
+	  expectToken( three, fp );
+	  
+	  requireToken( ";", fp );
+	  
+	  return makeDiv( tok, two, three );
   }
   //If command is Mod
   else if ( strcmp( cmdName, "mod" ) == 0 ) {
