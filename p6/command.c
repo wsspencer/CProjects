@@ -15,6 +15,9 @@ static char *copyString( char const *str )
   return strcpy( cpy, str );
 }
 
+
+//COMMAND STRUCTS:
+
 //////////////////////////////////////////////////////////////////////
 // Print Command
 
@@ -28,6 +31,19 @@ typedef struct {
   char *arg;
 } PrintCommand;
 
+//Representation for a set command? derived from Command.
+typedef struct {
+	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+	int line;
+	
+	/** Arguments for sum and two additives */
+	char *var;
+	char *arg;
+} SetCommand;
+
+
+//COMMAND EXECUTIONS:
+
 // execute function for the print command
 static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
 {
@@ -40,8 +56,6 @@ static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
   // Environment variables are stored in the standard library,
   // so we should use getenv and setenv to work with them...
   
-  // TEMPORARY FIX? (this will work for environment variables since they contain quotes but what
-  // about normal vars?
   if ( isVarName( this->arg ) ) {
 	  //strip quotes?
 	  char *str = getenv(this->arg);
@@ -55,6 +69,19 @@ static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
   
   return pc + 1;
 }
+
+//execute set command
+static int executeSet( Command *cmd, LabelMap *labelMap, int pc ) {
+	SetCommand *this = (SetCommand *)cmd;
+	
+	//set a new environmental variable to this name and value
+	//setenv(this->var, this->arg, 1);
+	setenv(this->var, this->arg, 1);
+	
+	return pc + 1;
+}
+
+//COMMAND MAKES:
 
 /** Make a command that prints the given argument to the terminal.
     @param arg The argument to print, either a string literal or the
@@ -80,6 +107,25 @@ static Command *makePrint( char const *arg )
   return (Command *) this;
 }
 
+static Command *makeSet( char const *var, char const *arg ) {
+	SetCommand *this = (SetCommand *) malloc( sizeof( SetCommand ) );
+	
+	this->execute = executeSet;
+	this->line = getLineNumber();
+	
+	//set variable and argument
+	this->var = copyString( var );
+	this->arg = copyString( arg );
+	
+	return (Command *) this;
+}
+
+//static Command *makeAdd( char const *sum, char const *two, char const *three ) {
+	
+//}
+
+//COMMAND PARSE:
+
 Command *parseCommand( char *cmdName, FILE *fp )
 {
   // Read the first token.
@@ -99,10 +145,28 @@ Command *parseCommand( char *cmdName, FILE *fp )
   //If command is Set
   else if ( strcmp( cmdName, "set" ) == 0 ) {
 	  //two args: set first to second's value
+	  char var[ MAX_TOKEN + 1 ];
+
+	  expectVariable( var, fp );
+	  expectToken( tok, fp );
+
+	  requireToken(";", fp );
+
+	  return makeSet( var, tok );
   }
   //If command is Add
   else if ( strcmp( cmdName, "add" ) == 0 ) {
 	  //three args, add second and third, store value in first
+	//  char two[ MAX_TOKEN + 1 ];
+	//  char three[ MAX_TOKEN + 1 ];
+
+	//  expectVariable( tok, fp );
+	//  expectToken( two, fp );
+	//  expectToken( three, fp );
+
+	//  requireToken( ";", fp );
+
+	//  return makeAdd( tok, two, three );
   }
   //If command is Sub
   else if ( strcmp( cmdName, "sub" ) == 0 ) {
