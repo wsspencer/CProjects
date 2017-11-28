@@ -114,6 +114,11 @@ static Command *makeSet( char const *var, char const *arg ) {
 	this->var = copyString( var );
 	this->arg = copyString( arg );
 	
+	//iterate over first " if it's there
+	if (this->arg[0] == '"') {
+		this->arg++;
+	}
+	
 	return (Command *) this;
 }
 
