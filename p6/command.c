@@ -57,7 +57,7 @@ typedef struct {
 	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
 	int line;
 	
-	/** Arguments for sum and two additives */
+	/** Arguments for result and two args */
 	char *res;
 	char *two;
 	char *three;
@@ -68,7 +68,7 @@ typedef struct {
 	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
 	int line;
 	
-	/** Arguments for sum and two additives */
+	/** Arguments for product and two multiples */
 	char *prod;
 	char *two;
 	char *three;
@@ -79,7 +79,7 @@ typedef struct {
 	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
 	int line;
 	
-	/** Arguments for sum and two additives */
+	/** Arguments for quotient and two dividends */
 	char *quot;
 	char *two;
 	char *three;
@@ -90,7 +90,7 @@ typedef struct {
 	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
 	int line;
 	
-	/** Arguments for sum and two additives */
+	/** Arguments for modulo and two dividends */
 	char *mod;
 	char *two;
 	char *three;
@@ -101,11 +101,22 @@ typedef struct {
 	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
 	int line;
 	
-	/** Arguments for sum and two additives */
+	/** Arguments for result and two args */
 	char *res;
 	char *two;
 	char *three;
 } EqCommand;
+
+//Representation for an equality check command? derived from Command.
+typedef struct {
+	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+	int line;
+	
+	/** Arguments for result and two args */
+	char *res;
+	char *two;
+	char *three;
+} LessCommand;
 
 
 //COMMAND EXECUTIONS:
@@ -334,9 +345,43 @@ static int executeEq( Command *cmd, LabelMap *labelMap, int pc ) {
 	}
 	
 	//check if the two args are equal,  if they are store 1 in result, if not store empty string (null).
-	char res[ 2 ] = "";
+	char res[ 2 ] = " ";
 	
 	if ( arg1 == arg2 ) {
+		strcpy(res, "1");
+	}
+	
+	setenv(this->res, res, 1);
+
+	return pc + 1;
+}
+
+//execute Less command
+static int executeLess( Command *cmd, LabelMap *labelMap, int pc ) {
+	LessCommand *this = (LessCommand *)cmd;
+	
+	long arg1 = 0;
+	long arg2 = 0;
+	
+	//if either of the two additive arguments are variables, carry out the equation with their environment values
+	//be sure to exclude the opening " in each literal and variable
+	if ( isVarName( this->two ) ) {
+		sscanf( getenv( this->two ), "\"%ld", &arg1 );
+	}
+	else {
+		sscanf( this->two, "\"%ld", &arg1 );
+	}
+	if (isVarName(this->three)) {
+		sscanf( getenv( this->three ), "\"%ld", &arg2 );
+	}
+	else {
+		sscanf( this->three, "\"%ld", &arg2 );
+	}
+	
+	//check if second arg is less than third arg,  if they are store 1 (true) in result, if not store empty string (false).
+	char res[ 2 ] = " ";
+	
+	if ( arg1 < arg2 ) {
 		strcpy(res, "1");
 	}
 	
@@ -470,6 +515,21 @@ static Command *makeEq( char const *res, char const *two, char const *three ) {
 	return (Command *) this;
 }
 
+//make function for initializing a less command struct
+static Command *makeLess( char const *res, char const *two, char const *three ) {
+	LessCommand *this = (LessCommand *) malloc( sizeof( LessCommand ) );
+	
+	this->execute = executeLess;
+	this->line = getLineNumber();
+	
+	//set variable and argument
+	this->res = copyString( res );
+	this->two = copyString( two );
+	this->three = copyString( three );
+	
+	return (Command *) this;
+}
+
 //COMMAND PARSE:
 
 Command *parseCommand( char *cmdName, FILE *fp )
@@ -588,6 +648,16 @@ Command *parseCommand( char *cmdName, FILE *fp )
   //If command is Less
   else if ( strcmp( cmdName, "less" ) == 0 ) {
 	  //three args, set first to true when second is less than third
+	  char two[ MAX_TOKEN + 1 ];
+	  char three[ MAX_TOKEN + 1 ];
+	  
+	  expectVariable( tok, fp );
+	  expectToken( two, fp );
+	  expectToken( three, fp );
+	  
+	  requireToken( ";", fp );
+	  
+	  return makeLess( tok, two, three );
   }
   //If command is Goto
   else if ( strcmp( cmdName, "goto" ) == 0 ) {
