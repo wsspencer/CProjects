@@ -179,12 +179,19 @@ static int executeSet( Command *cmd, LabelMap *labelMap, int pc ) {
 	SetCommand *this = (SetCommand *)cmd;
 	
 	//set a new environmental variable to this name and value
-	//check if arg is a variable, if it is, set it to its value, not its 		//name.
+	//check if arg is a variable, if it is, set it to its value, not its
+	//name.
 	if ( isVarName( this->arg ) ) {
 		setenv(this->var, getenv( this->arg ), 1);
 	}
 	else {
-		setenv(this->var, this->arg, 1);
+		//don't skip over " if it's all we've got because then we're left with nothing
+		if ( strlen( this->arg ) > 1 ) {
+			setenv(this->var, this->arg + 1, 1);
+		}
+		else {
+			setenv(this->var, " ", 1);
+		}
 	}
 
 	return pc + 1;
@@ -198,15 +205,15 @@ static int executeAdd( Command *cmd, LabelMap *labelMap, int pc ) {
 	long add2 = 0;
 	
 	//if either of the two additive arguments are variables, carry out the addition with their environment values
-	//be sure to exclude the opening " in each literal and variable
+	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "\"%ld", &add1 );
+		sscanf( getenv( this->two ), "%ld", &add1 );
 	}
 	else {
 		sscanf( this->two, "\"%ld", &add1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "\"%ld", &add2 );
+		sscanf( getenv( this->three ), "%ld", &add2 );
 	}
 	else {
 		sscanf( this->three, "\"%ld", &add2 );
@@ -217,7 +224,7 @@ static int executeAdd( Command *cmd, LabelMap *labelMap, int pc ) {
 	char sum[ MAX_TOKEN + 1 ];
 	sprintf(sum, "%ld", total);
 	setenv(this->sum, sum, 1);
-
+	
 	return pc + 1;
 }
 
@@ -229,15 +236,15 @@ static int executeSub( Command *cmd, LabelMap *labelMap, int pc ) {
 	long sub2 = 0;
 	
 	//if either of the two additive arguments are variables, carry out the equation with their environment values
-	//be sure to exclude the opening " in each literal and variable
+	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "\"%ld", &sub1 );
+		sscanf( getenv( this->two ), "%ld", &sub1 );
 	}
 	else {
 		sscanf( this->two, "\"%ld", &sub1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "\"%ld", &sub2 );
+		sscanf( getenv( this->three ), "%ld", &sub2 );
 	}
 	else {
 		sscanf( this->three, "\"%ld", &sub2 );
@@ -260,15 +267,15 @@ static int executeMult( Command *cmd, LabelMap *labelMap, int pc ) {
 	long mul2 = 0;
 	
 	//if either of the two additive arguments are variables, carry out the equation with their environment values
-	//be sure to exclude the opening " in each literal and variable
+	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "\"%ld", &mul1 );
+		sscanf( getenv( this->two ), "%ld", &mul1 );
 	}
 	else {
 		sscanf( this->two, "\"%ld", &mul1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "\"%ld", &mul2 );
+		sscanf( getenv( this->three ), "%ld", &mul2 );
 	}
 	else {
 		sscanf( this->three, "\"%ld", &mul2 );
@@ -291,15 +298,15 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc ) {
 	long div2 = 0;
 	
 	//if either of the two additive arguments are variables, carry out the equation with their environment values
-	//be sure to exclude the opening " in each literal and variable
+	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "\"%ld", &div1 );
+		sscanf( getenv( this->two ), "%ld", &div1 );
 	}
 	else {
 		sscanf( this->two, "\"%ld", &div1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "\"%ld", &div2 );
+		sscanf( getenv( this->three ), "%ld", &div2 );
 	}
 	else {
 		sscanf( this->three, "\"%ld", &div2 );
@@ -322,15 +329,15 @@ static int executeMod( Command *cmd, LabelMap *labelMap, int pc ) {
 	long div2 = 0;
 	
 	//if either of the two additive arguments are variables, carry out the equation with their environment values
-	//be sure to exclude the opening " in each literal and variable
+	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "\"%ld", &div1 );
+		sscanf( getenv( this->two ), "%ld", &div1 );
 	}
 	else {
 		sscanf( this->two, "\"%ld", &div1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "\"%ld", &div2 );
+		sscanf( getenv( this->three ), "%ld", &div2 );
 	}
 	else {
 		sscanf( this->three, "\"%ld", &div2 );
@@ -353,15 +360,15 @@ static int executeEq( Command *cmd, LabelMap *labelMap, int pc ) {
 	long arg2 = 0;
 	
 	//if either of the two additive arguments are variables, carry out the equation with their environment values
-	//be sure to exclude the opening " in each literal and variable
+	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "\"%ld", &arg1 );
+		sscanf( getenv( this->two ), "%ld", &arg1 );
 	}
 	else {
 		sscanf( this->two, "\"%ld", &arg1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "\"%ld", &arg2 );
+		sscanf( getenv( this->three ), "%ld", &arg2 );
 	}
 	else {
 		sscanf( this->three, "\"%ld", &arg2 );
@@ -386,16 +393,16 @@ static int executeLess( Command *cmd, LabelMap *labelMap, int pc ) {
 	long arg1 = 0;
 	long arg2 = 0;
 	
-	//if either of the two additive arguments are variables, carry out the equation with their environment values
-	//be sure to exclude the opening " in each literal and variable
+	//if either of the arguments are variables, carry out the equation with their environment values
+	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "\"%ld", &arg1 );
+		sscanf( getenv( this->two ), "%ld", &arg1 );
 	}
 	else {
 		sscanf( this->two, "\"%ld", &arg1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "\"%ld", &arg2 );
+		sscanf( getenv( this->three ), "%ld", &arg2 );
 	}
 	else {
 		sscanf( this->three, "\"%ld", &arg2 );
@@ -406,6 +413,9 @@ static int executeLess( Command *cmd, LabelMap *labelMap, int pc ) {
 	
 	if ( arg1 < arg2 ) {
 		strcpy(res, "1");
+	}
+	else {
+		strcpy(res, " ");
 	}
 	
 	setenv(this->res, res, 1);
@@ -430,8 +440,10 @@ static int executeIf( Command *cmd, LabelMap *labelMap, int pc ) {
 	int jump = pc + 1;
 	
 	//whether the conditional is variable or literal, make its value a long so we can check it
+	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->cond ) ) {
-		sscanf( getenv( this->cond ), "\"%ld", &conditional );
+		sscanf( getenv( this->cond ), "%ld", &conditional );
+
 	}
 	else {
 		sscanf( this->cond, "\"%ld", &conditional );
@@ -442,7 +454,7 @@ static int executeIf( Command *cmd, LabelMap *labelMap, int pc ) {
 	if ( conditional ) {
 		jump = findLabel( *labelMap, this->jmp );
 	}
-	
+
 	return jump;
 }
 
