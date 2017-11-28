@@ -74,6 +74,7 @@ static int executeSet( Command *cmd, LabelMap *labelMap, int pc ) {
 	
 	//set a new environmental variable to this name and value
 	setenv(this->var, this->arg, 1);
+	//putenv(this->var);
 	
 	return pc + 1;
 }
@@ -113,11 +114,6 @@ static Command *makeSet( char const *var, char const *arg ) {
 	//set variable and argument
 	this->var = copyString( var );
 	this->arg = copyString( arg );
-	
-	//iterate over first " if it's there
-	if (this->arg[0] == '"') {
-		this->arg++;
-	}
 	
 	return (Command *) this;
 }
