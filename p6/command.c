@@ -107,7 +107,7 @@ typedef struct {
 	char *three;
 } EqCommand;
 
-//Representation for an equality check command? derived from Command.
+//Representation for a less than check command? derived from Command.
 typedef struct {
 	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
 	int line;
@@ -118,14 +118,24 @@ typedef struct {
 	char *three;
 } LessCommand;
 
-//Representation for an equality check command? derived from Command.
+//Representation for goto command? derived from Command.
 typedef struct {
 	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
 	int line;
 	
-	/** Arguments for argument */
+	/** Arguments for go to label */
 	char *arg;
 } GotoCommand;
+
+//Representation for an if command? derived from Command.
+typedef struct {
+	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+	int line;
+	
+	/** Arguments for conditional and jump label */
+	char *cond;
+	char *jmp;
+} IfCommand;
 
 
 //COMMAND EXECUTIONS:
@@ -412,6 +422,30 @@ static int executeGoto( Command *cmd, LabelMap *labelMap, int pc ) {
 	return jump;
 }
 
+//execute If command (go to label if conditional is true, otherwise continue as normal
+static int executeIf( Command *cmd, LabelMap *labelMap, int pc ) {
+	IfCommand *this = (IfCommand *)cmd;
+	
+	long conditional = 0;
+	int jump = pc + 1;
+	
+	//whether the conditional is variable or literal, make its value a long so we can check it
+	if ( isVarName( this->cond ) ) {
+		sscanf( getenv( this->cond ), "\"%ld", &conditional );
+	}
+	else {
+		sscanf( this->cond, "\"%ld", &conditional );
+	}
+	
+	//check if conditional is true, if not jump's int value will be unchanged and processing will
+	//continue as normal.
+	if ( conditional ) {
+		jump = findLabel( *labelMap, this->jmp );
+	}
+	
+	return jump;
+}
+
 //COMMAND MAKES:
 
 /** Make a command that prints the given argument to the terminal.
@@ -565,6 +599,20 @@ static Command *makeGoto( char const *arg ) {
 	return (Command *) this;
 }
 
+//make function for going to the label given if the first argument is true
+static Command *makeIf( char const *cond, char const *jmp ) {
+	IfCommand *this = (IfCommand *) malloc( sizeof( IfCommand ) );
+	
+	this->execute = executeIf;
+	this->line = getLineNumber();
+	
+	//set conditional and jump location
+	this->cond = copyString( cond );
+	this->jmp = copyString( jmp );
+	
+	return (Command *) this;
+}
+
 //COMMAND PARSE:
 
 Command *parseCommand( char *cmdName, FILE *fp )
@@ -706,6 +754,14 @@ Command *parseCommand( char *cmdName, FILE *fp )
   else if ( strcmp( cmdName, "if" ) == 0 ) {
 	  //two args, if first is true, jump to label given as second argument, otherwise execution
 	  //continues with the next command.
+	  char var[ MAX_TOKEN + 1 ];
+
+	  expectVariable( var, fp );
+	  expectToken( tok, fp );
+
+	  requireToken(";", fp );
+
+	  return makeIf( var, tok );
   }
   //Otherwise, command is invalid so give syntax error
   else {
