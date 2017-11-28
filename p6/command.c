@@ -36,10 +36,21 @@ typedef struct {
 	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
 	int line;
 	
-	/** Arguments for sum and two additives */
+	/** Arguments for setting variable */
 	char *var;
 	char *arg;
 } SetCommand;
+
+//Representation for a add command? derived from Command.
+typedef struct {
+	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+	int line;
+	
+	/** Arguments for sum and two additives */
+	char *sum;
+	char *two;
+	char *three;
+} AddCommand;
 
 
 //COMMAND EXECUTIONS:
@@ -59,7 +70,13 @@ static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
   if ( isVarName( this->arg ) ) {
 	  //strip quotes?
 	  char *str = getenv(this->arg);
-	  printf( "%s", str );
+	  //remove " if it's first char
+	  if (str[0] == '"') {
+		printf( "%s", str + 1);
+	  }
+	  else {
+	        printf("%s", str);
+	  }
   }
   else {
 	printf( "%s", this->arg + 1 );
@@ -73,9 +90,25 @@ static int executeSet( Command *cmd, LabelMap *labelMap, int pc ) {
 	SetCommand *this = (SetCommand *)cmd;
 	
 	//set a new environmental variable to this name and value
-	setenv(this->var, this->arg, 1);
-	//putenv(this->var);
+	//check if arg is a variable, if it is, set it to its value, not its 		//name.
+	if ( isVarName( this->arg ) ) {
+		setenv(this->var, getenv( this->arg ), 1);
+	}
+	else {
+		setenv(this->var, this->arg, 1);
+	}
+
+	return pc + 1;
+}
+
+//execute add command
+static int executeAdd( Command *cmd, LabelMap *labelMap, int pc ) {
+	AddCommand *this = (AddCommand *)cmd;
 	
+	//set a new environmental variable to this name and value
+	int total = (int) this->two + (int) this->three;
+	setenv(this->sum, total, 1);
+
 	return pc + 1;
 }
 
@@ -114,13 +147,23 @@ static Command *makeSet( char const *var, char const *arg ) {
 	//set variable and argument
 	this->var = copyString( var );
 	this->arg = copyString( arg );
-	
+
 	return (Command *) this;
 }
 
-//static Command *makeAdd( char const *sum, char const *two, char const *three ) {
+static Command *makeAdd( char const *sum, char const *two, char const *three ) {
+	AddCommand *this = (AddCommand *) malloc( sizeof( AddCommand ) );
 	
-//}
+	this->execute = executeSet;
+	this->line = getLineNumber();
+	
+	//set variable and argument
+	this->sum = copyString( sum );
+	this->two = copyString( two );
+	this->three = copyString( three );
+	
+	return (Command *) this;
+}
 
 //COMMAND PARSE:
 
@@ -155,16 +198,16 @@ Command *parseCommand( char *cmdName, FILE *fp )
   //If command is Add
   else if ( strcmp( cmdName, "add" ) == 0 ) {
 	  //three args, add second and third, store value in first
-	//  char two[ MAX_TOKEN + 1 ];
-	//  char three[ MAX_TOKEN + 1 ];
+	  char two[ MAX_TOKEN + 1 ];
+	  char three[ MAX_TOKEN + 1 ];
 
-	//  expectVariable( tok, fp );
-	//  expectToken( two, fp );
-	//  expectToken( three, fp );
+	  expectVariable( tok, fp );
+	  expectToken( two, fp );
+	  expectToken( three, fp );
 
-	//  requireToken( ";", fp );
+	  requireToken( ";", fp );
 
-	//  return makeAdd( tok, two, three );
+	  return makeAdd( tok, two, three );
   }
   //If command is Sub
   else if ( strcmp( cmdName, "sub" ) == 0 ) {
