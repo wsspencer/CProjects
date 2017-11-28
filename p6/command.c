@@ -85,6 +85,28 @@ typedef struct {
 	char *three;
 } DivCommand;
 
+//Representation for a modulo command? derived from Command.
+typedef struct {
+	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+	int line;
+	
+	/** Arguments for sum and two additives */
+	char *mod;
+	char *two;
+	char *three;
+} ModCommand;
+
+//Representation for an equality check command? derived from Command.
+typedef struct {
+	int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+	int line;
+	
+	/** Arguments for sum and two additives */
+	char *res;
+	char *two;
+	char *three;
+} EqCommand;
+
 
 //COMMAND EXECUTIONS:
 
@@ -172,7 +194,7 @@ static int executeSub( Command *cmd, LabelMap *labelMap, int pc ) {
 	long sub1 = 0;
 	long sub2 = 0;
 	
-	//if either of the two additive arguments are variables, carry out the addition with their environment values
+	//if either of the two additive arguments are variables, carry out the equation with their environment values
 	//be sure to exclude the opening " in each literal and variable
 	if ( isVarName( this->two ) ) {
 		sscanf( getenv( this->two ), "\"%ld", &sub1 );
@@ -203,7 +225,7 @@ static int executeMult( Command *cmd, LabelMap *labelMap, int pc ) {
 	long mul1 = 0;
 	long mul2 = 0;
 	
-	//if either of the two additive arguments are variables, carry out the addition with their environment values
+	//if either of the two additive arguments are variables, carry out the equation with their environment values
 	//be sure to exclude the opening " in each literal and variable
 	if ( isVarName( this->two ) ) {
 		sscanf( getenv( this->two ), "\"%ld", &mul1 );
@@ -234,7 +256,7 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc ) {
 	long div1 = 0;
 	long div2 = 0;
 	
-	//if either of the two additive arguments are variables, carry out the addition with their environment values
+	//if either of the two additive arguments are variables, carry out the equation with their environment values
 	//be sure to exclude the opening " in each literal and variable
 	if ( isVarName( this->two ) ) {
 		sscanf( getenv( this->two ), "\"%ld", &div1 );
@@ -254,6 +276,71 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc ) {
 	char quot[ MAX_TOKEN + 1 ];
 	sprintf(quot, "%ld", total);
 	setenv(this->quot, quot, 1);
+
+	return pc + 1;
+}
+
+//execute modulo command
+static int executeMod( Command *cmd, LabelMap *labelMap, int pc ) {
+	ModCommand *this = (ModCommand *)cmd;
+	
+	long div1 = 0;
+	long div2 = 0;
+	
+	//if either of the two additive arguments are variables, carry out the equation with their environment values
+	//be sure to exclude the opening " in each literal and variable
+	if ( isVarName( this->two ) ) {
+		sscanf( getenv( this->two ), "\"%ld", &div1 );
+	}
+	else {
+		sscanf( this->two, "\"%ld", &div1 );
+	}
+	if (isVarName(this->three)) {
+		sscanf( getenv( this->three ), "\"%ld", &div2 );
+	}
+	else {
+		sscanf( this->three, "\"%ld", &div2 );
+	}
+	
+	//set a new environmental variable to this name and value, then cast sum back to a string
+	long remainder = div1 % div2;
+	char mod[ MAX_TOKEN + 1 ];
+	sprintf(mod, "%ld", remainder);
+	setenv(this->mod, mod, 1);
+
+	return pc + 1;
+}
+
+//execute equality check command
+static int executeEq( Command *cmd, LabelMap *labelMap, int pc ) {
+	EqCommand *this = (EqCommand *)cmd;
+	
+	long arg1 = 0;
+	long arg2 = 0;
+	
+	//if either of the two additive arguments are variables, carry out the equation with their environment values
+	//be sure to exclude the opening " in each literal and variable
+	if ( isVarName( this->two ) ) {
+		sscanf( getenv( this->two ), "\"%ld", &arg1 );
+	}
+	else {
+		sscanf( this->two, "\"%ld", &arg1 );
+	}
+	if (isVarName(this->three)) {
+		sscanf( getenv( this->three ), "\"%ld", &arg2 );
+	}
+	else {
+		sscanf( this->three, "\"%ld", &arg2 );
+	}
+	
+	//check if the two args are equal,  if they are store 1 in result, if not store empty string (null).
+	char res[ 2 ] = "";
+	
+	if ( arg1 == arg2 ) {
+		strcpy(res, "1");
+	}
+	
+	setenv(this->res, res, 1);
 
 	return pc + 1;
 }
@@ -353,6 +440,36 @@ static Command *makeDiv( char const *quot, char const *two, char const *three ) 
 	return (Command *) this;
 }
 
+//make function for initializing a modulus command struct
+static Command *makeMod( char const *mod, char const *two, char const *three ) {
+	ModCommand *this = (ModCommand *) malloc( sizeof( ModCommand ) );
+	
+	this->execute = executeMod;
+	this->line = getLineNumber();
+	
+	//set variable and argument
+	this->mod = copyString( mod );
+	this->two = copyString( two );
+	this->three = copyString( three );
+	
+	return (Command *) this;
+}
+
+//make function for initializing an equality check command struct
+static Command *makeEq( char const *res, char const *two, char const *three ) {
+	EqCommand *this = (EqCommand *) malloc( sizeof( EqCommand ) );
+	
+	this->execute = executeEq;
+	this->line = getLineNumber();
+	
+	//set variable and argument
+	this->res = copyString( res );
+	this->two = copyString( two );
+	this->three = copyString( three );
+	
+	return (Command *) this;
+}
+
 //COMMAND PARSE:
 
 Command *parseCommand( char *cmdName, FILE *fp )
@@ -442,11 +559,31 @@ Command *parseCommand( char *cmdName, FILE *fp )
   //If command is Mod
   else if ( strcmp( cmdName, "mod" ) == 0 ) {
 	  //three args, divide second BY the third, store value of REMAINDER in first
+	  char two[ MAX_TOKEN + 1 ];
+	  char three[ MAX_TOKEN + 1 ];
+	  
+	  expectVariable( tok, fp );
+	  expectToken( two, fp );
+	  expectToken( three, fp );
+	  
+	  requireToken( ";", fp );
+	  
+	  return makeMod( tok, two, three );
   }
   //If command is Eq
   else if ( strcmp( cmdName, "eq" ) == 0 ) {
 	  //three args, compare numeric value of the second arg and third and store the result in first
 	  //(if equal, first is set to 1 (true) if not equal, it will be set to an empty string (false)
+	  char two[ MAX_TOKEN + 1 ];
+	  char three[ MAX_TOKEN + 1 ];
+	  
+	  expectVariable( tok, fp );
+	  expectToken( two, fp );
+	  expectToken( three, fp );
+	  
+	  requireToken( ";", fp );
+	  
+	  return makeEq( tok, two, three );
   }
   //If command is Less
   else if ( strcmp( cmdName, "less" ) == 0 ) {
