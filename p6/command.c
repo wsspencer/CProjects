@@ -59,8 +59,6 @@ static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
   if ( isVarName( this->arg ) ) {
 	  //strip quotes?
 	  char *str = getenv(this->arg);
-	  str++; //strip first quote
-	  str[strlen(str) - 1] = 0; //strip last quote?
 	  printf( "%s", str );
   }
   else {
@@ -75,7 +73,6 @@ static int executeSet( Command *cmd, LabelMap *labelMap, int pc ) {
 	SetCommand *this = (SetCommand *)cmd;
 	
 	//set a new environmental variable to this name and value
-	//setenv(this->var, this->arg, 1);
 	setenv(this->var, this->arg, 1);
 	
 	return pc + 1;
