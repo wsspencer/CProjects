@@ -108,7 +108,7 @@ static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
 		printf( "%s", str + 1);
 	  }
 	  else {
-	        printf("%s", str);
+	    printf( "%s", str );
 	  }
   }
   else {
@@ -142,22 +142,24 @@ static int executeAdd( Command *cmd, LabelMap *labelMap, int pc ) {
 	long add2 = 0;
 	
 	//if either of the two additive arguments are variables, carry out the addition with their environment values
+	//be sure to exclude the opening " in each literal and variable
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "%ld", &add1 );
+		sscanf( getenv( this->two ), "\"%ld", &add1 );
 	}
 	else {
-		sscanf( this->two, "%ld", &add1 );
+		sscanf( this->two, "\"%ld", &add1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "%ld", &add2 );
+		sscanf( getenv( this->three ), "\"%ld", &add2 );
 	}
 	else {
-		sscanf( this->three, "%ld", &add2 );
+		sscanf( this->three, "\"%ld", &add2 );
 	}
 	
-	//set a new environmental variable to this name and value, then cast sum back to a string
+	//set a new environmental variable to this name and value, then convert sum back to a string
 	long total = add1 + add2;
-	char *sum = (char *) total;
+	char sum[ MAX_TOKEN + 1 ];
+	sprintf(sum, "%ld", total);
 	setenv(this->sum, sum, 1);
 
 	return pc + 1;
@@ -171,22 +173,24 @@ static int executeSub( Command *cmd, LabelMap *labelMap, int pc ) {
 	long sub2 = 0;
 	
 	//if either of the two additive arguments are variables, carry out the addition with their environment values
+	//be sure to exclude the opening " in each literal and variable
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "%ld", &sub1 );
+		sscanf( getenv( this->two ), "\"%ld", &sub1 );
 	}
 	else {
-		sscanf( this->two, "%ld", &sub1 );
+		sscanf( this->two, "\"%ld", &sub1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "%ld", &sub2 );
+		sscanf( getenv( this->three ), "\"%ld", &sub2 );
 	}
 	else {
-		sscanf( this->three, "%ld", &sub2 );
+		sscanf( this->three, "\"%ld", &sub2 );
 	}
 	
 	//set a new environmental variable to this name and value, then cast sum back to a string
-	long total = sub2 - sub1;
-	char *res = (char *) total;
+	long total = sub1 - sub2;
+	char res[ MAX_TOKEN + 1 ];
+	sprintf(res, "%ld", total);
 	setenv(this->res, res, 1);
 
 	return pc + 1;
@@ -200,22 +204,24 @@ static int executeMult( Command *cmd, LabelMap *labelMap, int pc ) {
 	long mul2 = 0;
 	
 	//if either of the two additive arguments are variables, carry out the addition with their environment values
+	//be sure to exclude the opening " in each literal and variable
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "%ld", &mul1 );
+		sscanf( getenv( this->two ), "\"%ld", &mul1 );
 	}
 	else {
-		sscanf( this->two, "%ld", &mul1 );
+		sscanf( this->two, "\"%ld", &mul1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "%ld", &mul2 );
+		sscanf( getenv( this->three ), "\"%ld", &mul2 );
 	}
 	else {
-		sscanf( this->three, "%ld", &mul2 );
+		sscanf( this->three, "\"%ld", &mul2 );
 	}
 	
 	//set a new environmental variable to this name and value, then cast sum back to a string
 	long total = mul1 * mul2;
-	char *prod = (char *) total;
+	char prod[ MAX_TOKEN + 1 ];
+	sprintf(prod, "%ld", total);
 	setenv(this->prod, prod, 1);
 
 	return pc + 1;
@@ -229,22 +235,24 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc ) {
 	long div2 = 0;
 	
 	//if either of the two additive arguments are variables, carry out the addition with their environment values
+	//be sure to exclude the opening " in each literal and variable
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "%ld", &div1 );
+		sscanf( getenv( this->two ), "\"%ld", &div1 );
 	}
 	else {
-		sscanf( this->two, "%ld", &div1 );
+		sscanf( this->two, "\"%ld", &div1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "%ld", &div2 );
+		sscanf( getenv( this->three ), "\"%ld", &div2 );
 	}
 	else {
-		sscanf( this->three, "%ld", &div2 );
+		sscanf( this->three, "\"%ld", &div2 );
 	}
 	
 	//set a new environmental variable to this name and value, then cast sum back to a string
 	long total = div1 / div2;
-	char *quot = (char *) total;
+	char quot[ MAX_TOKEN + 1 ];
+	sprintf(quot, "%ld", total);
 	setenv(this->quot, quot, 1);
 
 	return pc + 1;
