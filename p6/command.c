@@ -212,22 +212,31 @@ static int executeAdd( Command *cmd, LabelMap *labelMap, int pc ) {
 	long add1 = 0;
 	long add2 = 0;
 	
+	int checkerA;
+	int checkerB;
+	
 	//if either of the two additive arguments are variables, carry out the addition with their environment values
 	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "%ld", &add1 );
+		checkerA = sscanf( getenv( this->two ), "%ld", &add1 );
 	}
 	else {
-		sscanf( this->two, "\"%ld", &add1 );
+		checkerA = sscanf( this->two, "\"%ld", &add1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "%ld", &add2 );
+		checkerB = sscanf( getenv( this->three ), "%ld", &add2 );
 	}
 	else {
-		sscanf( this->three, "\"%ld", &add2 );
+		checkerB = sscanf( this->three, "\"%ld", &add2 );
 	}
 	
 	//set a new environmental variable to this name and value, then convert sum back to a string
+	//check that the values we are about to operate with parsed as longs, if not report error and
+	//exit
+	if ( !checkerA || !checkerB ) {
+		fprintf(stderr, "Invalid number (line %d)", this->line);
+		exit(1);
+	}
 	long total = add1 + add2;
 	char sum[ MAX_TOKEN + 1 ];
 	sprintf(sum, "%ld", total);
@@ -243,22 +252,31 @@ static int executeSub( Command *cmd, LabelMap *labelMap, int pc ) {
 	long sub1 = 0;
 	long sub2 = 0;
 	
+	int checkerA;
+	int checkerB;
+	
 	//if either of the two additive arguments are variables, carry out the equation with their environment values
 	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "%ld", &sub1 );
+		checkerA = sscanf( getenv( this->two ), "%ld", &sub1 );
 	}
 	else {
-		sscanf( this->two, "\"%ld", &sub1 );
+		checkerA = sscanf( this->two, "\"%ld", &sub1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "%ld", &sub2 );
+		checkerB = sscanf( getenv( this->three ), "%ld", &sub2 );
 	}
 	else {
-		sscanf( this->three, "\"%ld", &sub2 );
+		checkerB = sscanf( this->three, "\"%ld", &sub2 );
 	}
 	
 	//set a new environmental variable to this name and value, then cast sum back to a string
+	//check that the values we are about to operate with parsed as longs, if not report error and
+	//exit
+	if ( !checkerA || !checkerB ) {
+		fprintf(stderr, "Invalid number (line %d)", this->line);
+		exit(1);
+	}
 	long total = sub1 - sub2;
 	char res[ MAX_TOKEN + 1 ];
 	sprintf(res, "%ld", total);
@@ -274,22 +292,31 @@ static int executeMult( Command *cmd, LabelMap *labelMap, int pc ) {
 	long mul1 = 0;
 	long mul2 = 0;
 	
+	int checkerA;
+	int checkerB;
+	
 	//if either of the two additive arguments are variables, carry out the equation with their environment values
 	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "%ld", &mul1 );
+		checkerA = sscanf( getenv( this->two ), "%ld", &mul1 );
 	}
 	else {
-		sscanf( this->two, "\"%ld", &mul1 );
+		checkerA = sscanf( this->two, "\"%ld", &mul1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "%ld", &mul2 );
+		checkerB = sscanf( getenv( this->three ), "%ld", &mul2 );
 	}
 	else {
-		sscanf( this->three, "\"%ld", &mul2 );
+		checkerB = sscanf( this->three, "\"%ld", &mul2 );
 	}
 	
 	//set a new environmental variable to this name and value, then cast sum back to a string
+	//check that the values we are about to operate with parsed as longs, if not report error and
+	//exit
+	if ( !checkerA || !checkerB ) {
+		fprintf(stderr, "Invalid number (line %d)", this->line);
+		exit(1);
+	}
 	long total = mul1 * mul2;
 	char prod[ MAX_TOKEN + 1 ];
 	sprintf(prod, "%ld", total);
@@ -305,23 +332,33 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc ) {
 	long div1 = 0;
 	long div2 = 0;
 	
+	int checkerA;
+	int checkerB;
+	
 	//if either of the two additive arguments are variables, carry out the equation with their environment values
 	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "%ld", &div1 );
+		checkerA = sscanf( getenv( this->two ), "%ld", &div1 );
 	}
 	else {
-		sscanf( this->two, "\"%ld", &div1 );	
+		checkerA = sscanf( this->two, "\"%ld", &div1 );	
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "%ld", &div2 );
+		checkerB = sscanf( getenv( this->three ), "%ld", &div2 );
 	}
 	else {
-		sscanf( this->three, "\"%ld", &div2 );
+		checkerB = sscanf( this->three, "\"%ld", &div2 );
 	}
 	
 	//set a new environmental variable to this name and value, then cast sum back to a string
-	//first check for divide by zero error, if so, print error, otherwise carry out operation.
+
+	//first check that the values we are about to operate with parsed as longs, if not report error and
+	//exit
+	if ( !checkerA || !checkerB ) {
+		fprintf(stderr, "Invalid number (line %d)", this->line);
+		exit(1);
+	}
+	//then check for divide by zero error, if so, print error, otherwise carry out operation.
 	//do this by checking that all values parsed as longs in their scan.
 	if ( div1 == 0 || div2 == 0 ) {
 		fprintf(stderr, "Divide by zero (line %d)\n", this->line);
@@ -342,22 +379,37 @@ static int executeMod( Command *cmd, LabelMap *labelMap, int pc ) {
 	long div1 = 0;
 	long div2 = 0;
 	
+	int checkerA;
+	int checkerB;
+	
 	//if either of the two additive arguments are variables, carry out the equation with their environment values
 	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "%ld", &div1 );
+		checkerA = sscanf( getenv( this->two ), "%ld", &div1 );
 	}
 	else {
-		sscanf( this->two, "\"%ld", &div1 );
+		checkerA = sscanf( this->two, "\"%ld", &div1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "%ld", &div2 );
+		checkerB = sscanf( getenv( this->three ), "%ld", &div2 );
 	}
 	else {
-		sscanf( this->three, "\"%ld", &div2 );
+		checkerB = sscanf( this->three, "\"%ld", &div2 );
 	}
 	
 	//set a new environmental variable to this name and value, then cast sum back to a string
+
+	//check that the values we are about to operate with parsed as longs, if not report error and
+	//exit
+	if ( !checkerA || !checkerB ) {
+		fprintf(stderr, "Invalid number (line %d)", this->line);
+		exit(1);
+	}
+	//then (as with div) check that we aren't dividing by zero
+	if ( div1 == 0 || div2 == 0 ) {
+		fprintf(stderr, "Divide by zero (line %d)\n", this->line);
+		exit(1);
+	}
 	long remainder = div1 % div2;
 	char mod[ MAX_TOKEN + 1 ];
 	sprintf(mod, "%ld", remainder);
@@ -373,22 +425,31 @@ static int executeEq( Command *cmd, LabelMap *labelMap, int pc ) {
 	long arg1 = 0;
 	long arg2 = 0;
 	
+	int checkerA;
+	int checkerB;
+	
 	//if either of the two additive arguments are variables, carry out the equation with their environment values
 	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "%ld", &arg1 );
+		checkerA = sscanf( getenv( this->two ), "%ld", &arg1 );
 	}
 	else {
-		sscanf( this->two, "\"%ld", &arg1 );
+		checkerA = sscanf( this->two, "\"%ld", &arg1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "%ld", &arg2 );
+		checkerB = sscanf( getenv( this->three ), "%ld", &arg2 );
 	}
 	else {
-		sscanf( this->three, "\"%ld", &arg2 );
+		checkerB = sscanf( this->three, "\"%ld", &arg2 );
 	}
 	
 	//check if the two args are equal,  if they are store 1 in result, if not store empty string (null).
+	//check that the values we are about to operate with parsed as longs, if not report error and
+	//exit
+	if ( !checkerA || !checkerB ) {
+		fprintf(stderr, "Invalid number (line %d)", this->line);
+		exit(1);
+	}
 	char res[ 2 ] = " ";
 	
 	if ( arg1 == arg2 ) {
@@ -407,19 +468,29 @@ static int executeLess( Command *cmd, LabelMap *labelMap, int pc ) {
 	long arg1 = 0;
 	long arg2 = 0;
 	
+	int checkerA;
+	int checkerB;
+	
 	//if either of the arguments are variables, carry out the equation with their environment values
 	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->two ) ) {
-		sscanf( getenv( this->two ), "%ld", &arg1 );
+		checkerA = sscanf( getenv( this->two ), "%ld", &arg1 );
 	}
 	else {
-		sscanf( this->two, "\"%ld", &arg1 );
+		checkerA = sscanf( this->two, "\"%ld", &arg1 );
 	}
 	if (isVarName(this->three)) {
-		sscanf( getenv( this->three ), "%ld", &arg2 );
+		checkerB = sscanf( getenv( this->three ), "%ld", &arg2 );
 	}
 	else {
-		sscanf( this->three, "\"%ld", &arg2 );
+		checkerB = sscanf( this->three, "\"%ld", &arg2 );
+	}
+	
+	//check that the values we are about to operate with parsed as longs, if not report error and
+	//exit
+	if ( !checkerA || !checkerB ) {
+		fprintf(stderr, "Invalid number (line %d)", this->line);
+		exit(1);
 	}
 	
 	//check if second arg is less than third arg,  if they are store 1 (true) in result, if not store empty string (false).
@@ -453,16 +524,24 @@ static int executeIf( Command *cmd, LabelMap *labelMap, int pc ) {
 	long conditional = 0;
 	int jump = pc + 1;
 	
+	int checker;
+	
 	//whether the conditional is variable or literal, make its value a long so we can check it
 	//be sure to exclude the opening " in scanning each literal but not variables
 	if ( isVarName( this->cond ) ) {
-		sscanf( getenv( this->cond ), "%ld", &conditional );
+		checker = sscanf( getenv( this->cond ), "%ld", &conditional );
 
 	}
 	else {
-		sscanf( this->cond, "\"%ld", &conditional );
+		checker = sscanf( this->cond, "\"%ld", &conditional );
 	}
 	
+	//check that the value we are about to operate with parsed as long, if not report error and
+	//exit
+	if ( !checker ) {
+		fprintf(stderr, "Invalid number (line %d)", this->line);
+		exit(1);
+	}
 	//check if conditional is true, if not jump's int value will be unchanged and processing will
 	//continue as normal.
 	if ( conditional ) {
