@@ -24,7 +24,7 @@ void addLabel( LabelMap *labelMap, char *name, int loc )
     labelMap->cap += INITIAL_CAPACITY;
     //reallocate the map memory
     labelMap->map = realloc(labelMap->map, labelMap->cap * sizeof(Label));
-  }    
+  }
 
   //check that the label does not already exist in the labelMap, if it does,
   //print error and exit

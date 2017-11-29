@@ -351,7 +351,7 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc )
         checkerA = sscanf( getenv( this->A ), "%ld", &divA );
     }
     else {
-        checkerA = sscanf( this->A, "\"%ld", &divA );    
+        checkerA = sscanf( this->A, "\"%ld", &divA );
     }
     if (isVarName(this->B)) {
         checkerB = sscanf( getenv( this->B ), "%ld", &divB );
@@ -588,7 +588,7 @@ static Command *makePrint( char const *arg )
     //Check if token is a variable (environmental or otherwise since we set normal variables as
     //environmental ones?) name, if it is, change its arg's value to the value of the variable?
 
-    this->arg = copyString( arg );  
+    this->arg = copyString( arg );
 
     // Return the result, as an instance of the Command interface.
     return (Command *) this;
@@ -761,7 +761,7 @@ Command *parseCommand( char *cmdName, FILE *fp )
         requireToken( ";", fp );
 
         return makePrint( tok );
-    } 
+    }
     //If command is Set
     else if ( strcmp( cmdName, "set" ) == 0 ) {
         //two args: set first to second's value
@@ -793,7 +793,7 @@ Command *parseCommand( char *cmdName, FILE *fp )
         //three args, subtract third FROM second, store value in first
         char A[ MAX_TOKEN + 1 ];
         char B[ MAX_TOKEN + 1 ];
- 
+
         expectVariable( tok, fp );
         expectToken( A, fp );
         expectToken( B, fp );
@@ -811,9 +811,9 @@ Command *parseCommand( char *cmdName, FILE *fp )
         expectVariable( tok, fp );
         expectToken( A, fp );
         expectToken( B, fp );
- 
+
         requireToken( ";", fp );
-      
+
         return makeMult( tok, A, B );
     }
     //If command is Div
@@ -842,13 +842,15 @@ Command *parseCommand( char *cmdName, FILE *fp )
         expectToken( B, fp );
 
         requireToken( ";", fp );
-      
+
         return makeMod( tok, A, B );
     }
     //If command is Eq
     else if ( strcmp( cmdName, "eq" ) == 0 ) {
-        //three args, compare numeric value of the second arg and third and store the result in first
-        //(if equal, first is set to 1 (true) if not equal, it will be set to an empty string (false)
+        //three args, compare numeric value of the second arg and third and store the result in
+        //first.
+        //(if equal, first is set to 1 (true) if not equal, it will be set to an empty string
+        //(false).
         char A[ MAX_TOKEN + 1 ];
         char B[ MAX_TOKEN + 1 ];
 
@@ -857,7 +859,7 @@ Command *parseCommand( char *cmdName, FILE *fp )
         expectToken( B, fp );
 
         requireToken( ";", fp );
-      
+
         return makeEq( tok, A, B );
     }
     //If command is Less

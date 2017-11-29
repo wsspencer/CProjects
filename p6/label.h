@@ -9,11 +9,12 @@
 #define _LABEL_H_
 
 #define INITIAL_CAPACITY 5
+#define LABEL_LEN 21
 
 //struct for the labels themselves
 typedef struct Label {
   //label name (up to 20 chars)
-  char name[21];
+  char name[LABEL_LEN];
   //location in the script
   int loc;
   
@@ -30,8 +31,6 @@ typedef struct {
   Label *map;
 
 } LabelMap;
-
-
 
 /** Initialize the fields of the given labelMap structure.
     @param labelMap Addres of the structure to initialize.

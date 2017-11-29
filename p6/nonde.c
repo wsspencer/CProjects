@@ -14,6 +14,9 @@
 /** Growth rate (multiplier) for resizable arrays. */
 #define GROWTH_RATE 2
 
+/** Number of desired command line arguments */
+#define CMD_ARGS 2
+
 /** Type used to represent a whole program, including a list of commands and
     a record of where all the labels are. */
 typedef struct {
@@ -96,7 +99,7 @@ static void freeProgram( Program *prog )
 int main( int argc, char *argv[] )
 {
   // Make sure we get one filename on the command line, and that we can open the file.
-  if ( argc != 2 )
+  if ( argc != CMD_ARGS )
     usage();
 
   FILE *fp = fopen( argv[ 1 ], "r" );
