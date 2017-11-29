@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-// Maximum length of a token in the source file.
+/** Maximum length of a token in the source file. */
 #define MAX_TOKEN 1023
 
 /** Maximum length of a variable name or a label. */

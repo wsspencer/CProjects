@@ -1,7 +1,24 @@
-#include "label.h"
-#include <stdlib.h>
+/**
+  @file label.c
+  @author William S Spencer
+
+  This object is used by our script interpreter program to handle labels within the script given
+  to us by our user.  As nonde.c reads through our script and parse.c parses its contents, we will
+  inevitably run into labels intended to be jumping and reference points for the script.  This
+  object is responsible for keeping track of a data structure that holds the labels called
+  "labelmap" and adding more labels to it, as well as finding labels within it.  Once we are done
+  using the labelmap, this object will be responsible for freeing the memory used by the map
+  (labelmap's memory is allocated dynamically so we can grow it beyond a predefined size).
+*/
+
+/** Header for standard input/output function calls */
 #include <stdio.h>
+/** Header for standard library function calls */
+#include <stdlib.h>
+/** Header for string associated function calls */
 #include <string.h>
+/** Header for label function calls */
+#include "label.h"
 
 void initMap( LabelMap *labelMap )
 {

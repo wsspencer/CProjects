@@ -1,11 +1,24 @@
+/**
+  @file nonde.c
+  @author William S Spencer
+
+  Interpreter program for our scripting language.  Contains main and the struct for our "Program"
+  type.  Delegates tasks to other object files for parsing and running script files passed to
+  the program by the user.  Also reports errors when scripting rules are broken.
+*/
+
 //INTERPRETER PROGRAM
-
+/** Header for standard input/output function calls */
 #include <stdio.h>
+/** Header for standard library function calls */
 #include <stdlib.h>
+/** Header for string associated function calls */
 #include <string.h>
-
+/** Header for command function calls */
 #include "command.h"
+/** Header for label function calls */
 #include "label.h"
+/** Header for script-parsing function calls */
 #include "parse.h"
 
 /** Initial capacity for resizable arrays. */

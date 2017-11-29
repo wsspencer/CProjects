@@ -1,10 +1,27 @@
-#include "command.h"
+/**
+  @file command.c
+  @author William S Spencer
+
+  This object is used by our script interpreter program to handle commands parsed from the script
+  given by the user.  It will handle the commands: Print, Set, Add, Sub, Mult, Div, Mod, Eq, Less,
+  Goto, and If.  It will also be responsible for passing any errors to stderr and exiting the
+  program's run to gracefully handle invalid input/scripts.
+*/
+
+/** Header for standard input/output function calls */
 #include <stdio.h>
+/** Header for standard library function calls */
 #include <stdlib.h>
+/** Header for string associated function calls */
 #include <string.h>
+/** Header for command function calls */
+#include "command.h"
+/** Header for label function calls */
 #include "label.h"
+/** Header for script-parsing function calls */
 #include "parse.h"
 
+/** Cosntant for length of a one character string */
 #define SHORTSTR 2
 
 /** Copy the given string to a dynamically allocated character array.
@@ -17,12 +34,10 @@ static char *copyString( char const *str )
   return strcpy( cpy, str );
 }
 
+//////////////////////////////////////////////////////////////////////
 //COMMAND STRUCTS:
 
-//////////////////////////////////////////////////////////////////////
-// Print Command
-
-// Representation for a print command, derived from Command.
+/** Representation for a print command, derived from Command. */
 typedef struct {
   // Documented in the superclass.
   int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
@@ -32,7 +47,7 @@ typedef struct {
   char *arg;
 } PrintCommand;
 
-//Representation for a set command? derived from Command.
+/** Representation for a set command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     int line;
@@ -42,7 +57,7 @@ typedef struct {
     char *arg;
 } SetCommand;
 
-//Representation for a add command? derived from Command.
+/** Representation for a add command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     int line;
@@ -53,7 +68,7 @@ typedef struct {
     char *B;
 } AddCommand;
 
-//Representation for a sub command? derived from Command.
+/** Representation for a sub command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     int line;
@@ -64,7 +79,7 @@ typedef struct {
     char *B;
 } SubCommand;
 
-//Representation for a mult command? derived from Command.
+/** Representation for a mult command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     int line;
@@ -75,7 +90,7 @@ typedef struct {
     char *B;
 } MultCommand;
 
-//Representation for a div command? derived from Command.
+/** Representation for a div command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     int line;
@@ -86,7 +101,7 @@ typedef struct {
     char *B;
 } DivCommand;
 
-//Representation for a modulo command? derived from Command.
+/** Representation for a modulo command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     int line;
@@ -97,7 +112,7 @@ typedef struct {
     char *B;
 } ModCommand;
 
-//Representation for an equality check command? derived from Command.
+/** Representation for an equality check command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     int line;
@@ -108,7 +123,7 @@ typedef struct {
     char *B;
 } EqCommand;
 
-//Representation for a less than check command? derived from Command.
+/** Representation for a less than check command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     int line;
@@ -119,7 +134,7 @@ typedef struct {
     char *B;
 } LessCommand;
 
-//Representation for goto command? derived from Command.
+/** Representation for goto command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     int line;
@@ -128,7 +143,7 @@ typedef struct {
     char *arg;
 } GotoCommand;
 
-//Representation for an if command? derived from Command.
+/** Representation for an if command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     int line;
@@ -138,10 +153,15 @@ typedef struct {
     char *jmp;
 } IfCommand;
 
-
+//////////////////////////////////////////////////////////////////////
 //COMMAND EXECUTIONS:
 
-// execute function for the print command
+/** Function for executing a print command
+    @param *cmd command instance 
+    @param *labelMap instance of our label map data structure
+    @param pc the int location of where we are in script
+    @return where we want to be in the script for the next command
+*/
 static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
 {
   // Cast the this pointer to the struct type it really points to.
@@ -183,7 +203,12 @@ static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
   return pc + 1;
 }
 
-//execute set command
+/** Function for executing a set command
+    @param *cmd command instance 
+    @param *labelMap instance of our label map data structure
+    @param pc the int location of where we are in script
+    @return where we want to be in the script for the next command
+*/
 static int executeSet( Command *cmd, LabelMap *labelMap, int pc )
 {
     SetCommand *this = (SetCommand *)cmd;
@@ -207,7 +232,12 @@ static int executeSet( Command *cmd, LabelMap *labelMap, int pc )
     return pc + 1;
 }
 
-//execute add command
+/** Function for executing an add command
+    @param *cmd command instance 
+    @param *labelMap instance of our label map data structure
+    @param pc the int location of where we are in script
+    @return where we want to be in the script for the next command
+*/
 static int executeAdd( Command *cmd, LabelMap *labelMap, int pc )
 {
     AddCommand *this = (AddCommand *)cmd;
@@ -249,7 +279,12 @@ static int executeAdd( Command *cmd, LabelMap *labelMap, int pc )
     return pc + 1;
 }
 
-//execute sub command
+/** Function for executing a subtract command
+    @param *cmd command instance 
+    @param *labelMap instance of our label map data structure
+    @param pc the int location of where we are in script
+    @return where we want to be in the script for the next command
+*/
 static int executeSub( Command *cmd, LabelMap *labelMap, int pc )
 {
     SubCommand *this = (SubCommand *)cmd;
@@ -291,7 +326,12 @@ static int executeSub( Command *cmd, LabelMap *labelMap, int pc )
     return pc + 1;
 }
 
-//execute mult command
+/** Function for executing a multiplication command
+    @param *cmd command instance 
+    @param *labelMap instance of our label map data structure
+    @param pc the int location of where we are in script
+    @return where we want to be in the script for the next command
+*/
 static int executeMult( Command *cmd, LabelMap *labelMap, int pc )
 {
     MultCommand *this = (MultCommand *)cmd;
@@ -333,7 +373,12 @@ static int executeMult( Command *cmd, LabelMap *labelMap, int pc )
     return pc + 1;
 }
 
-//execute div command
+/** Function for executing a division command
+    @param *cmd command instance 
+    @param *labelMap instance of our label map data structure
+    @param pc the int location of where we are in script
+    @return where we want to be in the script for the next command
+*/
 static int executeDiv( Command *cmd, LabelMap *labelMap, int pc )
 {
     DivCommand *this = (DivCommand *)cmd;
@@ -382,7 +427,12 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc )
     return pc + 1;
 }
 
-//execute modulo command
+/** Function for executing a modulo command
+    @param *cmd command instance 
+    @param *labelMap instance of our label map data structure
+    @param pc the int location of where we are in script
+    @return where we want to be in the script for the next command
+*/
 static int executeMod( Command *cmd, LabelMap *labelMap, int pc )
 {
     ModCommand *this = (ModCommand *)cmd;
@@ -430,7 +480,12 @@ static int executeMod( Command *cmd, LabelMap *labelMap, int pc )
     return pc + 1;
 }
 
-//execute equality check command
+/** Function for executing an equality check command
+    @param *cmd command instance 
+    @param *labelMap instance of our label map data structure
+    @param pc the int location of where we are in script
+    @return where we want to be in the script for the next command
+*/
 static int executeEq( Command *cmd, LabelMap *labelMap, int pc )
 {
     EqCommand *this = (EqCommand *)cmd;
@@ -475,7 +530,12 @@ static int executeEq( Command *cmd, LabelMap *labelMap, int pc )
     return pc + 1;
 }
 
-//execute Less command
+/** Function for executing a less-than check command
+    @param *cmd command instance 
+    @param *labelMap instance of our label map data structure
+    @param pc the int location of where we are in script
+    @return where we want to be in the script for the next command
+*/
 static int executeLess( Command *cmd, LabelMap *labelMap, int pc )
 {
     LessCommand *this = (LessCommand *)cmd;
@@ -524,7 +584,12 @@ static int executeLess( Command *cmd, LabelMap *labelMap, int pc )
     return pc + 1;
 }
 
-//execute Goto label command
+/** Function for executing a goto command
+    @param *cmd command instance 
+    @param *labelMap instance of our label map data structure
+    @param pc the int location of where we are in script
+    @return where we want to be in the script for the next command
+*/
 static int executeGoto( Command *cmd, LabelMap *labelMap, int pc )
 {
     GotoCommand *this = (GotoCommand *)cmd;
@@ -534,7 +599,12 @@ static int executeGoto( Command *cmd, LabelMap *labelMap, int pc )
     return jump;
 }
 
-//execute If command (go to label if conditional is true, otherwise continue as normal
+/** Function for executing an if command
+    @param *cmd command instance 
+    @param *labelMap instance of our label map data structure
+    @param pc the int location of where we are in script
+    @return where we want to be in the script for the next command
+*/
 static int executeIf( Command *cmd, LabelMap *labelMap, int pc )
 {
     IfCommand *this = (IfCommand *)cmd;
@@ -569,7 +639,8 @@ static int executeIf( Command *cmd, LabelMap *labelMap, int pc )
     return jump;
 }
 
-//COMMAND MAKES:
+//////////////////////////////////////////////////////////////////////
+//COMMAND MAKEUPS:
 
 /** Make a command that prints the given argument to the terminal.
     @param arg The argument to print, either a string literal or the
@@ -594,6 +665,11 @@ static Command *makePrint( char const *arg )
     return (Command *) this;
 }
 
+/** Make a command that sets the given argument to the given value.
+    @param var the variable whose value we want to set
+    @param arg the value we want to set our variable to
+    @return a new Command that implements setting a variable.
+ */
 static Command *makeSet( char const *var, char const *arg )
 {
     SetCommand *this = (SetCommand *) malloc( sizeof( SetCommand ) );
@@ -608,6 +684,12 @@ static Command *makeSet( char const *var, char const *arg )
     return (Command *) this;
 }
 
+/** Make a command that sets the given argument to the sum of two other given arguments.
+    @param sum the int sum of the two additives
+    @param A the first additive
+    @param B the second additive
+    @return a new Command that implements setting a variable to a sum of two arguments.
+ */
 static Command *makeAdd( char const *sum, char const *A, char const *B )
 {
     AddCommand *this = (AddCommand *) malloc( sizeof( AddCommand ) );
@@ -745,7 +827,8 @@ static Command *makeIf( char const *cond, char const *jmp )
     return (Command *) this;
 }
 
-//COMMAND PARSE:
+//////////////////////////////////////////////////////////////////////
+//COMMAND PARSING:
 
 Command *parseCommand( char *cmdName, FILE *fp )
 {

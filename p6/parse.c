@@ -1,6 +1,22 @@
-#include "parse.h"
+/**
+  @file parse.c
+  @author William S Spencer
+
+  This object will be used by our script interpreter program to parse the script file itself.
+  Nonde.c will read in the script file and iterate through its contents, then it will pass
+  off certain tasks to this object such as parsing tokens (variables, labels, and literals),
+  expecting tokens and variables, requiring tokens, retrieving the line in the script we are on,
+  and checking if the token is a variable name. It will also report syntax errors to standard
+  error that are associated with parsing.
+*/
+
+/** Header for standard library function calls */
 #include <stdlib.h>
+/** Header for string associated function calls */
 #include <string.h>
+/** Header for script-parsing function calls */
+#include "parse.h"
+/** Header for ctype function/type calls */
 #include <ctype.h>
 
 /** Current line we're parsing, starting from 1 like most editors. */

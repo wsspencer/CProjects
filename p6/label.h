@@ -1,6 +1,6 @@
 /**
   @file label.h
-  @author
+  @author William S Spencer
 
   Mapping from label names to lines of code.
 */
@@ -11,9 +11,9 @@
 #define INITIAL_CAPACITY 5
 #define LABEL_LEN 21
 
-//struct for the labels themselves
+/** struct for the labels themselves */
 typedef struct Label {
-  //label name (up to 20 chars)
+  //label name (up to twenty chars)
   char name[LABEL_LEN];
   //location in the script
   int loc;
@@ -23,11 +23,11 @@ typedef struct Label {
 /** Map from label names to locations in the code. */
 typedef struct {
   // ...
-  //size of map?
+  //size of map
   int size;
-  //capacity of map?
+  //capacity of map
   int cap;
-  //Head of map?
+  //Head of map
   Label *map;
 
 } LabelMap;
