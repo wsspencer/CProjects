@@ -1,7 +1,7 @@
 # We're using the default rules for make, but we're using
 # these variables to get them to do exactly what we want.
 CC = gcc
-CFLAGS = -g -Wall -std=c99
+CFLAGS = -g -Wall -std=c99 -D_POSIX_C_SOURCE=200112L
 LDLIBS = -lm
 
 # This is a common trick.  All is the first target, so it's the
