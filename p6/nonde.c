@@ -48,13 +48,9 @@ static void loadProgram( Program *prog, FILE *fp )
   prog->count = 0;
   prog->cap = INITIAL_CAPACITY;
   prog->cmd = (Command **) malloc( prog->cap * sizeof( Command * ) );
-  
-  //WORK TO DO: do I need to allocate label map here or does declaring it as aa LabelMap type in struct definition automatically allocate?
-  
-  
+
   // Initialize the labelMap structure in the program.
   initMap( &prog->labelMap );
-
 
   // One token of read-ahead, so we can tell what's next in the program.
   char tok[ MAX_TOKEN + 1 ];
@@ -115,8 +111,6 @@ int main( int argc, char *argv[] )
   loadProgram( &prog, fp );
   fclose( fp );
 
-
-  
   // Index of the current command.
   int pc = 0;
 
@@ -126,8 +120,6 @@ int main( int argc, char *argv[] )
     pc = prog.cmd[ pc ]->execute( prog.cmd[ pc ], & prog.labelMap, pc );
 
   freeProgram( &prog );
-  
-  
-  
+
   return 0;
 }

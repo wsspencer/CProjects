@@ -41,8 +41,7 @@ bool parseToken( char *token, FILE *fp )
   while ( isspace( ch = fgetc( fp ) ) || ch == '#' ) {
     // If we hit the comment characer, skip the whole line.
     if ( ch == '#' )
-      while ( ( ch = fgetc( fp ) ) != EOF && ch != '\n' )
-        ;
+      while ( ( ch = fgetc( fp ) ) != EOF && ch != '\n' );
 
     if ( ch == '\n' )
       lineCount++;
@@ -132,7 +131,7 @@ bool parseToken( char *token, FILE *fp )
 }
 
 void expectToken( char *tok, FILE *fp )
-{ 
+{
   if ( !parseToken( tok, fp ) ) {
     syntaxError();
   }
@@ -153,4 +152,3 @@ void requireToken( char const *target, FILE *fp )
   if ( strcmp( tok, target ) != 0 )
     syntaxError();
 }
-
