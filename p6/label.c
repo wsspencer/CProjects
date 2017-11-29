@@ -25,6 +25,14 @@ void addLabel( LabelMap *labelMap, char *name, int loc )
     //reallocate the map memory
 	labelMap->map = realloc(labelMap->map, labelMap->cap * sizeof(Label));
   }	
+  
+  //check that the label does not already exist in the labelMap, if it does,
+  //print error and exit
+  if ( findLabel( *labelMap, name ) != -1 ) {
+	fprintf(stderr, "Duplicate label: %s\n", name);
+	exit(1);
+  }
+  
   //add the label name to the next available location
   strcpy( labelMap->map[labelMap->size].name, name);
   //add the label location to next available index
@@ -41,9 +49,11 @@ int findLabel( LabelMap lmap, char *name ) {
 	  index++;
 	  //check if we're at the end of the map
 	  if ( index > lmap.size ) {
-		  printf("label not found!\n");
+		  return -1;
 	  }
   }
+  //if label was not found, return -1
+
   //return the location in the script of the label at index
   return lmap.map[index].loc;
 }
