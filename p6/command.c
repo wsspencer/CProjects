@@ -157,7 +157,7 @@ static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
   if ( isVarName( this->arg ) ) {
 	  //check if the value has been set, if not, print error to stderr and exit
 	  if ( !getenv(this->arg ) ) {
-		  fprintf(stderr, "Undefined variable: %s (line %d)", this->arg, this->line);
+		  fprintf(stderr, "Undefined variable: %s (line %d)\n", this->arg, this->line);
 		  exit(1);
 	  }
 	  else {
