@@ -155,20 +155,27 @@ static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
   if (this->arg && strcmp( this->arg, " " ) != 0) {
   
   if ( isVarName( this->arg ) ) {
-	  //strip quotes?
-	  char *str = getenv(this->arg);
-	  //remove " if it's first char
-	  if (str[0] == '"') {
-		str += 1;
+	  //check if the value has been set, if not, print error to stderr
+	  if ( !getenv(this->arg ) ) {
+		  fprintf(stderr, "Undefined Variable: %s (line %d)", this->arg, this->line);
 	  }
-	  if (strcmp( str, " " ) != 0) {
-		printf( "%s", str );
+	  else {
+		//strip quotes?
+		char *str = getenv(this->arg);
+		//remove " if it's first char
+		if (str[0] == '"') {
+			str += 1;
+		}
+		//check that it is not an empty string
+		if (strcmp( str, " " ) != 0) {
+			printf( "%s", str );
+		}
 	  }
   }
   else {
 	printf( "%s", this->arg + 1 );
   }
-  
+
   }
   
   return pc + 1;
@@ -313,6 +320,7 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc ) {
 	}
 	
 	//set a new environmental variable to this name and value, then cast sum back to a string
+	//first check for divide by zero error, if so, print error, otherwise carry out operation.
 	long total = div1 / div2;
 	char quot[ MAX_TOKEN + 1 ];
 	sprintf(quot, "%ld", total);
