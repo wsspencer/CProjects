@@ -153,7 +153,6 @@ void expectToken( char *tok, FILE *fp )
   }
 }
 
-//WHEN DOES THIS GET CALLED?
 void expectVariable( char *tok, FILE *fp )
 {
   if ( !parseToken( tok, fp ) || !isVarName( tok ) ) {

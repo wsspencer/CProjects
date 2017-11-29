@@ -157,7 +157,7 @@ typedef struct {
 //COMMAND EXECUTIONS:
 
 /** Function for executing a print command
-    @param *cmd command instance 
+    @param *cmd command instance
     @param *labelMap instance of our label map data structure
     @param pc the int location of where we are in script
     @return where we want to be in the script for the next command
@@ -204,7 +204,7 @@ static int executePrint( Command *cmd, LabelMap *labelMap, int pc )
 }
 
 /** Function for executing a set command
-    @param *cmd command instance 
+    @param *cmd command instance
     @param *labelMap instance of our label map data structure
     @param pc the int location of where we are in script
     @return where we want to be in the script for the next command
@@ -233,7 +233,7 @@ static int executeSet( Command *cmd, LabelMap *labelMap, int pc )
 }
 
 /** Function for executing an add command
-    @param *cmd command instance 
+    @param *cmd command instance
     @param *labelMap instance of our label map data structure
     @param pc the int location of where we are in script
     @return where we want to be in the script for the next command
@@ -280,7 +280,7 @@ static int executeAdd( Command *cmd, LabelMap *labelMap, int pc )
 }
 
 /** Function for executing a subtract command
-    @param *cmd command instance 
+    @param *cmd command instance
     @param *labelMap instance of our label map data structure
     @param pc the int location of where we are in script
     @return where we want to be in the script for the next command
@@ -327,7 +327,7 @@ static int executeSub( Command *cmd, LabelMap *labelMap, int pc )
 }
 
 /** Function for executing a multiplication command
-    @param *cmd command instance 
+    @param *cmd command instance
     @param *labelMap instance of our label map data structure
     @param pc the int location of where we are in script
     @return where we want to be in the script for the next command
@@ -374,7 +374,7 @@ static int executeMult( Command *cmd, LabelMap *labelMap, int pc )
 }
 
 /** Function for executing a division command
-    @param *cmd command instance 
+    @param *cmd command instance
     @param *labelMap instance of our label map data structure
     @param pc the int location of where we are in script
     @return where we want to be in the script for the next command
@@ -428,7 +428,7 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc )
 }
 
 /** Function for executing a modulo command
-    @param *cmd command instance 
+    @param *cmd command instance
     @param *labelMap instance of our label map data structure
     @param pc the int location of where we are in script
     @return where we want to be in the script for the next command
@@ -481,7 +481,7 @@ static int executeMod( Command *cmd, LabelMap *labelMap, int pc )
 }
 
 /** Function for executing an equality check command
-    @param *cmd command instance 
+    @param *cmd command instance
     @param *labelMap instance of our label map data structure
     @param pc the int location of where we are in script
     @return where we want to be in the script for the next command
@@ -531,7 +531,7 @@ static int executeEq( Command *cmd, LabelMap *labelMap, int pc )
 }
 
 /** Function for executing a less-than check command
-    @param *cmd command instance 
+    @param *cmd command instance
     @param *labelMap instance of our label map data structure
     @param pc the int location of where we are in script
     @return where we want to be in the script for the next command
@@ -585,7 +585,7 @@ static int executeLess( Command *cmd, LabelMap *labelMap, int pc )
 }
 
 /** Function for executing a goto command
-    @param *cmd command instance 
+    @param *cmd command instance
     @param *labelMap instance of our label map data structure
     @param pc the int location of where we are in script
     @return where we want to be in the script for the next command
@@ -600,7 +600,7 @@ static int executeGoto( Command *cmd, LabelMap *labelMap, int pc )
 }
 
 /** Function for executing an if command
-    @param *cmd command instance 
+    @param *cmd command instance
     @param *labelMap instance of our label map data structure
     @param pc the int location of where we are in script
     @return where we want to be in the script for the next command
@@ -705,6 +705,12 @@ static Command *makeAdd( char const *sum, char const *A, char const *B )
     return (Command *) this;
 }
 
+/** Make a command that sets the given argument to the difference of two other given arguments.
+    @param res the int difference between the two arguments
+    @param A the first argument
+    @param B the second argument
+    @return a new Command that implements setting a variable to a difference of two arguments.
+ */
 static Command *makeSub( char const *res, char const *A, char const *B )
 {
     SubCommand *this = (SubCommand *) malloc( sizeof( SubCommand ) );
@@ -720,6 +726,12 @@ static Command *makeSub( char const *res, char const *A, char const *B )
     return (Command *) this;
 }
 
+/** Make a command that sets the given argument to the product of two other given arguments.
+    @param prod the int product of the two factors
+    @param A the first factor
+    @param B the second factor
+    @return a new Command that implements setting a variable to the product of two arguments.
+ */
 static Command *makeMult( char const *prod, char const *A, char const *B )
 {
     MultCommand *this = (MultCommand *) malloc( sizeof( MultCommand ) );
@@ -735,6 +747,12 @@ static Command *makeMult( char const *prod, char const *A, char const *B )
     return (Command *) this;
 }
 
+/** Make a command that sets the given argument to the quotient of two other given arguments.
+    @param quot the int quotient of the two additives
+    @param A the first factor
+    @param B the second factor
+    @return a new Command that implements setting a variable to a quotient of two arguments.
+ */
 static Command *makeDiv( char const *quot, char const *A, char const *B )
 {
     DivCommand *this = (DivCommand *) malloc( sizeof( DivCommand ) );
@@ -750,7 +768,12 @@ static Command *makeDiv( char const *quot, char const *A, char const *B )
     return (Command *) this;
 }
 
-//make function for initializing a modulus command struct
+/** Make a command that sets the given argument to the modulus of two other given arguments.
+    @param mod the int modulo (remainder) of the two additives
+    @param A the first factor
+    @param B the second factor
+    @return a new Command that implements setting a variable to a modulus of two arguments.
+ */
 static Command *makeMod( char const *mod, char const *A, char const *B )
 {
     ModCommand *this = (ModCommand *) malloc( sizeof( ModCommand ) );
@@ -766,7 +789,13 @@ static Command *makeMod( char const *mod, char const *A, char const *B )
     return (Command *) this;
 }
 
-//make function for initializing an equality check command struct
+/** Make a command that sets the given argument to one if the two other given arguments are equal.
+    @param res the int result stating whether the two arguments are equal
+    @param A the first argument
+    @param B the second argument
+    @return a new Command that implements setting a variable to one if the other two arguments are
+    equal.
+ */
 static Command *makeEq( char const *res, char const *A, char const *B )
 {
     EqCommand *this = (EqCommand *) malloc( sizeof( EqCommand ) );
@@ -782,7 +811,14 @@ static Command *makeEq( char const *res, char const *A, char const *B )
     return (Command *) this;
 }
 
-//make function for initializing a less command struct
+/** Make a command that sets the given argument to whether the second argument is less than
+    the first.
+    @param res the int stating whether the second is less than the first
+    @param A the first argument
+    @param B the second argument
+    @return a new Command that implements setting a variable to whether the second argument
+    is less than the first.
+ */
 static Command *makeLess( char const *res, char const *A, char const *B )
 {
     LessCommand *this = (LessCommand *) malloc( sizeof( LessCommand ) );
@@ -798,7 +834,11 @@ static Command *makeLess( char const *res, char const *A, char const *B )
     return (Command *) this;
 }
 
-//make function for going to the label given
+/** Make a command that jumps to the given label in the script.
+    @param arg the label argument passed to jump to in the script
+    @return a new Command that moves the current position in the script to the location of the
+    passed label.
+ */
 static Command *makeGoto( char const *arg )
 {
     GotoCommand *this = (GotoCommand *) malloc( sizeof( GotoCommand ) );
@@ -812,7 +852,11 @@ static Command *makeGoto( char const *arg )
     return (Command *) this;
 }
 
-//make function for going to the label given if the first argument is true
+/** Make a command that moves position to the given label if the passed condition is true.
+    @param cond the condition we are checking
+    @param jmp the label to jump to if the condition is true
+    @return a new Command that implements a jump if the condition is true.
+ */
 static Command *makeIf( char const *cond, char const *jmp )
 {
     IfCommand *this = (IfCommand *) malloc( sizeof( IfCommand ) );
@@ -830,6 +874,11 @@ static Command *makeIf( char const *cond, char const *jmp )
 //////////////////////////////////////////////////////////////////////
 //COMMAND PARSING:
 
+/** Make a command that performs whatever command is passed as a parameter in the given file.
+    @param cmdName the name of the command we are on in the file
+    @param fp the file containing the script we are reading
+    @return a new Command that implements whatever command is parsed from the file.
+ */
 Command *parseCommand( char *cmdName, FILE *fp )
 {
     // Read the first token.

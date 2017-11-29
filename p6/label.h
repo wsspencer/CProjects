@@ -8,7 +8,9 @@
 #ifndef _LABEL_H_
 #define _LABEL_H_
 
+/** The initial capacity of our label map */
 #define INITIAL_CAPACITY 5
+/** The maximum length of a label */
 #define LABEL_LEN 21
 
 /** struct for the labels themselves */
@@ -45,9 +47,18 @@ void initMap( LabelMap *labelMap );
 */
 void addLabel( LabelMap *labelMap, char *name, int loc );
 
-
+/** Find where the label is in the labelmap, return its location.
+    @param lmap instance of our labelmap
+    @param name the name of the label we're looking for.
+    @return int location of the label we found
+ */
 int findLabel( LabelMap lmap, char *name );
 
+
+/** Free the dynamically allocated memory storing our label map.
+    @param lmap instance of our labelmap
+    @return void
+ */
 void freeMap( LabelMap *lmap );
 
 #endif
