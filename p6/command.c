@@ -311,7 +311,7 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc ) {
 		sscanf( getenv( this->two ), "%ld", &div1 );
 	}
 	else {
-		sscanf( this->two, "\"%ld", &div1 );
+		sscanf( this->two, "\"%ld", &div1 );	
 	}
 	if (isVarName(this->three)) {
 		sscanf( getenv( this->three ), "%ld", &div2 );
@@ -322,6 +322,11 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc ) {
 	
 	//set a new environmental variable to this name and value, then cast sum back to a string
 	//first check for divide by zero error, if so, print error, otherwise carry out operation.
+	//do this by checking that all values parsed as longs in their scan.
+	if ( div1 == 0 || div2 == 0 ) {
+		fprintf(stderr, "Divide by zero (line %d)\n", this->line);
+		exit(1);
+	}
 	long total = div1 / div2;
 	char quot[ MAX_TOKEN + 1 ];
 	sprintf(quot, "%ld", total);
