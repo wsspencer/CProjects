@@ -234,7 +234,7 @@ static int executeAdd( Command *cmd, LabelMap *labelMap, int pc ) {
 	//check that the values we are about to operate with parsed as longs, if not report error and
 	//exit
 	if ( !checkerA || !checkerB ) {
-		fprintf(stderr, "Invalid number (line %d)", this->line);
+		fprintf(stderr, "Invalid number (line %d)\n", this->line);
 		exit(1);
 	}
 	long total = add1 + add2;
@@ -274,7 +274,7 @@ static int executeSub( Command *cmd, LabelMap *labelMap, int pc ) {
 	//check that the values we are about to operate with parsed as longs, if not report error and
 	//exit
 	if ( !checkerA || !checkerB ) {
-		fprintf(stderr, "Invalid number (line %d)", this->line);
+		fprintf(stderr, "Invalid number (line %d)\n", this->line);
 		exit(1);
 	}
 	long total = sub1 - sub2;
@@ -314,7 +314,7 @@ static int executeMult( Command *cmd, LabelMap *labelMap, int pc ) {
 	//check that the values we are about to operate with parsed as longs, if not report error and
 	//exit
 	if ( !checkerA || !checkerB ) {
-		fprintf(stderr, "Invalid number (line %d)", this->line);
+		fprintf(stderr, "Invalid number (line %d)\n", this->line);
 		exit(1);
 	}
 	long total = mul1 * mul2;
@@ -355,7 +355,7 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc ) {
 	//first check that the values we are about to operate with parsed as longs, if not report error and
 	//exit
 	if ( !checkerA || !checkerB ) {
-		fprintf(stderr, "Invalid number (line %d)", this->line);
+		fprintf(stderr, "Invalid number (line %d)\n", this->line);
 		exit(1);
 	}
 	//then check for divide by zero error, if so, print error, otherwise carry out operation.
@@ -402,7 +402,7 @@ static int executeMod( Command *cmd, LabelMap *labelMap, int pc ) {
 	//check that the values we are about to operate with parsed as longs, if not report error and
 	//exit
 	if ( !checkerA || !checkerB ) {
-		fprintf(stderr, "Invalid number (line %d)", this->line);
+		fprintf(stderr, "Invalid number (line %d)\n", this->line);
 		exit(1);
 	}
 	//then (as with div) check that we aren't dividing by zero
@@ -447,7 +447,7 @@ static int executeEq( Command *cmd, LabelMap *labelMap, int pc ) {
 	//check that the values we are about to operate with parsed as longs, if not report error and
 	//exit
 	if ( !checkerA || !checkerB ) {
-		fprintf(stderr, "Invalid number (line %d)", this->line);
+		fprintf(stderr, "Invalid number (line %d)\n", this->line);
 		exit(1);
 	}
 	char res[ 2 ] = " ";
@@ -489,7 +489,7 @@ static int executeLess( Command *cmd, LabelMap *labelMap, int pc ) {
 	//check that the values we are about to operate with parsed as longs, if not report error and
 	//exit
 	if ( !checkerA || !checkerB ) {
-		fprintf(stderr, "Invalid number (line %d)", this->line);
+		fprintf(stderr, "Invalid number (line %d)\n", this->line);
 		exit(1);
 	}
 	
@@ -539,7 +539,7 @@ static int executeIf( Command *cmd, LabelMap *labelMap, int pc ) {
 	//check that the value we are about to operate with parsed as long, if not report error and
 	//exit
 	if ( !checker ) {
-		fprintf(stderr, "Invalid number (line %d)", this->line);
+		fprintf(stderr, "Invalid number (line %d)\n", this->line);
 		exit(1);
 	}
 	//check if conditional is true, if not jump's int value will be unchanged and processing will
