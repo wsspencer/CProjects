@@ -50,8 +50,8 @@ typedef struct {
     
     /** Arguments for sum and two additives */
     char *sum;
-    char *two;
-    char *three;
+    char *A;
+    char *B;
 } AddCommand;
 
 //Representation for a sub command? derived from Command.
@@ -61,8 +61,8 @@ typedef struct {
     
     /** Arguments for result and two args */
     char *res;
-    char *two;
-    char *three;
+    char *A;
+    char *B;
 } SubCommand;
 
 //Representation for a mult command? derived from Command.
@@ -72,8 +72,8 @@ typedef struct {
     
     /** Arguments for product and two multiples */
     char *prod;
-    char *two;
-    char *three;
+    char *A;
+    char *B;
 } MultCommand;
 
 //Representation for a div command? derived from Command.
@@ -83,8 +83,8 @@ typedef struct {
     
     /** Arguments for quotient and two dividends */
     char *quot;
-    char *two;
-    char *three;
+    char *A;
+    char *B;
 } DivCommand;
 
 //Representation for a modulo command? derived from Command.
@@ -94,8 +94,8 @@ typedef struct {
     
     /** Arguments for modulo and two dividends */
     char *mod;
-    char *two;
-    char *three;
+    char *A;
+    char *B;
 } ModCommand;
 
 //Representation for an equality check command? derived from Command.
@@ -105,8 +105,8 @@ typedef struct {
     
     /** Arguments for result and two args */
     char *res;
-    char *two;
-    char *three;
+    char *A;
+    char *B;
 } EqCommand;
 
 //Representation for a less than check command? derived from Command.
@@ -116,8 +116,8 @@ typedef struct {
     
     /** Arguments for result and two args */
     char *res;
-    char *two;
-    char *three;
+    char *A;
+    char *B;
 } LessCommand;
 
 //Representation for goto command? derived from Command.
@@ -219,17 +219,17 @@ static int executeAdd( Command *cmd, LabelMap *labelMap, int pc ) {
     
     //if either of the two additive arguments are variables, carry out the addition with their environment values
     //be sure to exclude the opening " in scanning each literal but not variables
-    if ( isVarName( this->two ) ) {
-        checkerA = sscanf( getenv( this->two ), "%ld", &addA );
+    if ( isVarName( this->A ) ) {
+        checkerA = sscanf( getenv( this->A ), "%ld", &addA );
     }
     else {
-        checkerA = sscanf( this->two, "\"%ld", &addA );
+        checkerA = sscanf( this->A, "\"%ld", &addA );
     }
-    if (isVarName(this->three)) {
-        checkerB = sscanf( getenv( this->three ), "%ld", &addB );
+    if (isVarName(this->B)) {
+        checkerB = sscanf( getenv( this->B ), "%ld", &addB );
     }
     else {
-        checkerB = sscanf( this->three, "\"%ld", &addB );
+        checkerB = sscanf( this->B, "\"%ld", &addB );
     }
     
     //set a new environmental variable to this name and value, then convert sum back to a string
@@ -259,17 +259,17 @@ static int executeSub( Command *cmd, LabelMap *labelMap, int pc ) {
     
     //if either of the two additive arguments are variables, carry out the equation with their environment values
     //be sure to exclude the opening " in scanning each literal but not variables
-    if ( isVarName( this->two ) ) {
-        checkerA = sscanf( getenv( this->two ), "%ld", &subA );
+    if ( isVarName( this->A ) ) {
+        checkerA = sscanf( getenv( this->A ), "%ld", &subA );
     }
     else {
-        checkerA = sscanf( this->two, "\"%ld", &subA );
+        checkerA = sscanf( this->A, "\"%ld", &subA );
     }
-    if (isVarName(this->three)) {
-        checkerB = sscanf( getenv( this->three ), "%ld", &subB );
+    if (isVarName(this->B)) {
+        checkerB = sscanf( getenv( this->B ), "%ld", &subB );
     }
     else {
-        checkerB = sscanf( this->three, "\"%ld", &subB );
+        checkerB = sscanf( this->B, "\"%ld", &subB );
     }
     
     //set a new environmental variable to this name and value, then cast sum back to a string
@@ -299,17 +299,17 @@ static int executeMult( Command *cmd, LabelMap *labelMap, int pc ) {
     
     //if either of the two additive arguments are variables, carry out the equation with their environment values
     //be sure to exclude the opening " in scanning each literal but not variables
-    if ( isVarName( this->two ) ) {
-        checkerA = sscanf( getenv( this->two ), "%ld", &mulA );
+    if ( isVarName( this->A ) ) {
+        checkerA = sscanf( getenv( this->A ), "%ld", &mulA );
     }
     else {
-        checkerA = sscanf( this->two, "\"%ld", &mulA );
+        checkerA = sscanf( this->A, "\"%ld", &mulA );
     }
-    if (isVarName(this->three)) {
-        checkerB = sscanf( getenv( this->three ), "%ld", &mulB );
+    if (isVarName(this->B)) {
+        checkerB = sscanf( getenv( this->B ), "%ld", &mulB );
     }
     else {
-        checkerB = sscanf( this->three, "\"%ld", &mulB );
+        checkerB = sscanf( this->B, "\"%ld", &mulB );
     }
     
     //set a new environmental variable to this name and value, then cast sum back to a string
@@ -339,17 +339,17 @@ static int executeDiv( Command *cmd, LabelMap *labelMap, int pc ) {
     
     //if either of the two additive arguments are variables, carry out the equation with their environment values
     //be sure to exclude the opening " in scanning each literal but not variables
-    if ( isVarName( this->two ) ) {
-        checkerA = sscanf( getenv( this->two ), "%ld", &divA );
+    if ( isVarName( this->A ) ) {
+        checkerA = sscanf( getenv( this->A ), "%ld", &divA );
     }
     else {
-        checkerA = sscanf( this->two, "\"%ld", &divA );    
+        checkerA = sscanf( this->A, "\"%ld", &divA );    
     }
-    if (isVarName(this->three)) {
-        checkerB = sscanf( getenv( this->three ), "%ld", &divB );
+    if (isVarName(this->B)) {
+        checkerB = sscanf( getenv( this->B ), "%ld", &divB );
     }
     else {
-        checkerB = sscanf( this->three, "\"%ld", &divB );
+        checkerB = sscanf( this->B, "\"%ld", &divB );
     }
     
     //set a new environmental variable to this name and value, then cast sum back to a string
@@ -386,17 +386,17 @@ static int executeMod( Command *cmd, LabelMap *labelMap, int pc ) {
     
     //if either of the two additive arguments are variables, carry out the equation with their environment values
     //be sure to exclude the opening " in scanning each literal but not variables
-    if ( isVarName( this->two ) ) {
-        checkerA = sscanf( getenv( this->two ), "%ld", &divA );
+    if ( isVarName( this->A ) ) {
+        checkerA = sscanf( getenv( this->A ), "%ld", &divA );
     }
     else {
-        checkerA = sscanf( this->two, "\"%ld", &divA );
+        checkerA = sscanf( this->A, "\"%ld", &divA );
     }
-    if (isVarName(this->three)) {
-        checkerB = sscanf( getenv( this->three ), "%ld", &divB );
+    if (isVarName(this->B)) {
+        checkerB = sscanf( getenv( this->B ), "%ld", &divB );
     }
     else {
-        checkerB = sscanf( this->three, "\"%ld", &divB );
+        checkerB = sscanf( this->B, "\"%ld", &divB );
     }
     
     //set a new environmental variable to this name and value, then cast sum back to a string
@@ -432,17 +432,17 @@ static int executeEq( Command *cmd, LabelMap *labelMap, int pc ) {
     
     //if either of the two additive arguments are variables, carry out the equation with their environment values
     //be sure to exclude the opening " in scanning each literal but not variables
-    if ( isVarName( this->two ) ) {
-        checkerA = sscanf( getenv( this->two ), "%ld", &argA );
+    if ( isVarName( this->A ) ) {
+        checkerA = sscanf( getenv( this->A ), "%ld", &argA );
     }
     else {
-        checkerA = sscanf( this->two, "\"%ld", &argA );
+        checkerA = sscanf( this->A, "\"%ld", &argA );
     }
-    if (isVarName(this->three)) {
-        checkerB = sscanf( getenv( this->three ), "%ld", &argB );
+    if (isVarName(this->B)) {
+        checkerB = sscanf( getenv( this->B ), "%ld", &argB );
     }
     else {
-        checkerB = sscanf( this->three, "\"%ld", &argB );
+        checkerB = sscanf( this->B, "\"%ld", &argB );
     }
     
     //check if the two args are equal,  if they are store 1 in result, if not store empty string (null).
@@ -475,17 +475,17 @@ static int executeLess( Command *cmd, LabelMap *labelMap, int pc ) {
     
     //if either of the arguments are variables, carry out the equation with their environment values
     //be sure to exclude the opening " in scanning each literal but not variables
-    if ( isVarName( this->two ) ) {
-        checkerA = sscanf( getenv( this->two ), "%ld", &argA );
+    if ( isVarName( this->A ) ) {
+        checkerA = sscanf( getenv( this->A ), "%ld", &argA );
     }
     else {
-        checkerA = sscanf( this->two, "\"%ld", &argA );
+        checkerA = sscanf( this->A, "\"%ld", &argA );
     }
-    if (isVarName(this->three)) {
-        checkerB = sscanf( getenv( this->three ), "%ld", &argB );
+    if (isVarName(this->B)) {
+        checkerB = sscanf( getenv( this->B ), "%ld", &argB );
     }
     else {
-        checkerB = sscanf( this->three, "\"%ld", &argB );
+        checkerB = sscanf( this->B, "\"%ld", &argB );
     }
     
     //check that the values we are about to operate with parsed as longs, if not report error and
@@ -592,7 +592,7 @@ static Command *makeSet( char const *var, char const *arg ) {
     return (Command *) this;
 }
 
-static Command *makeAdd( char const *sum, char const *two, char const *three ) {
+static Command *makeAdd( char const *sum, char const *A, char const *B ) {
     AddCommand *this = (AddCommand *) malloc( sizeof( AddCommand ) );
     
     this->execute = executeAdd;
@@ -600,13 +600,13 @@ static Command *makeAdd( char const *sum, char const *two, char const *three ) {
     
     //set variable and argument
     this->sum = copyString( sum );
-    this->two = copyString( two );
-    this->three = copyString( three );
+    this->A = copyString( A );
+    this->B = copyString( B );
     
     return (Command *) this;
 }
 
-static Command *makeSub( char const *res, char const *two, char const *three ) {
+static Command *makeSub( char const *res, char const *A, char const *B ) {
     SubCommand *this = (SubCommand *) malloc( sizeof( SubCommand ) );
     
     this->execute = executeSub;
@@ -614,13 +614,13 @@ static Command *makeSub( char const *res, char const *two, char const *three ) {
     
     //set variable and argument
     this->res = copyString( res );
-    this->two = copyString( two );
-    this->three = copyString( three );
+    this->A = copyString( A );
+    this->B = copyString( B );
     
     return (Command *) this;
 }
 
-static Command *makeMult( char const *prod, char const *two, char const *three ) {
+static Command *makeMult( char const *prod, char const *A, char const *B ) {
     MultCommand *this = (MultCommand *) malloc( sizeof( MultCommand ) );
     
     this->execute = executeMult;
@@ -628,13 +628,13 @@ static Command *makeMult( char const *prod, char const *two, char const *three )
     
     //set variable and argument
     this->prod = copyString( prod );
-    this->two = copyString( two );
-    this->three = copyString( three );
+    this->A = copyString( A );
+    this->B = copyString( B );
     
     return (Command *) this;
 }
 
-static Command *makeDiv( char const *quot, char const *two, char const *three ) {
+static Command *makeDiv( char const *quot, char const *A, char const *B ) {
     DivCommand *this = (DivCommand *) malloc( sizeof( DivCommand ) );
     
     this->execute = executeDiv;
@@ -642,14 +642,14 @@ static Command *makeDiv( char const *quot, char const *two, char const *three ) 
     
     //set variable and argument
     this->quot = copyString( quot );
-    this->two = copyString( two );
-    this->three = copyString( three );
+    this->A = copyString( A );
+    this->B = copyString( B );
     
     return (Command *) this;
 }
 
 //make function for initializing a modulus command struct
-static Command *makeMod( char const *mod, char const *two, char const *three ) {
+static Command *makeMod( char const *mod, char const *A, char const *B ) {
     ModCommand *this = (ModCommand *) malloc( sizeof( ModCommand ) );
     
     this->execute = executeMod;
@@ -657,14 +657,14 @@ static Command *makeMod( char const *mod, char const *two, char const *three ) {
     
     //set variable and argument
     this->mod = copyString( mod );
-    this->two = copyString( two );
-    this->three = copyString( three );
+    this->A = copyString( A );
+    this->B = copyString( B );
     
     return (Command *) this;
 }
 
 //make function for initializing an equality check command struct
-static Command *makeEq( char const *res, char const *two, char const *three ) {
+static Command *makeEq( char const *res, char const *A, char const *B ) {
     EqCommand *this = (EqCommand *) malloc( sizeof( EqCommand ) );
     
     this->execute = executeEq;
@@ -672,14 +672,14 @@ static Command *makeEq( char const *res, char const *two, char const *three ) {
     
     //set variable and argument
     this->res = copyString( res );
-    this->two = copyString( two );
-    this->three = copyString( three );
+    this->A = copyString( A );
+    this->B = copyString( B );
     
     return (Command *) this;
 }
 
 //make function for initializing a less command struct
-static Command *makeLess( char const *res, char const *two, char const *three ) {
+static Command *makeLess( char const *res, char const *A, char const *B ) {
     LessCommand *this = (LessCommand *) malloc( sizeof( LessCommand ) );
     
     this->execute = executeLess;
@@ -687,8 +687,8 @@ static Command *makeLess( char const *res, char const *two, char const *three ) 
     
     //set variable and argument
     this->res = copyString( res );
-    this->two = copyString( two );
-    this->three = copyString( three );
+    this->A = copyString( A );
+    this->B = copyString( B );
     
     return (Command *) this;
 }
@@ -752,102 +752,102 @@ Command *parseCommand( char *cmdName, FILE *fp )
   //If command is Add
   else if ( strcmp( cmdName, "add" ) == 0 ) {
       //three args, add second and third, store value in first
-      char two[ MAX_TOKEN + 1 ];
-      char three[ MAX_TOKEN + 1 ];
+      char A[ MAX_TOKEN + 1 ];
+      char B[ MAX_TOKEN + 1 ];
 
       expectVariable( tok, fp );
-      expectToken( two, fp );
-      expectToken( three, fp );
+      expectToken( A, fp );
+      expectToken( B, fp );
 
       requireToken( ";", fp );
 
-      return makeAdd( tok, two, three );
+      return makeAdd( tok, A, B );
   }
   //If command is Sub
   else if ( strcmp( cmdName, "sub" ) == 0 ) {
       //three args, subtract third FROM second, store value in first
-      char two[ MAX_TOKEN + 1 ];
-      char three[ MAX_TOKEN + 1 ];
+      char A[ MAX_TOKEN + 1 ];
+      char B[ MAX_TOKEN + 1 ];
       
       expectVariable( tok, fp );
-      expectToken( two, fp );
-      expectToken( three, fp );
-      
+      expectToken( A, fp );
+      expectToken( B, fp );
+
       requireToken( ";", fp );
-      
-      return makeSub( tok, two, three );
+
+      return makeSub( tok, A, B );
   }
   //If command is Mult
   else if ( strcmp( cmdName, "mult" ) == 0 ) {
       //three args, multiply second and third, store value in first
-      char two[ MAX_TOKEN + 1 ];
-      char three[ MAX_TOKEN + 1 ];
+      char A[ MAX_TOKEN + 1 ];
+      char B[ MAX_TOKEN + 1 ];
       
       expectVariable( tok, fp );
-      expectToken( two, fp );
-      expectToken( three, fp );
+      expectToken( A, fp );
+      expectToken( B, fp );
       
       requireToken( ";", fp );
       
-      return makeMult( tok, two, three );
+      return makeMult( tok, A, B );
   }
   //If command is Div
   else if ( strcmp( cmdName, "div" ) == 0 ) {
       //three args, divide second BY the third, store value in first (discard any remainder
       //using long)
-      char two[ MAX_TOKEN + 1 ];
-      char three[ MAX_TOKEN + 1 ];
+      char A[ MAX_TOKEN + 1 ];
+      char B[ MAX_TOKEN + 1 ];
       
       expectVariable( tok, fp );
-      expectToken( two, fp );
-      expectToken( three, fp );
+      expectToken( A, fp );
+      expectToken( B, fp );
       
       requireToken( ";", fp );
       
-      return makeDiv( tok, two, three );
+      return makeDiv( tok, A, B );
   }
   //If command is Mod
   else if ( strcmp( cmdName, "mod" ) == 0 ) {
       //three args, divide second BY the third, store value of REMAINDER in first
-      char two[ MAX_TOKEN + 1 ];
-      char three[ MAX_TOKEN + 1 ];
+      char A[ MAX_TOKEN + 1 ];
+      char B[ MAX_TOKEN + 1 ];
       
       expectVariable( tok, fp );
-      expectToken( two, fp );
-      expectToken( three, fp );
+      expectToken( A, fp );
+      expectToken( B, fp );
       
       requireToken( ";", fp );
       
-      return makeMod( tok, two, three );
+      return makeMod( tok, A, B );
   }
   //If command is Eq
   else if ( strcmp( cmdName, "eq" ) == 0 ) {
       //three args, compare numeric value of the second arg and third and store the result in first
       //(if equal, first is set to 1 (true) if not equal, it will be set to an empty string (false)
-      char two[ MAX_TOKEN + 1 ];
-      char three[ MAX_TOKEN + 1 ];
+      char A[ MAX_TOKEN + 1 ];
+      char B[ MAX_TOKEN + 1 ];
       
       expectVariable( tok, fp );
-      expectToken( two, fp );
-      expectToken( three, fp );
+      expectToken( A, fp );
+      expectToken( B, fp );
       
       requireToken( ";", fp );
       
-      return makeEq( tok, two, three );
+      return makeEq( tok, A, B );
   }
   //If command is Less
   else if ( strcmp( cmdName, "less" ) == 0 ) {
       //three args, set first to true when second is less than third
-      char two[ MAX_TOKEN + 1 ];
-      char three[ MAX_TOKEN + 1 ];
+      char A[ MAX_TOKEN + 1 ];
+      char B[ MAX_TOKEN + 1 ];
       
       expectVariable( tok, fp );
-      expectToken( two, fp );
-      expectToken( three, fp );
+      expectToken( A, fp );
+      expectToken( B, fp );
       
       requireToken( ";", fp );
       
-      return makeLess( tok, two, three );
+      return makeLess( tok, A, B );
   }
   //If command is Goto
   else if ( strcmp( cmdName, "goto" ) == 0 ) {
