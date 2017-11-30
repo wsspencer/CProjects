@@ -785,7 +785,7 @@ static Command *makePrint( char const *arg )
 
     this->arg = copyString( arg );
     this->destroy = destroyPrint;
-	
+
     // Return the result, as an instance of the Command interface.
     return (Command *) this;
 }
