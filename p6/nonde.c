@@ -101,6 +101,9 @@ static void freeProgram( Program *prog )
 {
   // ...
   //MORE WORK GOES HERE
+  //for ( int i = 0; i < prog->count; i++ ) {
+  //  free( prog->cmd[i] );
+  //}
   free( prog->cmd );
 }
 
@@ -134,6 +137,8 @@ int main( int argc, char *argv[] )
   // looping as we run).
   while ( pc < prog.count )
     pc = prog.cmd[ pc ]->execute( prog.cmd[ pc ], & prog.labelMap, pc );
+    //test destroy command
+    prog.cmd[ pc ]->destroy( prog.cmd[ pc ] )
 
   freeProgram( &prog );
 

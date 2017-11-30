@@ -41,6 +41,7 @@ static char *copyString( char const *str )
 typedef struct {
   // Documented in the superclass.
   int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+  void (*destroy)( Command *cmd );
   int line;
 
   /** Argument we're supposed to print. */
@@ -50,6 +51,7 @@ typedef struct {
 /** Representation for a set command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+    void (*destroy)( Command *cmd );
     int line;
     
     /** Arguments for setting variable */
@@ -60,6 +62,7 @@ typedef struct {
 /** Representation for a add command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+    void (*destroy)( Command *cmd );
     int line;
     
     /** Arguments for sum and two additives */
@@ -71,6 +74,8 @@ typedef struct {
 /** Representation for a sub command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+    void (*destroy)( Command *cmd );
+
     int line;
     
     /** Arguments for result and two args */
@@ -82,6 +87,8 @@ typedef struct {
 /** Representation for a mult command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+    void (*destroy)( Command *cmd );
+
     int line;
     
     /** Arguments for product and two multiples */
@@ -93,6 +100,8 @@ typedef struct {
 /** Representation for a div command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+    void (*destroy)( Command *cmd );
+
     int line;
     
     /** Arguments for quotient and two dividends */
@@ -104,6 +113,8 @@ typedef struct {
 /** Representation for a modulo command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+    void (*destroy)( Command *cmd );
+
     int line;
     
     /** Arguments for modulo and two dividends */
@@ -115,6 +126,8 @@ typedef struct {
 /** Representation for an equality check command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+    void (*destroy)( Command *cmd );
+
     int line;
     
     /** Arguments for result and two args */
@@ -126,6 +139,8 @@ typedef struct {
 /** Representation for a less than check command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+    void (*destroy)( Command *cmd );
+
     int line;
     
     /** Arguments for result and two args */
@@ -137,6 +152,8 @@ typedef struct {
 /** Representation for goto command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+    void (*destroy)( Command *cmd );
+
     int line;
     
     /** Arguments for go to label */
@@ -146,6 +163,8 @@ typedef struct {
 /** Representation for an if command? derived from Command. */
 typedef struct {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+    void (*destroy)( Command *cmd );
+
     int line;
     
     /** Arguments for conditional and jump label */
@@ -640,6 +659,96 @@ static int executeIf( Command *cmd, LabelMap *labelMap, int pc )
 }
 
 //////////////////////////////////////////////////////////////////////
+//COMMAND DESTROYING FUNCTIONS:
+/** Destroy command function to free command memory
+    @param cmd the command to be destroyed
+    @return void
+*/
+static void destroyPrint( Command *cmd ) {
+    free(cmd);
+}
+
+/** Destroy command function to free command memory
+    @param cmd the command to be destroyed
+    @return void
+*/
+static void destroySet( Command *cmd ) {
+    free(cmd);
+}
+
+/** Destroy command function to free command memory
+    @param cmd the command to be destroyed
+    @return void
+*/
+static void destroyAdd( Command *cmd ) {
+    free(cmd);
+}
+
+/** Destroy command function to free command memory
+    @param cmd the command to be destroyed
+    @return void
+*/
+static void destroySub( Command *cmd ) {
+    free(cmd);
+}
+
+/** Destroy command function to free command memory
+    @param cmd the command to be destroyed
+    @return void
+*/
+static void destroyMult( Command *cmd ) {
+    free(cmd);
+}
+
+/** Destroy command function to free command memory
+    @param cmd the command to be destroyed
+    @return void
+*/
+static void destroyDiv( Command *cmd ) {
+    free(cmd);
+}
+
+/** Destroy command function to free command memory
+    @param cmd the command to be destroyed
+    @return void
+*/
+static void destroyMod( Command *cmd ) {
+    free(cmd);
+}
+
+/** Destroy command function to free command memory
+    @param cmd the command to be destroyed
+    @return void
+*/
+static void destroyEq( Command *cmd ) {
+    free(cmd);
+}
+
+/** Destroy command function to free command memory
+    @param cmd the command to be destroyed
+    @return void
+*/
+static void destroyLess( Command *cmd ) {
+    free(cmd);
+}
+
+/** Destroy command function to free command memory
+    @param cmd the command to be destroyed
+    @return void
+*/
+static void destroyGoto( Command *cmd ) {
+    free(cmd);
+}
+
+/** Destroy command function to free command memory
+    @param cmd the command to be destroyed
+    @return void
+*/
+static void destroyIf( Command *cmd ) {
+    free(cmd);
+}
+
+//////////////////////////////////////////////////////////////////////
 //COMMAND MAKEUPS:
 
 /** Make a command that prints the given argument to the terminal.
@@ -654,6 +763,7 @@ static Command *makePrint( char const *arg )
 
     // Remember pointers to our overridable methods and line number.
     this->execute = executePrint;
+    this->destroy = destroyPrint;
     this->line = getLineNumber();
 
     //Check if token is a variable (environmental or otherwise since we set normal variables as
@@ -675,6 +785,7 @@ static Command *makeSet( char const *var, char const *arg )
     SetCommand *this = (SetCommand *) malloc( sizeof( SetCommand ) );
 
     this->execute = executeSet;
+    this->destroy = destroySet;
     this->line = getLineNumber();
 
     //set variable and argument
@@ -695,6 +806,7 @@ static Command *makeAdd( char const *sum, char const *A, char const *B )
     AddCommand *this = (AddCommand *) malloc( sizeof( AddCommand ) );
 
     this->execute = executeAdd;
+    this->destroy = destroyAdd;
     this->line = getLineNumber();
 
     //set variable and argument
@@ -716,6 +828,7 @@ static Command *makeSub( char const *res, char const *A, char const *B )
     SubCommand *this = (SubCommand *) malloc( sizeof( SubCommand ) );
 
     this->execute = executeSub;
+    this->destroy = destroySub;
     this->line = getLineNumber();
 
     //set variable and argument
@@ -737,6 +850,7 @@ static Command *makeMult( char const *prod, char const *A, char const *B )
     MultCommand *this = (MultCommand *) malloc( sizeof( MultCommand ) );
 
     this->execute = executeMult;
+    this->destroy = destroyMult;
     this->line = getLineNumber();
 
     //set variable and argument
@@ -758,6 +872,7 @@ static Command *makeDiv( char const *quot, char const *A, char const *B )
     DivCommand *this = (DivCommand *) malloc( sizeof( DivCommand ) );
 
     this->execute = executeDiv;
+    this->destroy = destroyDiv;
     this->line = getLineNumber();
 
     //set variable and argument
@@ -779,6 +894,7 @@ static Command *makeMod( char const *mod, char const *A, char const *B )
     ModCommand *this = (ModCommand *) malloc( sizeof( ModCommand ) );
 
     this->execute = executeMod;
+    this->destroy = destroyMod;
     this->line = getLineNumber();
 
     //set variable and argument
@@ -801,6 +917,7 @@ static Command *makeEq( char const *res, char const *A, char const *B )
     EqCommand *this = (EqCommand *) malloc( sizeof( EqCommand ) );
 
     this->execute = executeEq;
+    this->destroy = destroyEq;
     this->line = getLineNumber();
 
     //set variable and argument
@@ -824,6 +941,7 @@ static Command *makeLess( char const *res, char const *A, char const *B )
     LessCommand *this = (LessCommand *) malloc( sizeof( LessCommand ) );
 
     this->execute = executeLess;
+    this->destroy = destroyLess;
     this->line = getLineNumber();
 
     //set variable and argument
@@ -844,6 +962,7 @@ static Command *makeGoto( char const *arg )
     GotoCommand *this = (GotoCommand *) malloc( sizeof( GotoCommand ) );
 
     this->execute = executeGoto;
+    this->destroy = destroyGoto;
     this->line = getLineNumber();
 
     //set argument
@@ -862,6 +981,7 @@ static Command *makeIf( char const *cond, char const *jmp )
     IfCommand *this = (IfCommand *) malloc( sizeof( IfCommand ) );
 
     this->execute = executeIf;
+    this->destroy = destroyIf;
     this->line = getLineNumber();
 
     //set conditional and jump location

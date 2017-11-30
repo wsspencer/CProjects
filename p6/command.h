@@ -32,6 +32,7 @@ struct CommandStruct {
       anywhere.
    */
   int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
+  void (*destroy)( Command *cmd );
 
   /** Source file line containing this command. Used for reporting errors. */
   int line;
