@@ -136,7 +136,7 @@ int main( int argc, char *argv[] )
     pc = prog.cmd[ pc ]->execute( prog.cmd[ pc ], & prog.labelMap, pc );
   //test destroy command
   for ( int i = 0; i < prog->count; i++ ) {
-    prog.cmd[ i ]->destroy( prog.cmd[ i ] );
+    prog.cmd[ i ].destroy( prog.cmd[ i ] );
   }
 
 
