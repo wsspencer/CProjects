@@ -79,8 +79,6 @@ int findLabel( LabelMap lmap, char *name )
 void freeMap( LabelMap *lmap )
 {
   // ...
-  // Free the memory of out labelmap's map first, then the memory containing the labelmap struct
-  //itself
+  // Free the memory of out labelmap's map
   free(lmap->map);
-  free(lmap);
 }

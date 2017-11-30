@@ -1,7 +1,6 @@
 /**
   @file nonde.c
   @author William S Spencer
-
   Interpreter program for our scripting language.  Contains main and the struct for our "Program"
   type.  Delegates tasks to other object files for parsing and running script files passed to
   the program by the user.  Also reports errors when scripting rules are broken.
@@ -39,7 +38,7 @@ typedef struct {
   /** Number of commands in the program. */
   int count;
 
-  /** Capacity of the command list, fre resize behavior. */
+  /** Capacity of the command list, for resize behavior. */
   int cap;
 
   /** Label map, for the targets of if and goto. */
@@ -101,7 +100,12 @@ static void freeProgram( Program *prog )
 {
   // ...
   //MORE WORK GOES HERE
+  for ( int i = 0; i < prog->count; i++ ) {
+    free( prog->cmd[i] );
+  }
   free( prog->cmd );
+  //free labelmap
+  freeMap(&prog->labelMap);
 }
 
 /** Starting point for the program
@@ -138,7 +142,6 @@ int main( int argc, char *argv[] )
   for ( int i = 0; i < prog.count; i++ ) {
     prog.cmd[ i ]->destroy( prog.cmd[ i ] );
   }
-
 
   freeProgram( &prog );
 

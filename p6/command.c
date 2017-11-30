@@ -1,7 +1,6 @@
 /**
   @file command.c
   @author William S Spencer
-
   This object is used by our script interpreter program to handle commands parsed from the script
   given by the user.  It will handle the commands: Print, Set, Add, Sub, Mult, Div, Mod, Eq, Less,
   Goto, and If.  It will also be responsible for passing any errors to stderr and exiting the
@@ -664,88 +663,104 @@ static int executeIf( Command *cmd, LabelMap *labelMap, int pc )
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyPrint( Command *cmd ) {
-    free(cmd);
+static void destroyPrint( PrintCommand *cmd ) {
+    free(cmd->arg);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroySet( Command *cmd ) {
-    free(cmd);
+static void destroySet( SetCommand *cmd ) {
+    free(cmd->var);
+    free(cmd->arg);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyAdd( Command *cmd ) {
-    free(cmd);
+static void destroyAdd( AddCommand *cmd ) {
+    free(cmd->sum);
+    free(cmd->A);
+    free(cmd->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroySub( Command *cmd ) {
-    free(cmd);
+static void destroySub( SubCommand *cmd ) {
+    free(cmd->res);
+    free(cmd->A);
+    free(cmd->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyMult( Command *cmd ) {
-    free(cmd);
+static void destroyMult( MultCommand *cmd ) {
+    free(cmd->prod);
+    free(cmd->A);
+    free(cmd->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyDiv( Command *cmd ) {
-    free(cmd);
+static void destroyDiv( DivCommand *cmd ) {
+    free(cmd->quot);
+    free(cmd->A);
+    free(cmd->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyMod( Command *cmd ) {
-    free(cmd);
+static void destroyMod( ModCommand *cmd ) {
+    free(cmd->mod);
+    free(cmd->A);
+    free(cmd->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyEq( Command *cmd ) {
-    free(cmd);
+static void destroyEq( EqCommand *cmd ) {
+    free(cmd->res);
+    free(cmd->A);
+    free(cmd->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyLess( Command *cmd ) {
-    free(cmd);
+static void destroyLess( LessCommand *cmd ) {
+    free(cmd->res);
+    free(cmd->A);
+    free(cmd->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyGoto( Command *cmd ) {
-    free(cmd);
+static void destroyGoto( GotoCommand *cmd ) {
+    free(cmd->arg);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyIf( Command *cmd ) {
-    free(cmd);
+static void destroyIf( IfCommand *cmd ) {
+    free(cmd->cond);
+    free(cmd->jmp);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -763,14 +778,14 @@ static Command *makePrint( char const *arg )
 
     // Remember pointers to our overridable methods and line number.
     this->execute = executePrint;
-    this->destroy = destroyPrint;
     this->line = getLineNumber();
 
     //Check if token is a variable (environmental or otherwise since we set normal variables as
     //environmental ones?) name, if it is, change its arg's value to the value of the variable?
 
     this->arg = copyString( arg );
-
+    this->destroy = destroyPrint;
+	
     // Return the result, as an instance of the Command interface.
     return (Command *) this;
 }
