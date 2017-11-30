@@ -37,7 +37,7 @@ static char *copyString( char const *str )
 //COMMAND STRUCTS:
 
 /** Representation for a print command, derived from Command. */
-typedef struct {
+typedef struct PrintCommand {
   // Documented in the superclass.
   int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
   void (*destroy)( Command *cmd );
@@ -48,7 +48,7 @@ typedef struct {
 } PrintCommand;
 
 /** Representation for a set command? derived from Command. */
-typedef struct {
+typedef struct SetCommand {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     void (*destroy)( Command *cmd );
     int line;
@@ -59,7 +59,7 @@ typedef struct {
 } SetCommand;
 
 /** Representation for a add command? derived from Command. */
-typedef struct {
+typedef struct AddCommand {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     void (*destroy)( Command *cmd );
     int line;
@@ -71,7 +71,7 @@ typedef struct {
 } AddCommand;
 
 /** Representation for a sub command? derived from Command. */
-typedef struct {
+typedef struct SubCommand {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     void (*destroy)( Command *cmd );
 
@@ -84,7 +84,7 @@ typedef struct {
 } SubCommand;
 
 /** Representation for a mult command? derived from Command. */
-typedef struct {
+typedef struct MultCommand {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     void (*destroy)( Command *cmd );
 
@@ -97,7 +97,7 @@ typedef struct {
 } MultCommand;
 
 /** Representation for a div command? derived from Command. */
-typedef struct {
+typedef struct DivCommand {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     void (*destroy)( Command *cmd );
 
@@ -110,7 +110,7 @@ typedef struct {
 } DivCommand;
 
 /** Representation for a modulo command? derived from Command. */
-typedef struct {
+typedef struct ModCommand {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     void (*destroy)( Command *cmd );
 
@@ -123,7 +123,7 @@ typedef struct {
 } ModCommand;
 
 /** Representation for an equality check command? derived from Command. */
-typedef struct {
+typedef struct EqCommand {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     void (*destroy)( Command *cmd );
 
@@ -136,7 +136,7 @@ typedef struct {
 } EqCommand;
 
 /** Representation for a less than check command? derived from Command. */
-typedef struct {
+typedef struct LessCommand {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     void (*destroy)( Command *cmd );
 
@@ -149,7 +149,7 @@ typedef struct {
 } LessCommand;
 
 /** Representation for goto command? derived from Command. */
-typedef struct {
+typedef struct GotoCommand {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     void (*destroy)( Command *cmd );
 
@@ -160,7 +160,7 @@ typedef struct {
 } GotoCommand;
 
 /** Representation for an if command? derived from Command. */
-typedef struct {
+typedef struct IfCommand {
     int (*execute)( Command *cmd, LabelMap *labelMap, int pc );
     void (*destroy)( Command *cmd );
 
@@ -663,104 +663,115 @@ static int executeIf( Command *cmd, LabelMap *labelMap, int pc )
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyPrint( PrintCommand *cmd ) {
-    free(cmd->arg);
+static void destroyPrint( Command *cmd ) {
+    PrintCommand *this = (PrintCommand *)cmd;
+    free(this->arg);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroySet( SetCommand *cmd ) {
-    free(cmd->var);
-    free(cmd->arg);
+static void destroySet( Command *cmd ) {
+    SetCommand *this = (SetCommand *)cmd;
+    free(this->var);
+    free(this->arg);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyAdd( AddCommand *cmd ) {
-    free(cmd->sum);
-    free(cmd->A);
-    free(cmd->B);
+static void destroyAdd( Command *cmd ) {
+    AddCommand *this = (AddCommand *)cmd;
+    free(this->sum);
+    free(this->A);
+    free(this->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroySub( SubCommand *cmd ) {
-    free(cmd->res);
-    free(cmd->A);
-    free(cmd->B);
+static void destroySub( Command *cmd ) {
+    SubCommand *this = (SubCommand *)cmd;
+    free(this->res);
+    free(this->A);
+    free(this->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyMult( MultCommand *cmd ) {
-    free(cmd->prod);
-    free(cmd->A);
-    free(cmd->B);
+static void destroyMult( Command *cmd ) {
+    MultCommand *this = (MultCommand *)cmd;
+    free(this->prod);
+    free(this->A);
+    free(this->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyDiv( DivCommand *cmd ) {
-    free(cmd->quot);
-    free(cmd->A);
-    free(cmd->B);
+static void destroyDiv( Command *cmd ) {
+    DivCommand *this = (DivCommand *)cmd;
+    free(this->quot);
+    free(this->A);
+    free(this->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyMod( ModCommand *cmd ) {
-    free(cmd->mod);
-    free(cmd->A);
-    free(cmd->B);
+static void destroyMod( Command *cmd ) {
+    ModCommand *this = (ModCommand *)cmd;
+    free(this->mod);
+    free(this->A);
+    free(this->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyEq( EqCommand *cmd ) {
-    free(cmd->res);
-    free(cmd->A);
-    free(cmd->B);
+static void destroyEq( Command *cmd ) {
+    EqCommand *this = (EqCommand *)cmd;
+    free(this->res);
+    free(this->A);
+    free(this->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyLess( LessCommand *cmd ) {
-    free(cmd->res);
-    free(cmd->A);
-    free(cmd->B);
+static void destroyLess( Command *cmd ) {
+    LessCommand *this = (LessCommand *)cmd;
+    free(this->res);
+    free(this->A);
+    free(this->B);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyGoto( GotoCommand *cmd ) {
-    free(cmd->arg);
+static void destroyGoto( Command *cmd ) {
+    GotoCommand *this = (GotoCommand *)cmd;
+    free(this->arg);
 }
 
 /** Destroy command function to free command memory
     @param cmd the command to be destroyed
     @return void
 */
-static void destroyIf( IfCommand *cmd ) {
-    free(cmd->cond);
-    free(cmd->jmp);
+static void destroyIf( Command *cmd ) {
+    IfCommand *this = (IfCommand *)cmd;
+    free(this->cond);
+    free(this->jmp);
 }
 
 //////////////////////////////////////////////////////////////////////
