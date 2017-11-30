@@ -665,7 +665,7 @@ static int executeIf( Command *cmd, LabelMap *labelMap, int pc )
     @return void
 */
 static void destroyPrint( Command *cmd ) {
-    free(cmd);
+    //free(cmd);
 }
 
 /** Destroy command function to free command memory
