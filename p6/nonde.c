@@ -138,7 +138,7 @@ int main( int argc, char *argv[] )
   while ( pc < prog.count )
     pc = prog.cmd[ pc ]->execute( prog.cmd[ pc ], & prog.labelMap, pc );
     //test destroy command
-    prog.cmd[ pc ]->destroy( prog.cmd[ pc ] )
+    prog.cmd[ pc ]->destroy( prog.cmd[ pc ] );
 
   freeProgram( &prog );
 
