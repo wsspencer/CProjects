@@ -1,6 +1,0 @@
-8 10
-left 1
-right 5
-down 0
-up 17
-left 5
