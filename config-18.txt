@@ -1,6 +1,0 @@
-10 b
-left 5
-right 6
-up 7
-down 8
-quit
